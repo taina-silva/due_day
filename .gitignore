@@ -1,0 +1,27 @@
+# FVM Version Cache
+.fvm/
+
+# Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+
+# IDEs and Tools
+.idea/
+.vscode/
+*.iml
+.DS_Store
+*.log
+*.jks
+key.properties
+.ruby-lsp/
+
+# Agent Configurations & Documentation
+.agents/
+docs/
+
+# Temporary Dev/Agent Analysis and Logs
+analysis_*.txt
+*log.txt

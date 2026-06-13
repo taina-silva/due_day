@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "849117174196",
+    "project_id": "dueday-7ab7f",
+    "storage_bucket": "dueday-7ab7f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:849117174196:android:d995f1baa3a5af282fbae1",
+        "android_client_info": {
+          "package_name": "com.dueday.due_day"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "849117174196-q0aifrhk4e5e1nnbb9q2f0tv53agvojn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCW0Q0RgHZ9XcbPOB0cAPGuSlt34vCpeEY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "849117174196-q0aifrhk4e5e1nnbb9q2f0tv53agvojn.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "849117174196-tf323dudlkqj4cc9bkkseatf9d72suv4.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dueday.dueDay"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
