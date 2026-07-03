@@ -20,7 +20,6 @@ key.properties
 
 # Agent Configurations & Documentation
 .agents/
-docs/
 
 # Temporary Dev/Agent Analysis and Logs
 analysis_*.txt
