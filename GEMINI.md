@@ -67,7 +67,7 @@ _How does this project work?_ Refer to these for architectural patterns, standar
 - [feature_development.md](.gemini/docs/feature_development.md) — Directory layout and feature development workflow.
 - [firestore.md](.gemini/docs/firestore.md) — Firestore collections, queries, subcollections, rules, and pagination.
 - [navigation.md](.gemini/docs/navigation.md) — GoRouter setup, bottom nav state, and guards.
-- [design_system.md](.gemini/docs/design_system.md) — Tokens, typography, colors, spacing, and reusable components.
+- [design_system.md](.gemini/docs/design_system.md) — Full Design System specs, tokens, typography, colors, spacing, components, and code template.
 - [notifications.md](.gemini/docs/notifications.md) — FCM and local notifications handling.
 - [testing.md](.gemini/docs/testing.md) — Unit, widget, and integration testing strategies.
 
@@ -81,7 +81,6 @@ _Where is the official data or structure?_ Quick reference tables, schemas, and 
 - [dependency_injection.md](.gemini/references/dependency_injection.md) — GetIt service locator mapping.
 - [localization.md](.gemini/references/localization.md) — Translation setups.
 - [ai_coding_conventions.md](.gemini/references/ai_coding_conventions.md) — Quick cheat sheet and prompts for coding widgets.
-- [design_system_reference.md](.gemini/references/design_system_reference.md) — Detailed code examples and builders for design tokens.
 - [firebase_setup.md](.gemini/references/firebase_setup.md) — Firebase CLI setup, environment options, and rules initialization.
 - [security_hardening.md](.gemini/references/security_hardening.md) — Native configurations and services for biometrics and app privacy.
 - [glossary.md](.gemini/references/glossary.md) — Domain definitions.
