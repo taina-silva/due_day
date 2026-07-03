@@ -80,7 +80,6 @@ _Where is the official data or structure?_ Quick reference tables, schemas, and 
 - [firestore_schema.md](.gemini/references/firestore_schema.md) — Database schema definitions.
 - [dependency_injection.md](.gemini/references/dependency_injection.md) — GetIt service locator mapping.
 - [localization.md](.gemini/references/localization.md) — Translation setups.
-- [ai_coding_conventions.md](.gemini/references/ai_coding_conventions.md) — Quick cheat sheet and prompts for coding widgets.
 - [firebase_setup.md](.gemini/references/firebase_setup.md) — Firebase CLI setup, environment options, and rules initialization.
 - [security_hardening.md](.gemini/references/security_hardening.md) — Native configurations and services for biometrics and app privacy.
 - [glossary.md](.gemini/references/glossary.md) — Domain definitions.
@@ -90,7 +89,6 @@ _Where is the official data or structure?_ Quick reference tables, schemas, and 
 
 _How do I perform task X following project standards?_ Structured step-by-step procedures.
 
-- [create_feature.md](.gemini/skills/create_feature.md) — Scaffold a new feature.
 - [create_usecase.md](.gemini/skills/create_usecase.md) — Write a Domain UseCase.
 - [create_datasource.md](.gemini/skills/create_datasource.md) — Create a DataSource.
 - [create_repository.md](.gemini/skills/create_repository.md) — Implement contracts.

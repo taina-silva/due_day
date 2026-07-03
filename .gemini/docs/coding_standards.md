@@ -151,10 +151,88 @@ fvm flutter gen-l10n
 ## ⚡ 7. Formatting Checklist
 
 Before completing files:
-- [ ] No raw `Colors.*` — only `DueDayTheme.colors.*`
-- [ ] No hardcoded dimensions — only `DueDayTheme.dimensions.*`
+- [ ] No raw `Colors.*` — only `DueDayTheme.colors.*` (or `context.colors.*`)
+- [ ] No hardcoded dimensions — only `DueDayTheme.dimensions.*` (or `context.dimensions.*`)
 - [ ] All numeric layouts scale with `.width`, `.height`, `.scale`, or `.fontSize`.
 - [ ] All texts retrieved via `AppLocalizations`.
 - [ ] No raw exceptions bubble up to pages.
 - [ ] Run `fvm flutter analyze` to confirm no errors.
+
+---
+
+## 🤖 8. AI Guidelines & Screen Template
+
+When generating layout files, pages, or custom widgets, AI assistants must strictly conform to the styling conventions, localization standards, and architecture layers. 
+
+### 8.1. AI Context Base Prompt
+Use the following prompt to configure code generation rules:
+> **Colors** — Use exclusively the theme colors via `context.colors` (`AppColorsSys`). Access them via `colors.resource.primary`, `colors.onDarkBackground`, etc. Never use `Colors.white`, `Colors.black`, or raw hex literals.
+>
+> **Dimensions** — Use `context.dimensions` (or its direct shortcuts) for all sizes, spacing, margins, border radius, and stroke values:
+> - `context.sizes.*` for fixed component widths/heights.
+> - `context.spacing.*` for margins and paddings.
+> - `context.radius.*` for rounded corners.
+>
+> **Responsive Extensions** — Apply `.width` (or `.w`), `.height` (or `.h`), `.scale` (or `.sp`), or `.fontSize` (or `.fs`) to **every** numeric dimensional layout value, using the `NumExtension` utilities.
+>
+> **Texts & i18n** — Never use hardcoded literal strings in user-facing widgets. All user-visible strings must come from `AppLocalizations.of(context)`.
+
+### 8.2. Base Widget Structure Template
+```dart
+import 'package:flutter/material.dart';
+import 'package:due_day/core/l10n/app_localizations.dart';
+import 'package:due_day/core/design_system/theme/theme.dart';
+import 'package:due_day/core/utils/extensions/num_extension.dart';
+
+class ExamplePage extends StatelessWidget {
+  const ExamplePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // 1. Retrieve all theme design tokens using BuildContext extension
+    final colors = context.colors;
+    final typography = context.typography;
+    final size = context.sizes;
+    final spacing = context.spacing;
+    final radius = context.radius;
+
+    // 2. Retrieve localization dictionary
+    final l10n = AppLocalizations.of(context);
+
+    return Scaffold(
+      backgroundColor: colors.lightBackground,
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: spacing.largeExtraLarge.width,
+          vertical: spacing.twoExtraLarge.height,
+        ),
+        child: Column(
+          children: [
+            Image.asset(
+              'assets/images/logo/logo.png',
+              width: 104.scale,
+              height: 104.scale,
+            ),
+            SizedBox(height: spacing.mediumLarge.height),
+            Text(
+              l10n.exampleTitle,
+              style: typography.headline.large.copyWith(
+                color: colors.onLightBackground,
+                fontSize: size.twoExtraLarge.fontSize,
+              ),
+            ),
+            SizedBox(height: spacing.small.height),
+            Text(
+              l10n.exampleSubtitle,
+              style: typography.body.medium.copyWith(
+                color: colors.onLightBackground.withValues(alpha: 0.75),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
 

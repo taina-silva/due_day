@@ -140,4 +140,57 @@ fvm flutter pub run build_runner build --delete-conflicting-outputs
 # Watch files and rebuild on save
 fvm flutter pub run build_runner watch --delete-conflicting-outputs
 ```
- Ensure no compilation or analyzer warnings remain before merging the new feature.
+Ensure no compilation or analyzer warnings remain before merging the new feature.
+
+---
+
+## 🧪 7. Feature Testing Strategy (4-Phase Cycle)
+
+When implementing a feature, you must implement the corresponding tests according to the following cycle:
+
+```
+[Phase 1: Domain & Tests] ➔ [Phase 2: Data & Mocks] ➔ [Phase 3: BLoC & bloc_test] ➔ [Phase 4: UI & Widget Tests]
+```
+
+### Phase 1: Domain & Unit Tests
+- **UseCase Tests:** Create unit tests under `test/features/my_feature/domain/usecases/my_usecase_test.dart` to verify logic.
+- Assert that successful executions return a `Right` type and error states return a `Left` type wrapping a subclass of `Failure`.
+
+### Phase 2: Data & Repository Tests (with Mocks)
+- **Repository Tests:** Create repository implementation tests under `test/features/my_feature/data/repositories/my_repository_impl_test.dart`.
+- Mock remote/local DataSources using mockito or mocktail to verify error handling and conversion from data Models to Domain Entities.
+
+### Phase 3: BLoC & `bloc_test`
+- **BLoC Tests:** Create BLoC tests under `test/features/my_feature/presentation/bloc/my_bloc_test.dart` using the `bloc_test` package:
+  ```dart
+  blocTest<MyBloc, MyState>(
+    'emits [MyLoading, MyLoaded] on success',
+    build: () {
+      when(() => mockUseCase(any())).thenAnswer((_) async => Right(testData));
+      return MyBloc(useCase: mockUseCase);
+    },
+    act: (bloc) => bloc.add(const FetchEvent()),
+    expect: () => [
+      MyLoading(),
+      MyLoaded(testData),
+    ],
+  );
+  ```
+- **Resource Cleanup:** Always close stream controllers or manual subscriptions created in `setUp` during `tearDown` to avoid memory leaks.
+
+### Phase 4: UI & Widget Tests
+- **Widget Smoke Tests:** Verify screen elements render correctly and respond to user clicks.
+- Wrap tested widgets inside a mock environment using `MultiBlocProvider`, a localized `MaterialApp` with `DueDayTheme`, and `AppLocalizations`.
+- **Localization:** Search elements and assert labels using translation keys from `AppLocalizations` instead of hardcoded strings.
+
+### 📈 7.5. Code Coverage Standards
+Every new or modified file must reach a minimum of **80% code coverage** (excluding generated files like `.freezed.dart` or `.g.dart`).
+
+```bash
+# Run tests and collect coverage info
+fvm flutter test --coverage
+
+# Generate visual HTML report
+genhtml coverage/lcov.info -o coverage/html
+```
+Open `coverage/html/index.html` in a browser to review coverage details.
