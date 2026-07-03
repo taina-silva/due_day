@@ -20,7 +20,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:due_day/core/design_system/components/structure/custom_scaffold.dart';
 import 'package:due_day/core/design_system/components/structure/custom_app_bar.dart';
-import 'package:due_day/core/design_system/theme/due_day_theme.dart';
+import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
 import '../../bloc/account_bloc.dart';
@@ -31,10 +31,10 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1. Recover theme tokens
-    final colors = DueDayTheme.colors;
-    final spacing = DueDayTheme.dimensions.spacing;
-    final typography = DueDayTheme.typography;
+    // 1. Recover theme tokens using BuildContext extension
+    final colors = context.colors;
+    final spacing = context.spacing;
+    final typography = context.typography;
 
     // 2. Recover localized translations
     final l10n = AppLocalizations.of(context);

@@ -6,7 +6,27 @@ Detailed implementation reference for the **DueDay** Design System, focusing on 
 
 ## 🎯 Overview
 
-The Design System is accessed globally via the **`DueDayTheme`** class, providing static handles for:
+The Design System is accessed globally via the static **`DueDayTheme`** class, or inside build methods via the **`BuildContext` extension** (recommended):
+
+### 1. BuildContext Extension Getters (Recommended)
+- **Colors:** `context.colors`
+- **Typography:** `context.typography`
+- **Dimensions:** `context.dimensions`
+- **Spacing:** `context.spacing`
+- **Radius:** `context.radius`
+- **Sizes:** `context.sizes`
+- **Stroke:** `context.stroke`
+
+### 2. Theme-Adaptive Color Helpers
+- `context.isDarkMode` (bool)
+- `context.scaffoldBackgroundColor` (Color)
+- `context.surfaceColor` (Color)
+- `context.onSurfaceColor` (Color)
+- `context.onSurfaceVariantColor` (Color)
+- `context.primaryColor` (Color)
+- `context.errorColor` (Color)
+
+### 3. Static Gateways (No Context)
 - **Colors:** `DueDayTheme.colors`
 - **Typography:** `DueDayTheme.typography`
 - **Dimensions:** `DueDayTheme.dimensions` (spacings, radii, sizes, stroke widths)
@@ -361,9 +381,10 @@ class _LoginPageExampleState extends State<LoginPageExample> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final colors = DueDayTheme.colors;
-    final spacing = DueDayTheme.dimensions.spacing;
-    final typography = DueDayTheme.typography;
+    final colors = context.colors;
+    final spacing = context.spacing;
+    final typography = context.typography;
+    final radius = context.radius;
 
     return CustomScaffold(
       backgroundColor: colors.darkBackground,

@@ -10,12 +10,12 @@ Copy and paste this instruction at the beginning of any screen or widget impleme
 
 > When implementing any screen or widget in this Flutter project, you must strictly follow these design conventions:
 >
-> **Colors** — Use exclusively `DueDayTheme.colors` (`AppColorsSys`). Access them via `colors.resource.primary`, `colors.onDarkBackground`, `colors.lightBackground`, etc. Never use `Colors.white`, `Colors.black`, or raw hex literals.
+> **Colors** — Use exclusively the theme colors via `context.colors` (`AppColorsSys`). Access them via `colors.resource.primary`, `colors.onDarkBackground`, `colors.lightBackground`, etc. Never use `Colors.white`, `Colors.black`, or raw hex literals.
 >
-> **Dimensions** — Use `DueDayTheme.dimensions` for all sizes, spacing, margins, border radius, and stroke values:
-> - `dimensions.size.*` for fixed component widths/heights.
-> - `dimensions.spacing.*` for margins and paddings.
-> - `dimensions.radius.*` for rounded corners.
+> **Dimensions** — Use `context.dimensions` (or its direct shortcuts) for all sizes, spacing, margins, border radius, and stroke values:
+> - `context.sizes.*` for fixed component widths/heights.
+> - `context.spacing.*` for margins and paddings.
+> - `context.radius.*` for rounded corners.
 >
 > **Responsive Extensions** — Apply `.width` (or `.w`), `.height` (or `.h`), `.scale` (or `.sp`), or `.fontSize` (or `.fs`) to **every** numeric dimensional layout value, using the `NumExtension` utilities. Examples: `spacing.mediumLarge.height`, `size.large.width`, `104.scale`, `16.fontSize`.
 >
@@ -226,12 +226,12 @@ class ExamplePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1. Retrieve all theme design tokens
-    final colors = DueDayTheme.colors;
-    final typography = DueDayTheme.typography;
-    final size = DueDayTheme.dimensions.size;
-    final spacing = DueDayTheme.dimensions.spacing;
-    final radius = DueDayTheme.dimensions.radius;
+    // 1. Retrieve all theme design tokens using BuildContext extension
+    final colors = context.colors;
+    final typography = context.typography;
+    final size = context.sizes;
+    final spacing = context.spacing;
+    final radius = context.radius;
 
     // 2. Retrieve localization dictionary
     final l10n = AppLocalizations.of(context);

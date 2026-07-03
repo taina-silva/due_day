@@ -30,22 +30,22 @@ All source files, variables, classes, and directories must follow these conventi
 
 ## 🎨 2. Design System Tokens & Responsiveness
 
-Never hardcode styling assets (colors, fonts, paddings, margin size, radius) within layouts. Always utilize `DueDayTheme`.
+Never hardcode styling assets (colors, fonts, paddings, margin size, radius) within layouts. Always utilize `DueDayTheme` through the `BuildContext` extension inside build methods.
 
 ### 2.1. Colors
-Access colors via `DueDayTheme.colors`. Do not use `Colors.white`, `Colors.black`, or raw hex values.
+Access colors via `context.colors` (or `DueDayTheme.colors` if `BuildContext` is not available). Do not use `Colors.white`, `Colors.black`, or raw hex values.
 - **Example:**
   ```dart
-  color: DueDayTheme.colors.resource.primary
-  color: DueDayTheme.colors.lightBackground
+  color: context.colors.resource.primary
+  color: context.colors.lightBackground
   ```
 
 ### 2.2. Dimensions
-Access dimensions via `DueDayTheme.dimensions`:
-- `size` (e.g., `dimensions.size.iconMedium`)
-- `spacing` (e.g., `dimensions.spacing.mediumLarge`)
-- `radius` (e.g., `dimensions.radius.large`)
-- `stroke` (e.g., `dimensions.stroke.small`)
+Access dimensions via `context.dimensions` or the specific shortcuts (`context.spacing`, `context.radius`, `context.sizes`, `context.stroke`):
+- `sizes` (e.g., `context.sizes.iconMedium`)
+- `spacing` (e.g., `context.spacing.mediumLarge`)
+- `radius` (e.g., `context.radius.large`)
+- `stroke` (e.g., `context.stroke.small`)
 
 ### 2.3. Responsive Layout Extensions (`NumExtension`)
 Always apply responsive scaling to physical layout values using the extension located in `lib/core/utils/extensions/num_extension.dart`:

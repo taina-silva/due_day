@@ -4,13 +4,29 @@ This document describes the **DueDay** Design System, which centralizes UI style
 
 ---
 
-## 🎯 1. Theme Gateway (`DueDayTheme`)
+## 🎯 1. Theme Gateway (`DueDayTheme` & `BuildContext` Extension)
 
-The design system is accessed globally through the **`DueDayTheme`** static interface:
+The design system is defined under `DueDayTheme`, but the **recommended** way to access it inside build methods is via the **`BuildContext` extension** (defined in [due_day_theme_extension.dart](file:///Users/tainass/Personal/Projetos%20Pessoais/due_day/lib/core/design_system/theme/due_day_theme_extension.dart)):
 
-- **Colors:** `DueDayTheme.colors`
-- **Typography:** `DueDayTheme.typography`
-- **Dimensions:** `DueDayTheme.dimensions`
+### BuildContext Shortcut Getters
+- **Colors:** `context.colors` (instead of `DueDayTheme.colors`)
+- **Typography:** `context.typography` (instead of `DueDayTheme.typography`)
+- **Dimensions:** `context.dimensions` (instead of `DueDayTheme.dimensions`)
+- **Spacing:** `context.spacing` (instead of `DueDayTheme.dimensions.spacing`)
+- **Radius:** `context.radius` (instead of `DueDayTheme.dimensions.radius`)
+- **Sizes:** `context.sizes` (instead of `DueDayTheme.dimensions.size`)
+- **Stroke:** `context.stroke` (instead of `DueDayTheme.dimensions.stroke`)
+
+### Theme-Adaptive Colors (Context Helpers)
+- `context.isDarkMode` — Returns `true` if device is in dark mode.
+- `context.scaffoldBackgroundColor` — Scaffold color for active theme.
+- `context.surfaceColor` — Surface color for active theme.
+- `context.onSurfaceColor` — On-surface foreground color.
+- `context.onSurfaceVariantColor` — On-surface secondary foreground color.
+- `context.primaryColor` — Theme primary color.
+- `context.errorColor` — Theme error color.
+
+*Note: For locations where `BuildContext` is not available (like static theme creation), the static interface `DueDayTheme.colors` / `DueDayTheme.dimensions` / `DueDayTheme.typography` is still used.*
 
 ---
 
