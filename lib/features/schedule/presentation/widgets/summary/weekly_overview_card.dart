@@ -15,10 +15,10 @@ class WeeklyOverviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    final spacing = DueDayTheme.dimensions.spacing;
-    final radius = DueDayTheme.dimensions.radius;
+    final colors = context.colors;
+    final typography = context.typography;
+    final spacing = context.spacing;
+    final radius = context.radius;
     final l10n = context.l10n;
 
     final currencyFormat = NumberFormat.simpleCurrency(

@@ -15,8 +15,8 @@ class CategoryColorSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const dimensions = DueDayTheme.dimensions;
+    final colors = context.colors;
+    final dimensions = context.dimensions;
 
     return Row(
       children: CategoryColorUtils.availableColors.map((color) {

@@ -35,9 +35,9 @@ class _NotificationsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    final spacing = DueDayTheme.dimensions.spacing;
+    final colors = context.colors;
+    final typography = context.typography;
+    final spacing = context.spacing;
     final l10n = AppLocalizations.of(context);
 
     return CustomScaffold(
@@ -160,8 +160,8 @@ class _NotificationsView extends StatelessWidget {
 
   Widget _buildEmptyState(
       BuildContext context, dynamic spacing, AppLocalizations l10n) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
+    final colors = context.colors;
+    final typography = context.typography;
 
     return Center(
       child: Padding(
@@ -234,12 +234,12 @@ class _SectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
+    final colors = context.colors;
+    final typography = context.typography;
 
     return Padding(
       padding: EdgeInsets.symmetric(
-        horizontal: DueDayTheme.dimensions.spacing.small.width,
+        horizontal: context.spacing.small.width,
       ),
       child: Text(
         title.toUpperCase(),
@@ -266,10 +266,10 @@ class _NotificationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    final radius = DueDayTheme.dimensions.radius;
-    final spacing = DueDayTheme.dimensions.spacing;
+    final colors = context.colors;
+    final typography = context.typography;
+    final radius = context.radius;
+    final spacing = context.spacing;
 
     final isUrgent = notification.isUrgent;
     final isRead = notification.read;

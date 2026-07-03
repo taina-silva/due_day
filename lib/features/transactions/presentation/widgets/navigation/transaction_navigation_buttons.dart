@@ -11,7 +11,7 @@ class TransactionNavigationButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = DueDayTheme.dimensions.spacing;
+    final spacing = context.spacing;
 
     return Row(
       children: [
@@ -48,10 +48,10 @@ class _NavigationSmallButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    final spacing = DueDayTheme.dimensions.spacing;
-    const typography = DueDayTheme.typography;
-    final radius = DueDayTheme.dimensions.radius;
+    final colors = context.colors;
+    final spacing = context.spacing;
+    final typography = context.typography;
+    final radius = context.radius;
 
     return GestureDetector(
       onTap: onTap,

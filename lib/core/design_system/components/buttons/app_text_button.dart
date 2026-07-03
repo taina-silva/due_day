@@ -22,9 +22,9 @@ class AppTextButtonPrimary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    const dimensions = DueDayTheme.dimensions;
+    final colors = context.colors;
+    final typography = context.typography;
+    final dimensions = context.dimensions;
 
     return ElevatedButton(
       onPressed: (isEnabled && !isLoading) ? onPressed : null,
@@ -95,9 +95,9 @@ class AppTextButtonSecondary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    const dimensions = DueDayTheme.dimensions;
+    final colors = context.colors;
+    final typography = context.typography;
+    final dimensions = context.dimensions;
 
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final defaultForegroundColor = isDarkMode ? colors.onDarkBackground : colors.onLightBackground;
@@ -146,14 +146,14 @@ class AppTextButtonTertiary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
+    final colors = context.colors;
+    final typography = context.typography;
 
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
         foregroundColor: colors.resource.primary,
-        padding: DueDayTheme.dimensions.spacing.paddingMedium,
+        padding: context.spacing.paddingMedium,
       ),
       child: Text(
         label,

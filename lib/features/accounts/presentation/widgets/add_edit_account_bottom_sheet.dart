@@ -87,8 +87,8 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    const typography = DueDayTheme.typography;
-    const dimensions = DueDayTheme.dimensions;
+    final typography = context.typography;
+    final dimensions = context.dimensions;
     final l10n = AppLocalizations.of(context);
 
     final isEditing = widget.account != null;

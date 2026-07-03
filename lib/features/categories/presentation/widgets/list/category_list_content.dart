@@ -23,8 +23,8 @@ class CategoryListContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const typography = DueDayTheme.typography;
-    final spacing = DueDayTheme.dimensions.spacing;
+    final typography = context.typography;
+    final spacing = context.spacing;
     final l10n = AppLocalizations.of(context);
 
     return ListView(

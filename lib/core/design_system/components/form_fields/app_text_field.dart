@@ -41,9 +41,9 @@ class AppTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    const dimensions = DueDayTheme.dimensions;
+    final colors = context.colors;
+    final typography = context.typography;
+    final dimensions = context.dimensions;
 
     return TextFormField(
       controller: controller,

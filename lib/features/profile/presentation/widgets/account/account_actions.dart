@@ -14,9 +14,9 @@ class AccountActions extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    final radius = DueDayTheme.dimensions.radius;
+    final colors = context.colors;
+    final typography = context.typography;
+    final radius = context.radius;
 
     return Container(
       decoration: BoxDecoration(

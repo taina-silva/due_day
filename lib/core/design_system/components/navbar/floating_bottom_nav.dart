@@ -18,8 +18,8 @@ class FloatingBottomNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = DueDayTheme.dimensions.spacing;
-    final radius = DueDayTheme.dimensions.radius;
+    final spacing = context.spacing;
+    final radius = context.radius;
     final l10n = AppLocalizations.of(context);
 
     return Container(
@@ -107,11 +107,11 @@ class _NavItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    final spacing = DueDayTheme.dimensions.spacing;
-    final radius = DueDayTheme.dimensions.radius;
-    final size = DueDayTheme.dimensions.size;
+    final colors = context.colors;
+    final typography = context.typography;
+    final spacing = context.spacing;
+    final radius = context.radius;
+    final size = context.sizes;
 
     final color = isSelected
         ? colors.resource.primary

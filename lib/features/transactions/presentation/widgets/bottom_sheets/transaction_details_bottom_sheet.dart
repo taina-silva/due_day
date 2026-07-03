@@ -23,9 +23,9 @@ class TransactionDetailsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    const dimensions = DueDayTheme.dimensions;
+    final colors = context.colors;
+    final typography = context.typography;
+    final dimensions = context.dimensions;
     final l10n = AppLocalizations.of(context);
 
     final isExpense = transaction.type == TransactionType.expense;
@@ -292,7 +292,7 @@ class TransactionDetailsBottomSheet extends StatelessWidget {
             },
             child: Text(
               l10n.profileExclude,
-              style: TextStyle(color: DueDayTheme.colors.system.error),
+              style: TextStyle(color: context.colors.system.error),
             ),
           ),
         ],
@@ -316,9 +316,9 @@ class _DetailRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    final spacing = DueDayTheme.dimensions.spacing;
+    final colors = context.colors;
+    final typography = context.typography;
+    final spacing = context.spacing;
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: spacing.small),

@@ -20,9 +20,9 @@ class SettingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const typography = DueDayTheme.typography;
-    final spacing = DueDayTheme.dimensions.spacing;
-    final radius = DueDayTheme.dimensions.radius;
+    final typography = context.typography;
+    final spacing = context.spacing;
+    final radius = context.radius;
 
     return Container(
       padding: padding ?? EdgeInsets.all(spacing.mediumLarge.width),

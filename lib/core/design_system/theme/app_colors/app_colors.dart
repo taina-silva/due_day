@@ -1,12 +1,14 @@
-import 'package:due_day/core/design_system/theme/app_colors/resource_colors/resource_colors.dart';
-import 'package:due_day/core/design_system/theme/app_colors/system_colors/system_colors.dart';
+import 'package:due_day/core/design_system/theme/app_colors/resource_colors.dart';
+import 'package:due_day/core/design_system/theme/app_colors/system_colors.dart';
 import 'package:flutter/material.dart';
 
 class AppColorsSys {
-  const AppColorsSys();
+  final ResourceColors resource;
+  final SystemColors system;
 
-  ResourceColors get resource => const ResourceColors();
-  SystemColors get system => const SystemColors();
+  const AppColorsSys()
+      : resource = const ResourceColors(),
+        system = const SystemColors();
 
   // Backgrounds
   Color get lightBackground => const Color(0xFFFAFAFA);

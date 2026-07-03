@@ -23,8 +23,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    const typography = DueDayTheme.typography;
-    final spacing = DueDayTheme.dimensions.spacing;
+    final typography = context.typography;
+    final spacing = context.spacing;
 
     final canPop = ModalRoute.of(context)?.canPop ?? false;
 

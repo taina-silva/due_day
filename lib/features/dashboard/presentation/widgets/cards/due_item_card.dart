@@ -22,11 +22,11 @@ class DueItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    const typography = DueDayTheme.typography;
-    const colors = DueDayTheme.colors;
-    final spacing = DueDayTheme.dimensions.spacing;
-    final radius = DueDayTheme.dimensions.radius;
-    final size = DueDayTheme.dimensions.size;
+    final typography = context.typography;
+    final colors = context.colors;
+    final spacing = context.spacing;
+    final radius = context.radius;
+    final size = context.sizes;
 
     return Container(
       padding: EdgeInsets.all(spacing.mediumLarge.width),

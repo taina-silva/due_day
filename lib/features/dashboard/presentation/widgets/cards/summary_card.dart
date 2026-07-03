@@ -18,10 +18,10 @@ class SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const typography = DueDayTheme.typography;
-    final spacing = DueDayTheme.dimensions.spacing;
-    final radius = DueDayTheme.dimensions.radius;
-    final size = DueDayTheme.dimensions.size;
+    final typography = context.typography;
+    final spacing = context.spacing;
+    final radius = context.radius;
+    final size = context.sizes;
 
     return Container(
       padding: EdgeInsets.all(spacing.mediumLarge.width),

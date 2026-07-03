@@ -17,7 +17,7 @@ class CategoryFormActions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final spacing = DueDayTheme.dimensions.spacing;
+    final spacing = context.spacing;
 
     return Row(
       children: [

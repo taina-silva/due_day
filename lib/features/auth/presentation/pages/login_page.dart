@@ -32,9 +32,9 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    final spacing = DueDayTheme.dimensions.spacing;
+    final colors = context.colors;
+    final typography = context.typography;
+    final spacing = context.spacing;
     final l10n = AppLocalizations.of(context);
 
     return CustomScaffold(

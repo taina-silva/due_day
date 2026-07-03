@@ -56,9 +56,9 @@ class _TransactionFilterBottomSheetState
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final spacing = DueDayTheme.dimensions.spacing;
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
+    final spacing = context.spacing;
+    final colors = context.colors;
+    final typography = context.typography;
 
     final selectedCategory = widget.categories
         .where((c) => c.id == _selectedCategoryId)

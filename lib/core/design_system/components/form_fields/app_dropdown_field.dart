@@ -23,9 +23,9 @@ class AppDropdownField<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    const dimensions = DueDayTheme.dimensions;
+    final colors = context.colors;
+    final typography = context.typography;
+    final dimensions = context.dimensions;
 
     return DropdownButtonFormField<T>(
       initialValue: value,

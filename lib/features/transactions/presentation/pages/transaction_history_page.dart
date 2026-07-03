@@ -36,7 +36,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
-    const typography = DueDayTheme.typography;
+    final typography = context.typography;
     final l10n = context.l10n;
 
     final hasFilters =

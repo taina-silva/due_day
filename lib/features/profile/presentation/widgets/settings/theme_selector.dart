@@ -12,9 +12,9 @@ class ThemeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
+    final colors = context.colors;
     final l10n = AppLocalizations.of(context);
-    final spacing = DueDayTheme.dimensions.spacing;
+    final spacing = context.spacing;
     final currentTheme = context.watch<SettingsBloc>().state.themeMode;
 
     return SettingsSection(
@@ -74,10 +74,10 @@ class _RadioOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    final radius = DueDayTheme.dimensions.radius;
-    final spacing = DueDayTheme.dimensions.spacing;
+    final colors = context.colors;
+    final typography = context.typography;
+    final radius = context.radius;
+    final spacing = context.spacing;
     final isSelected = value == groupValue;
 
     final colorScheme = Theme.of(context).colorScheme;

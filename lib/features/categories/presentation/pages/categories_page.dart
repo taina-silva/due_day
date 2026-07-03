@@ -21,7 +21,7 @@ class CategoriesPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const typography = DueDayTheme.typography;
+    final typography = context.typography;
     final l10n = AppLocalizations.of(context);
 
     return CustomScaffold(
@@ -67,7 +67,7 @@ class CategoriesPage extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(DueDayTheme.dimensions.radius.extraLarge),
+          top: Radius.circular(context.radius.extraLarge),
         ),
       ),
       builder: (ctx) {

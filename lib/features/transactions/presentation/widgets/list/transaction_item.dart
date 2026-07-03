@@ -21,9 +21,9 @@ class TransactionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    final spacing = DueDayTheme.dimensions.spacing;
+    final colors = context.colors;
+    final typography = context.typography;
+    final spacing = context.spacing;
     final l10n = context.l10n;
 
     final isExpense = transaction.type == TransactionType.expense;
@@ -71,14 +71,14 @@ class TransactionItem extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(
-          DueDayTheme.dimensions.radius.medium,
+          context.radius.medium,
         ),
         child: Container(
           padding: EdgeInsets.all(spacing.medium.width),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(
-              DueDayTheme.dimensions.radius.medium,
+              context.radius.medium,
             ),
           ),
           child: Row(

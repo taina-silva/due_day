@@ -22,10 +22,10 @@ class AccountsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    final spacing = DueDayTheme.dimensions.spacing;
-    final radius = DueDayTheme.dimensions.radius;
+    final colors = context.colors;
+    final typography = context.typography;
+    final spacing = context.spacing;
+    final radius = context.radius;
     final l10n = AppLocalizations.of(context);
     final localeStr = context.localeString;
 
@@ -139,7 +139,7 @@ class AccountsPage extends StatelessWidget {
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(DueDayTheme.dimensions.radius.extraLarge),
+          top: Radius.circular(context.radius.extraLarge),
         ),
       ),
       builder: (ctx) {

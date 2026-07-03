@@ -21,10 +21,10 @@ class CategorySpendingList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
-    final spacing = DueDayTheme.dimensions.spacing;
-    final radius = DueDayTheme.dimensions.radius;
+    final colors = context.colors;
+    final typography = context.typography;
+    final spacing = context.spacing;
+    final radius = context.radius;
 
     final sortedEntries = spending.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));

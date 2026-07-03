@@ -134,7 +134,7 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = DueDayTheme.dimensions.spacing;
+    final spacing = context.spacing;
     final l10n = AppLocalizations.of(context);
 
     return MultiBlocListener(

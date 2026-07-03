@@ -17,8 +17,8 @@ class CategoryIconSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const dimensions = DueDayTheme.dimensions;
+    final colors = context.colors;
+    final dimensions = context.dimensions;
 
     return Wrap(
       spacing: dimensions.spacing.medium.width,

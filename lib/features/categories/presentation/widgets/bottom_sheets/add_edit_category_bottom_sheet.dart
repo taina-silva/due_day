@@ -62,7 +62,7 @@ class _AddEditCategoryBottomSheetState
 
   @override
   Widget build(BuildContext context) {
-    const dimensions = DueDayTheme.dimensions;
+    final dimensions = context.dimensions;
     final l10n = AppLocalizations.of(context);
 
     final isEditing = widget.category != null;

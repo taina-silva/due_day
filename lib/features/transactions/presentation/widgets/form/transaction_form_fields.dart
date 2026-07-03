@@ -55,7 +55,7 @@ class TransactionFormFields extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = DueDayTheme.dimensions.spacing;
+    final spacing = context.spacing;
 
     return Column(
       children: [

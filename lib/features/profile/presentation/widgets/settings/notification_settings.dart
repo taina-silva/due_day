@@ -12,8 +12,8 @@ class NotificationSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
+    final colors = context.colors;
+    final typography = context.typography;
     final l10n = AppLocalizations.of(context);
 
     return SettingsSection(

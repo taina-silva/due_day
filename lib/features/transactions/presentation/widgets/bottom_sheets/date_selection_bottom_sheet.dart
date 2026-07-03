@@ -33,9 +33,9 @@ class _DateSelectionBottomSheetState extends State<DateSelectionBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final spacing = DueDayTheme.dimensions.spacing;
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
+    final spacing = context.spacing;
+    final colors = context.colors;
+    final typography = context.typography;
 
     return Container(
       padding: EdgeInsets.only(
@@ -274,10 +274,10 @@ class _DateShortcutChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    final spacing = DueDayTheme.dimensions.spacing;
-    final radius = DueDayTheme.dimensions.radius;
-    const typography = DueDayTheme.typography;
+    final colors = context.colors;
+    final spacing = context.spacing;
+    final radius = context.radius;
+    final typography = context.typography;
 
     return GestureDetector(
       onTap: onTap,

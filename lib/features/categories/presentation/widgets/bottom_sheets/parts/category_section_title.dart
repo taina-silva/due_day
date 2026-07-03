@@ -8,8 +8,8 @@ class CategorySectionTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    const typography = DueDayTheme.typography;
+    final colors = context.colors;
+    final typography = context.typography;
 
     return Text(
       title,

@@ -1,11 +1,16 @@
-import 'package:due_day/core/design_system/theme/app_typography/typography_styles/typography_styles.dart';
+import 'package:due_day/core/design_system/theme/app_typography/typography_styles.dart';
 
 class AppTypography {
-  const AppTypography();
+  final HeadlineStyles headline;
+  final TitleStyles title;
+  final BodyStyles body;
+  final LabelStyles label;
+  final CaptionStyles caption;
 
-  HeadlineStyles get headline => const HeadlineStyles();
-  TitleStyles get title => const TitleStyles();
-  BodyStyles get body => const BodyStyles();
-  LabelStyles get label => const LabelStyles();
-  CaptionStyles get caption => const CaptionStyles();
+  const AppTypography()
+      : headline = const HeadlineStyles(),
+        title = const TitleStyles(),
+        body = const BodyStyles(),
+        label = const LabelStyles(),
+        caption = const CaptionStyles();
 }

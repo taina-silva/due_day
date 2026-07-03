@@ -21,7 +21,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = DueDayTheme.dimensions.spacing;
+    final spacing = context.spacing;
     final l10n = AppLocalizations.of(context);
 
     // Ensure state provides user info
@@ -70,11 +70,11 @@ class ProfilePage extends StatelessWidget {
               children: [
                 const LanguageSelector(),
                 SizedBox(
-                  height: DueDayTheme.dimensions.spacing.mediumLarge.height,
+                  height: context.spacing.mediumLarge.height,
                 ),
                 const ThemeSelector(),
                 SizedBox(
-                  height: DueDayTheme.dimensions.spacing.mediumLarge.height,
+                  height: context.spacing.mediumLarge.height,
                 ),
                 const NotificationSettings(),
               ],

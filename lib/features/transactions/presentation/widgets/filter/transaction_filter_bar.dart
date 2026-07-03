@@ -38,8 +38,8 @@ class TransactionFilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    const colors = DueDayTheme.colors;
-    final spacing = DueDayTheme.dimensions.spacing;
+    final colors = context.colors;
+    final spacing = context.spacing;
 
     final selectedCategory = categories
         .where((c) => c.id == selectedCategoryId)
@@ -134,7 +134,7 @@ class TransactionFilterBar extends StatelessWidget {
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: colors.resource.neutral,
-                        width: DueDayTheme.dimensions.stroke.medium,
+                        width: context.stroke.medium,
                       ),
                     ),
                     child: Icon(
@@ -170,10 +170,10 @@ class _FilterChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    final spacing = DueDayTheme.dimensions.spacing;
-    final radius = DueDayTheme.dimensions.radius;
-    const typography = DueDayTheme.typography;
+    final colors = context.colors;
+    final spacing = context.spacing;
+    final radius = context.radius;
+    final typography = context.typography;
 
     final baseColor = activeColor ?? colors.system.info;
 
@@ -192,7 +192,7 @@ class _FilterChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(radius.medium),
           border: Border.all(
             color: isSelected ? baseColor : colors.resource.neutral,
-            width: DueDayTheme.dimensions.stroke.medium,
+            width: context.stroke.medium,
           ),
         ),
         child: Row(

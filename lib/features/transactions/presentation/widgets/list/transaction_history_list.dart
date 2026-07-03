@@ -22,8 +22,8 @@ class TransactionHistoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const typography = DueDayTheme.typography;
-    final spacing = DueDayTheme.dimensions.spacing;
+    final typography = context.typography;
+    final spacing = context.spacing;
 
     // Group transactions by date (ignoring time)
     final groupedTransactions = groupBy(transactions, (tx) {
@@ -58,7 +58,7 @@ class TransactionHistoryList extends StatelessWidget {
                 _formatDateHeader(context, date),
                 style: typography.label.small.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: DueDayTheme.colors.resource.secondary,
+                  color: context.colors.resource.secondary,
                 ),
               ),
             ),

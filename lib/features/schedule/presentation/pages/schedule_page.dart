@@ -30,10 +30,10 @@ class ScheduleView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spacing = DueDayTheme.dimensions.spacing;
+    final spacing = context.spacing;
 
     final l10n = context.l10n;
-    const colors = DueDayTheme.colors;
+    final colors = context.colors;
 
     return CustomScaffold(
       appBar: CustomAppBar(

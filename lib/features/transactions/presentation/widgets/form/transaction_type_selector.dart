@@ -16,8 +16,8 @@ class TransactionTypeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    final spacing = DueDayTheme.dimensions.spacing;
+    final colors = context.colors;
+    final spacing = context.spacing;
     final l10n = context.l10n;
 
     return Row(
@@ -73,10 +73,10 @@ class _TypeItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const colors = DueDayTheme.colors;
-    final spacing = DueDayTheme.dimensions.spacing;
-    final radius = DueDayTheme.dimensions.radius;
-    const typography = DueDayTheme.typography;
+    final colors = context.colors;
+    final spacing = context.spacing;
+    final radius = context.radius;
+    final typography = context.typography;
 
     return GestureDetector(
       onTap: onTap,
