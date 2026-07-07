@@ -87,17 +87,30 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           final dueDate = t.dueDate!;
           final today = DateTime.now();
           final todayMidnight = DateTime(today.year, today.month, today.day);
-          final dueDateMidnight =
-              DateTime(dueDate.year, dueDate.month, dueDate.day);
+          final dueDateMidnight = DateTime(
+            dueDate.year,
+            dueDate.month,
+            dueDate.day,
+          );
 
           // 1 dia antes às 8:00 AM
           final dayBefore = dueDate.subtract(const Duration(days: 1));
-          final notifyDayBefore =
-              DateTime(dayBefore.year, dayBefore.month, dayBefore.day, 8, 0);
+          final notifyDayBefore = DateTime(
+            dayBefore.year,
+            dayBefore.month,
+            dayBefore.day,
+            8,
+            0,
+          );
 
           // No dia do vencimento às 8:00 AM
-          final notifyDueDay =
-              DateTime(dueDate.year, dueDate.month, dueDate.day, 8, 0);
+          final notifyDueDay = DateTime(
+            dueDate.year,
+            dueDate.month,
+            dueDate.day,
+            8,
+            0,
+          );
 
           if (dueDateMidnight.isBefore(todayMidnight)) {
             // Atrasada! Criar apenas histórico no Firestore

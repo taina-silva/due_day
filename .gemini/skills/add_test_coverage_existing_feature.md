@@ -51,3 +51,8 @@ This generates `coverage/lcov.info`. Use coverage extensions or tools (e.g. `lco
       expect(tapped, isTrue);
     });
     ```
+
+### Step 5: Format and Lint Checks
+Before concluding the testing task:
+1. Run `fvm dart format .` to format the test files and remove unused imports.
+2. Run `fvm flutter analyze` to verify that no new linter warnings or errors have been introduced in the test files or modified source code. Ensure all warnings (e.g. subtype_of_sealed_class) are resolved or explicitly ignored using standard directives.

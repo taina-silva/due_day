@@ -20,11 +20,11 @@ class ScheduleSummary extends Equatable {
 
   @override
   List<Object?> get props => [
-        totalAmount,
-        totalPaid,
-        totalToPay,
-        nextIncomeAmount,
-        nextIncomeDate,
-        transactions,
-      ];
+    totalAmount,
+    totalPaid,
+    totalToPay,
+    nextIncomeAmount,
+    nextIncomeDate,
+    transactions,
+  ];
 }

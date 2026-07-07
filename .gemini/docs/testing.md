@@ -8,7 +8,8 @@ This document defines the testing strategy, patterns, tools, and mock configurat
 
 We verify system correctness through layered testing. Because we use **Clean Architecture**, we isolate frameworks using interfaces, enabling simple, mock-based unit tests for business logic.
 
-- **Unit Tests (High Priority):** Test Domain UseCases and Presentation BLoCs in isolation.
+- **Unit Tests (High Priority):** Test Domain UseCases, Data Models/Entities, and Presentation BLoCs in isolation.
+  - **Models & Entities:** Every `_model.dart` and `_entity.dart` must have dedicated unit tests. They are not to be left without testing. Tests must cover serialization (`fromJson`/`toJson`), conversions (`fromEntity`/`toEntity`), equality (`Equatable` props), and `copyWith` behavior to verify data mappings.
 - **Widget Tests (Medium Priority):** Test individual Design System components and layout screens.
 - **Integration Tests (Low Priority):** Test end-to-end user flows (e.g., login to dashboard) on real devices or simulators.
 
@@ -20,6 +21,7 @@ Unit tests focus on validating logic without database or framework access.
 
 - **Tools:** `flutter_test`, `mocktail` (or `mockito`) for dependency mocking.
 - **Error States:** Use Cases must be tested for both success (`Right`) and failure (`Left`) returns.
+- **Naming Pattern:** All test descriptions must follow the `given [precondition] when [action] then [expected result]` format.
 
 ### Example UseCase Test Blueprint
 ```dart
@@ -41,18 +43,21 @@ void main() {
     usecase = AddAccount(mockRepository);
   });
 
-  test('should call addAccount on repository and return Right(success)', () async {
-    // Arrange
-    when(() => mockRepository.addAccount(any()))
-        .thenAnswer((_) async => const Right(null));
+  test(
+    'given account data when addAccount is called then return Right(null)',
+    () async {
+      // Arrange
+      when(() => mockRepository.addAccount(any()))
+          .thenAnswer((_) async => const Right(null));
 
-    // Act
-    final result = await usecase(testAccount);
+      // Act
+      final result = await usecase(testAccount);
 
-    // Assert
-    expect(result, const Right(null));
-    verify(() => mockRepository.addAccount(testAccount)).called(1);
-  });
+      // Assert
+      expect(result, const Right(null));
+      verify(() => mockRepository.addAccount(testAccount)).called(1);
+    },
+  );
 }
 ```
 
@@ -62,10 +67,10 @@ void main() {
 
 We test BLoCs by sending events and asserting the exact sequential list of emitted states.
 - **Package:** `bloc_test`
-- **Pattern:** Use the `blocTest` utility:
+- **Pattern:** Use the `blocTest` utility with `given-when-then` formatted descriptions:
 ```dart
 blocTest<AuthBloc, AuthState>(
-  'emits [AuthLoading, AuthAuthenticated] when LoginEvent succeeds',
+  'given successful login credentials when LoginEvent is added then emit [AuthLoading, AuthAuthenticated]',
   build: () {
     when(() => mockLoginUseCase(any())).thenAnswer((_) async => Right(testUser));
     return AuthBloc(loginUseCase: mockLoginUseCase);

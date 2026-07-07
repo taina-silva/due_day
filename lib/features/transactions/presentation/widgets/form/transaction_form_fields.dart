@@ -133,7 +133,9 @@ class TransactionFormFields extends StatelessWidget {
 
   String _formatAccountName(AccountEntity? account, AppLocalizations l10n) {
     if (account == null) return l10n.transactionsSelectAccount;
-    if (account.deletedAt != null) return '${account.name} ${l10n.accountsDeleted}';
+    if (account.deletedAt != null) {
+      return '${account.name} ${l10n.accountsDeleted}';
+    }
     return account.name;
   }
 }

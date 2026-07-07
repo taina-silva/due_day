@@ -24,13 +24,13 @@ class AccountEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        userId,
-        name,
-        category,
-        balance,
-        dueDay,
-        createdAt,
-        deletedAt,
-      ];
+    id,
+    userId,
+    name,
+    category,
+    balance,
+    dueDay,
+    createdAt,
+    deletedAt,
+  ];
 }

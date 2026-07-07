@@ -111,10 +111,9 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurfaceVariant
-                      .withValues(alpha: 0.2),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurfaceVariant.withValues(alpha: 0.2),
                   borderRadius: BorderRadius.circular(dimensions.radius.circle),
                 ),
               ),
@@ -214,7 +213,9 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
                 onPressed: () => _onDelete(context),
                 prefixIcon: Icons.delete_outline,
                 foregroundColor: Theme.of(context).colorScheme.error,
-                borderColor: Theme.of(context).colorScheme.error.withValues(alpha: 0.3),
+                borderColor: Theme.of(
+                  context,
+                ).colorScheme.error.withValues(alpha: 0.3),
               ),
             ],
             SizedBox(height: dimensions.spacing.large.height),

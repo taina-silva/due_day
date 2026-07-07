@@ -41,16 +41,10 @@ class SettingsSection extends StatelessWidget {
                   color: iconColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(radius.medium),
                 ),
-                child: Icon(
-                  icon,
-                  color: iconColor,
-                ),
+                child: Icon(icon, color: iconColor),
               ),
               SizedBox(width: spacing.smallMedium.width),
-              Text(
-                title,
-                style: typography.title.small,
-              ),
+              Text(title, style: typography.title.small),
             ],
           ),
           SizedBox(height: spacing.mediumLarge.height),

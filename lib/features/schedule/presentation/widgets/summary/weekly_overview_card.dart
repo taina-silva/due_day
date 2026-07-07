@@ -10,7 +10,10 @@ class WeeklyOverviewCard extends StatelessWidget {
   final double totalToPay;
 
   const WeeklyOverviewCard({
-    required this.totalAmount, required this.totalPaid, required this.totalToPay, super.key,
+    required this.totalAmount,
+    required this.totalPaid,
+    required this.totalToPay,
+    super.key,
   });
 
   @override

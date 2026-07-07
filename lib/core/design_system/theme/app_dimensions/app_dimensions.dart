@@ -10,8 +10,8 @@ class AppDimensions {
   final StrokeStyles stroke;
 
   const AppDimensions()
-      : radius = const RadiusStyles(),
-        size = const SizesStyles(),
-        spacing = const SpacingStyles(),
-        stroke = const StrokeStyles();
+    : radius = const RadiusStyles(),
+      size = const SizesStyles(),
+      spacing = const SpacingStyles(),
+      stroke = const StrokeStyles();
 }

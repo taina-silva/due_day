@@ -31,9 +31,9 @@ class SettingsState extends Equatable {
 
   @override
   List<Object?> get props => [
-        languageCode,
-        themeMode,
-        pushNotificationsEnabled,
-        isBiometricsEnabled,
-      ];
+    languageCode,
+    themeMode,
+    pushNotificationsEnabled,
+    isBiometricsEnabled,
+  ];
 }

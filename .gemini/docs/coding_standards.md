@@ -156,15 +156,16 @@ fvm flutter gen-l10n
 
 ---
 
-## ⚡ 7. Formatting Checklist
+## ⚡ 7. Formatting & Code Quality Checklist
 
-Before completing files:
+Before completing or committing changes:
 - [ ] No raw `Colors.*` — only `DueDayTheme.colors.*` (or `context.colors.*`)
 - [ ] No hardcoded dimensions — only `DueDayTheme.dimensions.*` (or `context.dimensions.*`)
 - [ ] All numeric layouts scale with `.width`, `.height`, `.scale`, or `.fontSize`.
 - [ ] All texts retrieved via `AppLocalizations`.
 - [ ] No raw exceptions bubble up to pages.
-- [ ] Run `fvm flutter analyze` to confirm no errors.
+- [ ] Run `fvm dart format .` to format all changed files and remove unused imports.
+- [ ] Run `fvm flutter analyze` to verify and resolve all warnings and errors in changed files (ensuring zero issues).
 
 ---
 

@@ -78,9 +78,7 @@ class AppTheme {
         ),
       ),
       iconButtonTheme: IconButtonThemeData(
-        style: IconButton.styleFrom(
-          foregroundColor: colors.resource.primary,
-        ),
+        style: IconButton.styleFrom(foregroundColor: colors.resource.primary),
       ),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: colors.lightBackground,
@@ -180,9 +178,7 @@ class AppTheme {
         ),
       ),
       iconButtonTheme: IconButtonThemeData(
-        style: IconButton.styleFrom(
-          foregroundColor: colors.resource.primary,
-        ),
+        style: IconButton.styleFrom(foregroundColor: colors.resource.primary),
       ),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: colors.darkBackground,

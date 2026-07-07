@@ -46,7 +46,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
         ),
       );
     }
-    
+
     add(LoadBiometricsSettingsEvent());
   }
 

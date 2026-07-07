@@ -41,16 +41,12 @@ class _NotificationsView extends StatelessWidget {
     final l10n = AppLocalizations.of(context);
 
     return CustomScaffold(
-      appBar: CustomAppBar(
-        titleText: l10n.notificationsTitle,
-      ),
+      appBar: CustomAppBar(titleText: l10n.notificationsTitle),
       body: SafeArea(
         child: BlocBuilder<NotificationsBloc, NotificationsState>(
           builder: (context, state) {
             if (state is NotificationsLoading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return const Center(child: CircularProgressIndicator());
             }
 
             if (state is NotificationsLoaded) {
@@ -85,9 +81,9 @@ class _NotificationsView extends StatelessWidget {
                             notification: notif,
                             time: _formatTime(notif.timestamp, l10n),
                             onMarkAsRead: () {
-                              context
-                                  .read<NotificationsBloc>()
-                                  .add(MarkAsReadEvent(notif.id));
+                              context.read<NotificationsBloc>().add(
+                                MarkAsReadEvent(notif.id),
+                              );
                             },
                           );
                         },
@@ -124,8 +120,9 @@ class _NotificationsView extends StatelessWidget {
                             width: 60.width,
                             height: 4.height,
                             decoration: BoxDecoration(
-                              color: colors.resource.neutral
-                                  .withValues(alpha: 0.5),
+                              color: colors.resource.neutral.withValues(
+                                alpha: 0.5,
+                              ),
                               borderRadius: BorderRadius.circular(999),
                             ),
                           ),
@@ -159,7 +156,10 @@ class _NotificationsView extends StatelessWidget {
   }
 
   Widget _buildEmptyState(
-      BuildContext context, dynamic spacing, AppLocalizations l10n) {
+    BuildContext context,
+    dynamic spacing,
+    AppLocalizations l10n,
+  ) {
     final colors = context.colors;
     final typography = context.typography;
 
@@ -238,9 +238,7 @@ class _SectionTitle extends StatelessWidget {
     final typography = context.typography;
 
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: context.spacing.small.width,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: context.spacing.small.width),
       child: Text(
         title.toUpperCase(),
         style: typography.label.small.copyWith(
@@ -321,11 +319,7 @@ class _NotificationCard extends StatelessWidget {
               color: getIconColor().withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(
-              getIcon(),
-              color: getIconColor(),
-              size: 20.width,
-            ),
+            child: Icon(getIcon(), color: getIconColor(), size: 20.width),
           ),
           SizedBox(width: spacing.mediumLarge.width),
           Expanded(
@@ -359,8 +353,9 @@ class _NotificationCard extends StatelessWidget {
                               ),
                               decoration: BoxDecoration(
                                 color: colors.system.error,
-                                borderRadius:
-                                    BorderRadius.circular(radius.small),
+                                borderRadius: BorderRadius.circular(
+                                  radius.small,
+                                ),
                               ),
                               child: Text(
                                 'URGENTE',

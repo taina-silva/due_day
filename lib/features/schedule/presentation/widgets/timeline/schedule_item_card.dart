@@ -15,7 +15,8 @@ class ScheduleItemCard extends StatelessWidget {
   final VoidCallback? onMarkAsPaid;
 
   const ScheduleItemCard({
-    required this.transaction, super.key,
+    required this.transaction,
+    super.key,
     this.categoryName,
     this.categoryIcon,
     this.categoryColor,
@@ -129,8 +130,9 @@ class ScheduleItemCard extends StatelessWidget {
                             Text(
                               categoryName ?? l10n.defaultTransaction,
                               style: typography.label.small.copyWith(
-                                color: colors.resource.secondary
-                                    .withValues(alpha: 0.5),
+                                color: colors.resource.secondary.withValues(
+                                  alpha: 0.5,
+                                ),
                                 fontWeight: FontWeight.bold,
                                 fontSize: 10.width,
                               ),

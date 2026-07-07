@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:flutter/widgets.dart';
 
 /// An extension on the [num] class that provides methods for scaling based on the screen size
 ///
@@ -15,7 +15,7 @@ extension NumExtension on num {
   _ScalingFactors _getScalingFactors() {
     if (this == double.infinity) return _ScalingFactors(1, 1, 1);
 
-    final base = PlatformDispatcher.instance.views.first;
+    final base = WidgetsBinding.instance.platformDispatcher.views.first;
     final screenSize = base.physicalSize / base.devicePixelRatio;
 
     final widthFactor = screenSize.width / baseWidth;

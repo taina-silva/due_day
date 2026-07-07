@@ -5,10 +5,7 @@ import 'package:flutter/material.dart';
 class ProfileAvatar extends StatelessWidget {
   final String initials;
 
-  const ProfileAvatar({
-    required this.initials,
-    super.key,
-  });
+  const ProfileAvatar({required this.initials, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,10 +21,7 @@ class ProfileAvatar extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: colors.resource.primaryWith15Opacity,
-            border: Border.all(
-              color: colors.resource.primary,
-              width: 2,
-            ),
+            border: Border.all(color: colors.resource.primary, width: 2),
           ),
           alignment: Alignment.center,
           child: Text(

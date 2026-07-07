@@ -41,7 +41,9 @@ class CategoryListContent extends StatelessWidget {
             category: categories.first,
             transactionCount: categories.first.transactionCount,
             mostActiveLabel: l10n.categoriesMostActive,
-            transactionLabel: l10n.categoriesTransactionCount(categories.first.transactionCount),
+            transactionLabel: l10n.categoriesTransactionCount(
+              categories.first.transactionCount,
+            ),
           ),
           SizedBox(height: spacing.large.height),
         ],
@@ -80,7 +82,9 @@ class CategoryListContent extends StatelessWidget {
             child: CategoryCard(
               category: c,
               transactionCount: c.transactionCount,
-              transactionLabel: l10n.categoriesTransactionCount(c.transactionCount),
+              transactionLabel: l10n.categoriesTransactionCount(
+                c.transactionCount,
+              ),
               onTap: () => onCategoryTap(c),
             ),
           ),

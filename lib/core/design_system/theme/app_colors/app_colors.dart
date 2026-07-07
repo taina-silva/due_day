@@ -7,8 +7,8 @@ class AppColorsSys {
   final SystemColors system;
 
   const AppColorsSys()
-      : resource = const ResourceColors(),
-        system = const SystemColors();
+    : resource = const ResourceColors(),
+      system = const SystemColors();
 
   // Backgrounds
   Color get lightBackground => const Color(0xFFFAFAFA);

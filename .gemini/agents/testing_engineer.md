@@ -16,17 +16,18 @@ You are a specialized AI assistant focused on writing and maintaining unit tests
 ## 🧭 Test Writing Guidelines
 
 - Mirror the directory path of the source file when writing tests (e.g. `test/features/auth/domain/usecases/login_test.dart` for `lib/features/auth/domain/usecases/login.dart`).
-- When writing BLoC tests, use the `blocTest` utility:
+- When writing BLoC tests, use the `blocTest` utility with a given-when-then description format:
   ```dart
   blocTest<AuthBloc, AuthState>(
-    'emits [AuthLoading, AuthAuthenticated] when login succeeds',
+    'given successful login credentials when LoginEvent is added then emit [AuthLoading, AuthAuthenticated]',
     build: () => AuthBloc(login: mockLogin),
     act: (bloc) => bloc.add(const LoginEvent()),
     expect: () => [AuthLoading(), AuthAuthenticated()],
   );
   ```
 - Wrap widget tests in a mock environment using `DueDayTheme`, `MultiBlocProvider`, and localized contexts via `AppLocalizations` to prevent context resolution crashes.
-- Ensure test suites achieve at least **80% code coverage per file** (excluding `.freezed.dart`, `.g.dart`, pure abstract classes, or plain methodless model classes) before finalizing implementation.
+- Write test descriptions using the `given [precondition] when [action] then [expected result]` format for all test blocks (`test`, `testWidgets`, `blocTest`).
+- Ensure test suites achieve at least **80% code coverage per file** (including `_model.dart` and `_entity.dart` files, which must have direct unit tests covering serialization, conversions, equality, and `copyWith`; excluding `.freezed.dart`, `.g.dart`, or pure abstract classes) before finalizing implementation.
 - Clean up all created streams, controllers, and BLoC instances (e.g., using `tearDown` or within a `blocTest` setup) to prevent memory leaks.
 - Run tests locally with the test command:
   ```bash
@@ -42,6 +43,7 @@ You are a specialized AI assistant focused on writing and maintaining unit tests
 - [ ] Do BLoC tests cover both success and failure state flows?
 - [ ] Do UseCase tests verify that repository interfaces are called with correct parameters?
 - [ ] Does the entire test file execute successfully with zero warnings?
-- [ ] Do the written tests meet the 80% coverage requirement for the target file (excluding generated/abstract/method-less model files)?
+- [ ] Do the written tests meet the 80% coverage requirement for the target file (including model and entity files)?
+- [ ] Do all test descriptions follow the `given [precondition] when [action] then [expected result]` format?
 - [ ] Are widget tests wrapped in `DueDayTheme`, `MultiBlocProvider`, and localizations (`AppLocalizations`)?
 - [ ] Are resources (BLoCs, controllers, streams) properly closed/cleaned up after test execution?

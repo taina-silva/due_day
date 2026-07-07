@@ -20,7 +20,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   final AccountBloc accountBloc;
   final TransactionBloc transactionBloc;
   final AuthBloc authBloc;
-  
+
   List<String> _selectedAccountIds = [];
 
   StreamSubscription? _accountSubscription;
@@ -64,17 +64,19 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       final filteredAccounts = _selectedAccountIds.isEmpty
           ? accountState.activeAccounts
           : accountState.activeAccounts
-              .where((a) => _selectedAccountIds.contains(a.id))
-              .toList();
+                .where((a) => _selectedAccountIds.contains(a.id))
+                .toList();
 
       // Filter transactions related to selected accounts
       final filteredTransactions = _selectedAccountIds.isEmpty
           ? transactionState.transactions
           : transactionState.transactions.where((tx) {
               final fromMatch =
-                  tx.accountFrom != null && _selectedAccountIds.contains(tx.accountFrom);
+                  tx.accountFrom != null &&
+                  _selectedAccountIds.contains(tx.accountFrom);
               final toMatch =
-                  tx.accountTo != null && _selectedAccountIds.contains(tx.accountTo);
+                  tx.accountTo != null &&
+                  _selectedAccountIds.contains(tx.accountTo);
               return fromMatch || toMatch;
             }).toList();
 

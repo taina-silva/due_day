@@ -6,10 +6,7 @@ import 'package:flutter/material.dart';
 class BiometricLockOverlay extends StatelessWidget {
   final VoidCallback onAuthenticate;
 
-  const BiometricLockOverlay({
-    required this.onAuthenticate,
-    super.key,
-  });
+  const BiometricLockOverlay({required this.onAuthenticate, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,15 +25,15 @@ class BiometricLockOverlay extends StatelessWidget {
             Positioned.fill(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 12.0, sigmaY: 12.0),
-                child: Container(
-                  color: Colors.transparent,
-                ),
+                child: Container(color: Colors.transparent),
               ),
             ),
             // Conteúdo principal
             Center(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: spacing.threeExtraLarge.width),
+                padding: EdgeInsets.symmetric(
+                  horizontal: spacing.threeExtraLarge.width,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -87,10 +84,14 @@ class BiometricLockOverlay extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           color: colors.resource.primary,
-                          borderRadius: BorderRadius.circular(radius.extraLarge),
+                          borderRadius: BorderRadius.circular(
+                            radius.extraLarge,
+                          ),
                           boxShadow: [
                             BoxShadow(
-                              color: colors.resource.primary.withValues(alpha: 0.4),
+                              color: colors.resource.primary.withValues(
+                                alpha: 0.4,
+                              ),
                               blurRadius: 10,
                               offset: const Offset(0, 4),
                             ),

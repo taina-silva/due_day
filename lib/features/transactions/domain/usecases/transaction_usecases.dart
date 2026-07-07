@@ -11,7 +11,10 @@ abstract class _TransactionBaseUseCase {
 
   _TransactionBaseUseCase(this.repository, this.accountRepository);
 
-  Future<void> _updateBalance(TransactionEntity tx, {required bool isAddition}) async {
+  Future<void> _updateBalance(
+    TransactionEntity tx, {
+    required bool isAddition,
+  }) async {
     final multiplier = isAddition ? 1 : -1;
 
     if (tx.type == TransactionType.expense && tx.accountFrom != null) {
@@ -28,21 +31,18 @@ abstract class _TransactionBaseUseCase {
 
   Future<void> _adjustAccountBalance(String accountId, double amount) async {
     final result = await accountRepository.getAccountById(accountId);
-    await result.fold(
-      (failure) async => null,
-      (account) async {
-        final updatedAccount = AccountEntity(
-          id: account.id,
-          userId: account.userId,
-          name: account.name,
-          category: account.category,
-          balance: account.balance + amount,
-          createdAt: account.createdAt,
-          dueDay: account.dueDay,
-        );
-        await accountRepository.updateAccount(updatedAccount);
-      },
-    );
+    await result.fold((failure) async => null, (account) async {
+      final updatedAccount = AccountEntity(
+        id: account.id,
+        userId: account.userId,
+        name: account.name,
+        category: account.category,
+        balance: account.balance + amount,
+        createdAt: account.createdAt,
+        dueDay: account.dueDay,
+      );
+      await accountRepository.updateAccount(updatedAccount);
+    });
   }
 }
 
@@ -54,15 +54,12 @@ class AddTransaction extends _TransactionBaseUseCase {
   ) async {
     final result = await repository.addTransaction(transaction);
 
-    return await result.fold(
-      (failure) async => Left(failure),
-      (newTx) async {
-        if (newTx.paid) {
-          await _updateBalance(newTx, isAddition: true);
-        }
-        return Right(newTx);
-      },
-    );
+    return await result.fold((failure) async => Left(failure), (newTx) async {
+      if (newTx.paid) {
+        await _updateBalance(newTx, isAddition: true);
+      }
+      return Right(newTx);
+    });
   }
 }
 
@@ -75,29 +72,25 @@ class UpdateTransaction extends _TransactionBaseUseCase {
     // 1. Get the old transaction to see if we need to revert balance
     final oldTxResult = await repository.getTransaction(transaction.id);
 
-    return await oldTxResult.fold(
-      (failure) async => Left(failure),
-      (oldTx) async {
-        // 2. Revert old balance impact if it was paid
-        if (oldTx.paid) {
-          await _updateBalance(oldTx, isAddition: false);
+    return await oldTxResult.fold((failure) async => Left(failure), (
+      oldTx,
+    ) async {
+      // 2. Revert old balance impact if it was paid
+      if (oldTx.paid) {
+        await _updateBalance(oldTx, isAddition: false);
+      }
+
+      // 3. Update the transaction
+      final result = await repository.updateTransaction(transaction);
+
+      return await result.fold((failure) async => Left(failure), (newTx) async {
+        // 4. Apply new balance impact if it is paid
+        if (newTx.paid) {
+          await _updateBalance(newTx, isAddition: true);
         }
-
-        // 3. Update the transaction
-        final result = await repository.updateTransaction(transaction);
-
-        return await result.fold(
-          (failure) async => Left(failure),
-          (newTx) async {
-            // 4. Apply new balance impact if it is paid
-            if (newTx.paid) {
-              await _updateBalance(newTx, isAddition: true);
-            }
-            return Right(newTx);
-          },
-        );
-      },
-    );
+        return Right(newTx);
+      });
+    });
   }
 }
 
@@ -108,15 +101,12 @@ class DeleteTransaction extends _TransactionBaseUseCase {
     // 1. Get transaction to revert balance if needed
     final txResult = await repository.getTransaction(transactionId);
 
-    return await txResult.fold(
-      (failure) async => Left(failure),
-      (tx) async {
-        if (tx.paid) {
-          await _updateBalance(tx, isAddition: false);
-        }
-        return repository.deleteTransaction(transactionId);
-      },
-    );
+    return await txResult.fold((failure) async => Left(failure), (tx) async {
+      if (tx.paid) {
+        await _updateBalance(tx, isAddition: false);
+      }
+      return repository.deleteTransaction(transactionId);
+    });
   }
 }
 

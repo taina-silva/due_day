@@ -147,8 +147,9 @@ class TransactionDetailsBottomSheet extends StatelessWidget {
               if (state is AccountLoaded) {
                 if (transaction.accountFrom != null) {
                   try {
-                    final acc = state.accounts
-                        .firstWhere((a) => a.id == transaction.accountFrom);
+                    final acc = state.accounts.firstWhere(
+                      (a) => a.id == transaction.accountFrom,
+                    );
                     fromAccount = acc.deletedAt != null
                         ? '${acc.name} ${l10n.accountsDeleted}'
                         : acc.name;
@@ -156,8 +157,9 @@ class TransactionDetailsBottomSheet extends StatelessWidget {
                 }
                 if (transaction.accountTo != null) {
                   try {
-                    final acc = state.accounts
-                        .firstWhere((a) => a.id == transaction.accountTo);
+                    final acc = state.accounts.firstWhere(
+                      (a) => a.id == transaction.accountTo,
+                    );
                     toAccount = acc.deletedAt != null
                         ? '${acc.name} ${l10n.accountsDeleted}'
                         : acc.name;

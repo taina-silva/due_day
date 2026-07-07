@@ -43,12 +43,14 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
     try {
       final docRef = _collection.doc(transaction.id);
       final batch = firestore.batch();
-      
+
       batch.set(docRef, transaction.toJson());
-      
+
       if (transaction.category != null && transaction.category!.isNotEmpty) {
         final categoryRef = _categoriesCollection.doc(transaction.category);
-        batch.update(categoryRef, {'transactionCount': FieldValue.increment(1)});
+        batch.update(categoryRef, {
+          'transactionCount': FieldValue.increment(1),
+        });
       }
 
       await batch.commit();
@@ -71,13 +73,22 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
 
       // Update category counts if the category changed
       if (oldTransaction.category != transaction.category) {
-        if (oldTransaction.category != null && oldTransaction.category!.isNotEmpty) {
-          final oldCategoryRef = _categoriesCollection.doc(oldTransaction.category);
-          batch.update(oldCategoryRef, {'transactionCount': FieldValue.increment(-1)});
+        if (oldTransaction.category != null &&
+            oldTransaction.category!.isNotEmpty) {
+          final oldCategoryRef = _categoriesCollection.doc(
+            oldTransaction.category,
+          );
+          batch.update(oldCategoryRef, {
+            'transactionCount': FieldValue.increment(-1),
+          });
         }
         if (transaction.category != null && transaction.category!.isNotEmpty) {
-          final newCategoryRef = _categoriesCollection.doc(transaction.category);
-          batch.update(newCategoryRef, {'transactionCount': FieldValue.increment(1)});
+          final newCategoryRef = _categoriesCollection.doc(
+            transaction.category,
+          );
+          batch.update(newCategoryRef, {
+            'transactionCount': FieldValue.increment(1),
+          });
         }
       }
 
@@ -94,12 +105,15 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
       final oldTransaction = await getTransaction(transactionId);
       final docRef = _collection.doc(transactionId);
       final batch = firestore.batch();
-      
+
       batch.delete(docRef);
 
-      if (oldTransaction.category != null && oldTransaction.category!.isNotEmpty) {
+      if (oldTransaction.category != null &&
+          oldTransaction.category!.isNotEmpty) {
         final categoryRef = _categoriesCollection.doc(oldTransaction.category);
-        batch.update(categoryRef, {'transactionCount': FieldValue.increment(-1)});
+        batch.update(categoryRef, {
+          'transactionCount': FieldValue.increment(-1),
+        });
       }
 
       await batch.commit();

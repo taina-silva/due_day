@@ -122,7 +122,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       throw ServerException(e.message ?? 'Google sign-in error.', e.code);
     } on GoogleSignInException catch (e) {
       if (e.code == GoogleSignInExceptionCode.canceled) {
-        throw const ServerException('Google sign-in cancelled.', 'google-sign-in-canceled');
+        throw const ServerException(
+          'Google sign-in cancelled.',
+          'google-sign-in-canceled',
+        );
       }
       throw ServerException(
         e.description ?? 'Google sign-in authentication error.',

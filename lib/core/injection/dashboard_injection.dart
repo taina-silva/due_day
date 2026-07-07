@@ -6,17 +6,21 @@ import 'package:due_day/features/transactions/domain/usecases/sync_recurring_tra
 void initDashboard() {
   // UseCases
   sl.registerLazySingleton(() => GetDashboardSummary());
-  sl.registerLazySingleton(() => SyncRecurringTransactions(
-    transactionRepository: sl(),
-    accountRepository: sl(),
-  ));
+  sl.registerLazySingleton(
+    () => SyncRecurringTransactions(
+      transactionRepository: sl(),
+      accountRepository: sl(),
+    ),
+  );
 
   // Bloc
-  sl.registerFactory(() => DashboardBloc(
-    getDashboardSummary: sl(),
-    syncRecurringTransactions: sl(),
-    accountBloc: sl(),
-    transactionBloc: sl(),
-    authBloc: sl(),
-  ));
+  sl.registerFactory(
+    () => DashboardBloc(
+      getDashboardSummary: sl(),
+      syncRecurringTransactions: sl(),
+      accountBloc: sl(),
+      transactionBloc: sl(),
+      authBloc: sl(),
+    ),
+  );
 }

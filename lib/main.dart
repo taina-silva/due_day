@@ -69,8 +69,7 @@ class _DueDayAppState extends State<DueDayApp> {
         BlocProvider(create: (_) => di.sl<TransactionBloc>()),
         BlocProvider(create: (_) => di.sl<DashboardBloc>()),
         BlocProvider(
-          create: (_) =>
-              di.sl<NotificationsBloc>()..add(LoadNotifications()),
+          create: (_) => di.sl<NotificationsBloc>()..add(LoadNotifications()),
         ),
       ],
       child: BlocBuilder<SettingsBloc, SettingsState>(

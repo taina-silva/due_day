@@ -18,6 +18,9 @@ build/
 key.properties
 .ruby-lsp/
 
+# Coverage
+coverage/*
 
 # Agent Plans
 .gemini/plans/*
+
