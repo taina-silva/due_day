@@ -18,9 +18,6 @@ build/
 key.properties
 .ruby-lsp/
 
-# Agent Configurations & Documentation
-.agents/
 
-# Temporary Dev/Agent Analysis and Logs
-analysis_*.txt
-*log.txt
+# Agent Plans
+.gemini/plans/*
