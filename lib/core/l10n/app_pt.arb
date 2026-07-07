@@ -103,6 +103,10 @@
     "accountsConfirmDelete": "Tem certeza que deseja deletar esta conta?",
     "accountsDeleted": "(Deletada)",
     "accountsDueDateLabel": "VENCIMENTO (FATURA/CARTÃO)",
+    "accountsCategoryCreditCard": "Cartão de Crédito",
+    "accountsErrorNotFound": "Conta não encontrada.",
+    "accountsErrorNotAuthenticated": "Usuário não autenticado. Por favor, faça login novamente.",
+    "accountsErrorFallback": "Ocorreu um erro ao gerenciar suas contas.",
 
     "categoriesTitle": "Categorias",
     "categoriesSubtitle": "Curadoria do seu fluxo de gastos.",

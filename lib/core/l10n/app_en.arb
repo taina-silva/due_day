@@ -95,6 +95,10 @@
     "accountsConfirmDelete": "Are you sure you want to delete this account?",
     "accountsDeleted": "(Deleted)",
     "accountsDueDateLabel": "DUE DATE (INVOICE/CARD)",
+    "accountsCategoryCreditCard": "Credit Card",
+    "accountsErrorNotFound": "Account not found.",
+    "accountsErrorNotAuthenticated": "User not authenticated. Please log in again.",
+    "accountsErrorFallback": "An error occurred while managing your accounts.",
 
     "categoriesTitle": "Categories",
     "categoriesSubtitle": "Curate your spending flow.",

@@ -8,7 +8,9 @@ enum AccountCategory {
   @JsonValue('savings')
   savings,
   @JsonValue('daily_use')
-  dailyUse;
+  dailyUse,
+  @JsonValue('credit_card')
+  creditCard;
 
   String localizedName(AppLocalizations l10n) {
     switch (this) {
@@ -18,6 +20,8 @@ enum AccountCategory {
         return l10n.accountsCategorySavings;
       case AccountCategory.dailyUse:
         return l10n.accountsCategoryDailyUse;
+      case AccountCategory.creditCard:
+        return l10n.accountsCategoryCreditCard;
     }
   }
 
@@ -29,6 +33,8 @@ enum AccountCategory {
         return Icons.savings_rounded;
       case AccountCategory.dailyUse:
         return Icons.account_balance_wallet_rounded;
+      case AccountCategory.creditCard:
+        return Icons.credit_card_rounded;
     }
   }
 }

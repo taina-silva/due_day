@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,307 +9,287 @@ part of 'category_model.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
-CategoryModel _$CategoryModelFromJson(Map<String, dynamic> json) {
-  return _CategoryModel.fromJson(json);
-}
 
 /// @nodoc
 mixin _$CategoryModel {
-  String get id => throw _privateConstructorUsedError;
-  String get userId => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-  String get color => throw _privateConstructorUsedError;
-  String get icon => throw _privateConstructorUsedError;
-  @TimestampConverter()
-  DateTime get createdAt => throw _privateConstructorUsedError;
-  int get transactionCount => throw _privateConstructorUsedError;
+
+ String get id; String get userId; String get name; String get color; String get icon;@TimestampConverter() DateTime get createdAt; int get transactionCount;
+/// Create a copy of CategoryModel
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CategoryModelCopyWith<CategoryModel> get copyWith => _$CategoryModelCopyWithImpl<CategoryModel>(this as CategoryModel, _$identity);
 
   /// Serializes this CategoryModel to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of CategoryModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $CategoryModelCopyWith<CategoryModel> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CategoryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.name, name) || other.name == name)&&(identical(other.color, color) || other.color == color)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.transactionCount, transactionCount) || other.transactionCount == transactionCount));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,userId,name,color,icon,createdAt,transactionCount);
+
+@override
+String toString() {
+  return 'CategoryModel(id: $id, userId: $userId, name: $name, color: $color, icon: $icon, createdAt: $createdAt, transactionCount: $transactionCount)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $CategoryModelCopyWith<$Res> {
-  factory $CategoryModelCopyWith(
-    CategoryModel value,
-    $Res Function(CategoryModel) then,
-  ) = _$CategoryModelCopyWithImpl<$Res, CategoryModel>;
-  @useResult
-  $Res call({
-    String id,
-    String userId,
-    String name,
-    String color,
-    String icon,
-    @TimestampConverter() DateTime createdAt,
-    int transactionCount,
-  });
-}
+abstract mixin class $CategoryModelCopyWith<$Res>  {
+  factory $CategoryModelCopyWith(CategoryModel value, $Res Function(CategoryModel) _then) = _$CategoryModelCopyWithImpl;
+@useResult
+$Res call({
+ String id, String userId, String name, String color, String icon,@TimestampConverter() DateTime createdAt, int transactionCount
+});
 
+
+
+
+}
 /// @nodoc
-class _$CategoryModelCopyWithImpl<$Res, $Val extends CategoryModel>
+class _$CategoryModelCopyWithImpl<$Res>
     implements $CategoryModelCopyWith<$Res> {
-  _$CategoryModelCopyWithImpl(this._value, this._then);
+  _$CategoryModelCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final CategoryModel _self;
+  final $Res Function(CategoryModel) _then;
 
-  /// Create a copy of CategoryModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? userId = null,
-    Object? name = null,
-    Object? color = null,
-    Object? icon = null,
-    Object? createdAt = null,
-    Object? transactionCount = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            id: null == id
-                ? _value.id
-                : id // ignore: cast_nullable_to_non_nullable
-                      as String,
-            userId: null == userId
-                ? _value.userId
-                : userId // ignore: cast_nullable_to_non_nullable
-                      as String,
-            name: null == name
-                ? _value.name
-                : name // ignore: cast_nullable_to_non_nullable
-                      as String,
-            color: null == color
-                ? _value.color
-                : color // ignore: cast_nullable_to_non_nullable
-                      as String,
-            icon: null == icon
-                ? _value.icon
-                : icon // ignore: cast_nullable_to_non_nullable
-                      as String,
-            createdAt: null == createdAt
-                ? _value.createdAt
-                : createdAt // ignore: cast_nullable_to_non_nullable
-                      as DateTime,
-            transactionCount: null == transactionCount
-                ? _value.transactionCount
-                : transactionCount // ignore: cast_nullable_to_non_nullable
-                      as int,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of CategoryModel
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? name = null,Object? color = null,Object? icon = null,Object? createdAt = null,Object? transactionCount = null,}) {
+  return _then(_self.copyWith(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,color: null == color ? _self.color : color // ignore: cast_nullable_to_non_nullable
+as String,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,transactionCount: null == transactionCount ? _self.transactionCount : transactionCount // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
 }
 
-/// @nodoc
-abstract class _$$CategoryModelImplCopyWith<$Res>
-    implements $CategoryModelCopyWith<$Res> {
-  factory _$$CategoryModelImplCopyWith(
-    _$CategoryModelImpl value,
-    $Res Function(_$CategoryModelImpl) then,
-  ) = __$$CategoryModelImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    String id,
-    String userId,
-    String name,
-    String color,
-    String icon,
-    @TimestampConverter() DateTime createdAt,
-    int transactionCount,
-  });
 }
 
-/// @nodoc
-class __$$CategoryModelImplCopyWithImpl<$Res>
-    extends _$CategoryModelCopyWithImpl<$Res, _$CategoryModelImpl>
-    implements _$$CategoryModelImplCopyWith<$Res> {
-  __$$CategoryModelImplCopyWithImpl(
-    _$CategoryModelImpl _value,
-    $Res Function(_$CategoryModelImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of CategoryModel
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? userId = null,
-    Object? name = null,
-    Object? color = null,
-    Object? icon = null,
-    Object? createdAt = null,
-    Object? transactionCount = null,
-  }) {
-    return _then(
-      _$CategoryModelImpl(
-        id: null == id
-            ? _value.id
-            : id // ignore: cast_nullable_to_non_nullable
-                  as String,
-        userId: null == userId
-            ? _value.userId
-            : userId // ignore: cast_nullable_to_non_nullable
-                  as String,
-        name: null == name
-            ? _value.name
-            : name // ignore: cast_nullable_to_non_nullable
-                  as String,
-        color: null == color
-            ? _value.color
-            : color // ignore: cast_nullable_to_non_nullable
-                  as String,
-        icon: null == icon
-            ? _value.icon
-            : icon // ignore: cast_nullable_to_non_nullable
-                  as String,
-        createdAt: null == createdAt
-            ? _value.createdAt
-            : createdAt // ignore: cast_nullable_to_non_nullable
-                  as DateTime,
-        transactionCount: null == transactionCount
-            ? _value.transactionCount
-            : transactionCount // ignore: cast_nullable_to_non_nullable
-                  as int,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [CategoryModel].
+extension CategoryModelPatterns on CategoryModel {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _CategoryModel value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _CategoryModel() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _CategoryModel value)  $default,){
+final _that = this;
+switch (_that) {
+case _CategoryModel():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _CategoryModel value)?  $default,){
+final _that = this;
+switch (_that) {
+case _CategoryModel() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String userId,  String name,  String color,  String icon, @TimestampConverter()  DateTime createdAt,  int transactionCount)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _CategoryModel() when $default != null:
+return $default(_that.id,_that.userId,_that.name,_that.color,_that.icon,_that.createdAt,_that.transactionCount);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String userId,  String name,  String color,  String icon, @TimestampConverter()  DateTime createdAt,  int transactionCount)  $default,) {final _that = this;
+switch (_that) {
+case _CategoryModel():
+return $default(_that.id,_that.userId,_that.name,_that.color,_that.icon,_that.createdAt,_that.transactionCount);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String userId,  String name,  String color,  String icon, @TimestampConverter()  DateTime createdAt,  int transactionCount)?  $default,) {final _that = this;
+switch (_that) {
+case _CategoryModel() when $default != null:
+return $default(_that.id,_that.userId,_that.name,_that.color,_that.icon,_that.createdAt,_that.transactionCount);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$CategoryModelImpl extends _CategoryModel {
-  const _$CategoryModelImpl({
-    required this.id,
-    required this.userId,
-    required this.name,
-    required this.color,
-    required this.icon,
-    @TimestampConverter() required this.createdAt,
-    this.transactionCount = 0,
-  }) : super._();
 
-  factory _$CategoryModelImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CategoryModelImplFromJson(json);
+class _CategoryModel extends CategoryModel {
+  const _CategoryModel({required this.id, required this.userId, required this.name, required this.color, required this.icon, @TimestampConverter() required this.createdAt, this.transactionCount = 0}): super._();
+  factory _CategoryModel.fromJson(Map<String, dynamic> json) => _$CategoryModelFromJson(json);
 
-  @override
-  final String id;
-  @override
-  final String userId;
-  @override
-  final String name;
-  @override
-  final String color;
-  @override
-  final String icon;
-  @override
-  @TimestampConverter()
-  final DateTime createdAt;
-  @override
-  @JsonKey()
-  final int transactionCount;
+@override final  String id;
+@override final  String userId;
+@override final  String name;
+@override final  String color;
+@override final  String icon;
+@override@TimestampConverter() final  DateTime createdAt;
+@override@JsonKey() final  int transactionCount;
 
-  @override
-  String toString() {
-    return 'CategoryModel(id: $id, userId: $userId, name: $name, color: $color, icon: $icon, createdAt: $createdAt, transactionCount: $transactionCount)';
-  }
+/// Create a copy of CategoryModel
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CategoryModelCopyWith<_CategoryModel> get copyWith => __$CategoryModelCopyWithImpl<_CategoryModel>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CategoryModelImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.color, color) || other.color == color) &&
-            (identical(other.icon, icon) || other.icon == icon) &&
-            (identical(other.createdAt, createdAt) ||
-                other.createdAt == createdAt) &&
-            (identical(other.transactionCount, transactionCount) ||
-                other.transactionCount == transactionCount));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    id,
-    userId,
-    name,
-    color,
-    icon,
-    createdAt,
-    transactionCount,
-  );
-
-  /// Create a copy of CategoryModel
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CategoryModelImplCopyWith<_$CategoryModelImpl> get copyWith =>
-      __$$CategoryModelImplCopyWithImpl<_$CategoryModelImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$CategoryModelImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$CategoryModelToJson(this, );
 }
 
-abstract class _CategoryModel extends CategoryModel {
-  const factory _CategoryModel({
-    required final String id,
-    required final String userId,
-    required final String name,
-    required final String color,
-    required final String icon,
-    @TimestampConverter() required final DateTime createdAt,
-    final int transactionCount,
-  }) = _$CategoryModelImpl;
-  const _CategoryModel._() : super._();
-
-  factory _CategoryModel.fromJson(Map<String, dynamic> json) =
-      _$CategoryModelImpl.fromJson;
-
-  @override
-  String get id;
-  @override
-  String get userId;
-  @override
-  String get name;
-  @override
-  String get color;
-  @override
-  String get icon;
-  @override
-  @TimestampConverter()
-  DateTime get createdAt;
-  @override
-  int get transactionCount;
-
-  /// Create a copy of CategoryModel
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CategoryModelImplCopyWith<_$CategoryModelImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CategoryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.name, name) || other.name == name)&&(identical(other.color, color) || other.color == color)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.transactionCount, transactionCount) || other.transactionCount == transactionCount));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,id,userId,name,color,icon,createdAt,transactionCount);
+
+@override
+String toString() {
+  return 'CategoryModel(id: $id, userId: $userId, name: $name, color: $color, icon: $icon, createdAt: $createdAt, transactionCount: $transactionCount)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CategoryModelCopyWith<$Res> implements $CategoryModelCopyWith<$Res> {
+  factory _$CategoryModelCopyWith(_CategoryModel value, $Res Function(_CategoryModel) _then) = __$CategoryModelCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String userId, String name, String color, String icon,@TimestampConverter() DateTime createdAt, int transactionCount
+});
+
+
+
+
+}
+/// @nodoc
+class __$CategoryModelCopyWithImpl<$Res>
+    implements _$CategoryModelCopyWith<$Res> {
+  __$CategoryModelCopyWithImpl(this._self, this._then);
+
+  final _CategoryModel _self;
+  final $Res Function(_CategoryModel) _then;
+
+/// Create a copy of CategoryModel
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? name = null,Object? color = null,Object? icon = null,Object? createdAt = null,Object? transactionCount = null,}) {
+  return _then(_CategoryModel(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String,color: null == color ? _self.color : color // ignore: cast_nullable_to_non_nullable
+as String,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
+as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime,transactionCount: null == transactionCount ? _self.transactionCount : transactionCount // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
+
+// dart format on

@@ -33,7 +33,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     _accountsSubscription?.cancel();
     _accountsSubscription = getAccounts().listen((result) {
       result.fold(
-        (failure) => add(AccountLoadFailed(failure.message)),
+        (failure) => add(AccountLoadFailed(failure)),
         (accounts) => add(_AccountsUpdated(accounts)),
       );
     });
@@ -43,7 +43,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     AccountLoadFailed event,
     Emitter<AccountState> emit,
   ) {
-    emit(AccountError(message: event.message));
+    emit(AccountError(failure: event.failure));
   }
 
   void _onAccountsUpdated(_AccountsUpdated event, Emitter<AccountState> emit) {
@@ -56,7 +56,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
   ) async {
     final result = await addAccount(event.account);
     result.fold(
-      (failure) => emit(AccountError(message: failure.message)),
+      (failure) => emit(AccountError(failure: failure)),
       (_) {}, // Snapshot stream atualiza sozinho
     );
   }
@@ -66,10 +66,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     Emitter<AccountState> emit,
   ) async {
     final result = await updateAccount(event.account);
-    result.fold(
-      (failure) => emit(AccountError(message: failure.message)),
-      (_) {},
-    );
+    result.fold((failure) => emit(AccountError(failure: failure)), (_) {});
   }
 
   Future<void> _onDeleteAccount(
@@ -77,10 +74,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     Emitter<AccountState> emit,
   ) async {
     final result = await deleteAccount(event.accountId);
-    result.fold(
-      (failure) => emit(AccountError(message: failure.message)),
-      (_) {},
-    );
+    result.fold((failure) => emit(AccountError(failure: failure)), (_) {});
   }
 
   @override

@@ -8,6 +8,7 @@ import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_bloc.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_event.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_state.dart';
+import 'package:due_day/features/accounts/presentation/utils/account_failure_extension.dart';
 import 'package:due_day/features/accounts/presentation/widgets/account_card.dart';
 import 'package:due_day/features/accounts/presentation/widgets/add_edit_account_bottom_sheet.dart';
 import 'package:due_day/features/dashboard/presentation/widgets/dashboard_app_bar.dart';
@@ -38,7 +39,10 @@ class AccountsPage extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             } else if (state is AccountError) {
               return Center(
-                child: Text(state.message, style: typography.body.medium),
+                child: Text(
+                  state.failure.toLocalizedString(context),
+                  style: typography.body.medium,
+                ),
               );
             } else if (state is AccountLoaded) {
               final accounts = state.activeAccounts;
