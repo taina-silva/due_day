@@ -67,14 +67,16 @@ class SecurityBlock extends StatelessWidget {
                 activeTrackColor: colors.resource.primary,
                 onChanged: (bool value) async {
                   final securityService = sl<SecurityService>();
-                  
+
                   // Verifica se o dispositivo possui suporte ativo
                   final isSupported = await securityService.canAuthenticate();
                   if (!isSupported) {
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                          content: Text('Este dispositivo não possui suporte biométrico ativo.'),
+                          content: Text(
+                            'Este dispositivo não possui suporte biométrico ativo.',
+                          ),
                         ),
                       );
                     }
@@ -86,8 +88,8 @@ class SecurityBlock extends StatelessWidget {
                   if (authenticated) {
                     if (context.mounted) {
                       context.read<SettingsBloc>().add(
-                            ToggleBiometricsEvent(value),
-                          );
+                        ToggleBiometricsEvent(value),
+                      );
                     }
                   } else {
                     if (context.mounted) {

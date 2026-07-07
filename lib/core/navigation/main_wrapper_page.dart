@@ -113,9 +113,7 @@ class _MainWrapperPageState extends State<MainWrapperPage>
               ),
               if (_isLocked && state.isBiometricsEnabled)
                 Positioned.fill(
-                  child: BiometricLockOverlay(
-                    onAuthenticate: _authenticate,
-                  ),
+                  child: BiometricLockOverlay(onAuthenticate: _authenticate),
                 ),
             ],
           ),

@@ -17,11 +17,12 @@ class GetScheduleData {
         final now = DateTime.now();
         // Simple logic for weekly overview: transactions in the next 7 days or overdue
         final weekFromNow = now.add(const Duration(days: 7));
-        
+
         final scheduledItems = transactions.where((t) {
           final date = t.dueDate ?? t.createdAt;
           // Include if it's an expense and (is overdue OR is within the next 7 days)
-          return t.type == TransactionType.expense && (date.isBefore(weekFromNow));
+          return t.type == TransactionType.expense &&
+              (date.isBefore(weekFromNow));
         }).toList();
 
         // Sort by date
@@ -44,13 +45,15 @@ class GetScheduleData {
 
         // Find next income
         TransactionEntity? nextIncome;
-        final incomes = transactions.where((t) => t.type == TransactionType.income && !t.paid).toList();
+        final incomes = transactions
+            .where((t) => t.type == TransactionType.income && !t.paid)
+            .toList();
         incomes.sort((a, b) {
           final dateA = a.dueDate ?? a.createdAt;
           final dateB = b.dueDate ?? b.createdAt;
           return dateA.compareTo(dateB);
         });
-        
+
         if (incomes.isNotEmpty) {
           nextIncome = incomes.first;
         }

@@ -8,9 +8,9 @@ class AppTypography {
   final CaptionStyles caption;
 
   const AppTypography()
-      : headline = const HeadlineStyles(),
-        title = const TitleStyles(),
-        body = const BodyStyles(),
-        label = const LabelStyles(),
-        caption = const CaptionStyles();
+    : headline = const HeadlineStyles(),
+      title = const TitleStyles(),
+      body = const BodyStyles(),
+      label = const LabelStyles(),
+      caption = const CaptionStyles();
 }

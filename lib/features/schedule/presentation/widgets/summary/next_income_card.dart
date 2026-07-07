@@ -8,10 +8,7 @@ class NextIncomeCard extends StatelessWidget {
   final double amount;
   final DateTime? arrivalDate;
 
-  const NextIncomeCard({
-    required this.amount, super.key,
-    this.arrivalDate,
-  });
+  const NextIncomeCard({required this.amount, super.key, this.arrivalDate});
 
   @override
   Widget build(BuildContext context) {

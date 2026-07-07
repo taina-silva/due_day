@@ -8,7 +8,8 @@ import 'package:due_day/features/notifications/presentation/bloc/notifications_b
 void initNotifications() {
   // Datasource
   sl.registerLazySingleton<NotificationsRemoteDataSource>(
-    () => NotificationsRemoteDataSourceImpl(firestore: sl(), firebaseAuth: sl()),
+    () =>
+        NotificationsRemoteDataSourceImpl(firestore: sl(), firebaseAuth: sl()),
   );
 
   // Repository
@@ -23,9 +24,7 @@ void initNotifications() {
 
   // Bloc
   sl.registerFactory(
-    () => NotificationsBloc(
-      getNotifications: sl(),
-      markNotificationAsRead: sl(),
-    ),
+    () =>
+        NotificationsBloc(getNotifications: sl(), markNotificationAsRead: sl()),
   );
 }

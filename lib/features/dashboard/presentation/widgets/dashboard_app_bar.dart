@@ -24,12 +24,7 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
     final spacing = context.spacing;
 
     return CustomAppBar(
-      title:
-          title ??
-          Text(
-            titleText!,
-            style: typography.title.medium,
-          ),
+      title: title ?? Text(titleText!, style: typography.title.medium),
       actions: [
         BlocBuilder<NotificationsBloc, NotificationsState>(
           builder: (context, state) {

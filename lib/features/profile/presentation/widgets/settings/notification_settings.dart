@@ -50,8 +50,8 @@ class NotificationSettings extends StatelessWidget {
                   activeThumbColor: colors.resource.primary,
                   onChanged: (val) {
                     context.read<SettingsBloc>().add(
-                          TogglePushNotificationsEvent(val),
-                        );
+                      TogglePushNotificationsEvent(val),
+                    );
                   },
                 ),
               ],

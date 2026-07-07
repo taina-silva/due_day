@@ -21,24 +21,19 @@ Future<void> init() async {
   await sl<NotificationService>().init();
 
   // --- Security ---
-  sl.registerLazySingleton<FlutterSecureStorage>(() => const FlutterSecureStorage());
+  sl.registerLazySingleton<FlutterSecureStorage>(
+    () => const FlutterSecureStorage(),
+  );
   sl.registerLazySingleton<LocalAuthentication>(() => LocalAuthentication());
   sl.registerLazySingleton<SecurityService>(
-    () => SecurityServiceImpl(
-      secureStorage: sl(),
-      localAuth: sl(),
-    ),
+    () => SecurityServiceImpl(secureStorage: sl(), localAuth: sl()),
   );
 
   // Features
   initAuth();
 
   sl.registerSingleton<SettingsBloc>(
-    SettingsBloc(
-      updateUser: sl(),
-      authBloc: sl(),
-      securityService: sl(),
-    ),
+    SettingsBloc(updateUser: sl(), authBloc: sl(), securityService: sl()),
   );
 
   // Accounts

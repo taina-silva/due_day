@@ -15,15 +15,13 @@ class SecurityServiceImpl implements SecurityService {
 
   static const String _biometricKey = 'is_biometrics_enabled';
 
-  SecurityServiceImpl({
-    required this.secureStorage,
-    required this.localAuth,
-  });
+  SecurityServiceImpl({required this.secureStorage, required this.localAuth});
 
   @override
   Future<bool> canAuthenticate() async {
     try {
-      final bool canAuthenticateWithBiometrics = await localAuth.canCheckBiometrics;
+      final bool canAuthenticateWithBiometrics =
+          await localAuth.canCheckBiometrics;
       final bool isDeviceSupported = await localAuth.isDeviceSupported();
       return canAuthenticateWithBiometrics && isDeviceSupported;
     } on PlatformException catch (_) {

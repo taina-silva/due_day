@@ -40,6 +40,7 @@ class CurrencyInputFormatter extends TextInputFormatter {
       selection: TextSelection.collapsed(offset: formattedText.length),
     );
   }
+
   static double parse(String text) {
     final String digitsOnly = text.replaceAll(RegExp(r'[^0-9]'), '');
     if (digitsOnly.isEmpty) return 0.0;

@@ -38,7 +38,8 @@ extension DueDayThemeExtension on BuildContext {
   Color get onSurfaceColor => Theme.of(this).colorScheme.onSurface;
 
   /// Retrieves the secondary/variant text color on top of surface.
-  Color get onSurfaceVariantColor => Theme.of(this).colorScheme.onSurfaceVariant;
+  Color get onSurfaceVariantColor =>
+      Theme.of(this).colorScheme.onSurfaceVariant;
 
   /// Retrieves the main brand primary color.
   Color get primaryColor => Theme.of(this).colorScheme.primary;

@@ -72,11 +72,11 @@ class AppTextField extends StatelessWidget {
             : null,
         suffixIcon: suffixIcon != null
             ? (onSuffixIconPressed != null
-                ? IconButton(
-                    icon: Icon(suffixIcon, color: colors.resource.secondary),
-                    onPressed: onSuffixIconPressed,
-                  )
-                : Icon(suffixIcon, color: colors.resource.secondary))
+                  ? IconButton(
+                      icon: Icon(suffixIcon, color: colors.resource.secondary),
+                      onPressed: onSuffixIconPressed,
+                    )
+                  : Icon(suffixIcon, color: colors.resource.secondary))
             : null,
         filled: true,
         fillColor: Theme.of(context).colorScheme.surface,

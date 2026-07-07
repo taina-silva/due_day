@@ -100,7 +100,9 @@ class AppTextButtonSecondary extends StatelessWidget {
     final dimensions = context.dimensions;
 
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final defaultForegroundColor = isDarkMode ? colors.onDarkBackground : colors.onLightBackground;
+    final defaultForegroundColor = isDarkMode
+        ? colors.onDarkBackground
+        : colors.onLightBackground;
     final effectiveForegroundColor = foregroundColor ?? defaultForegroundColor;
     final effectiveBorderColor = borderColor ?? colors.resource.neutral;
 

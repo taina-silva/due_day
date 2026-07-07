@@ -23,9 +23,10 @@ This checklist outlines the criteria for reviewing feature implementations and c
 - [ ] File names are written in `snake_case`.
 - [ ] All user-facing strings are localized using `AppLocalizations` (no hardcoded strings).
 - [ ] Translation keys follow the camelCase `featureNomeChave` naming convention.
-- [ ] No dead imports, commented-out code blocks, or print statements are left in production files.
+- [ ] No dead imports, unused imports, commented-out code blocks, or print statements are left in modified files.
+- [ ] All modified files are formatted with `fvm dart format .`.
 
 ### 4. Tests & Analysis
-- [ ] `fvm flutter analyze` passes with zero warnings or errors.
+- [ ] `fvm flutter analyze` passes cleanly with zero warnings or errors resolved in modified files.
 - [ ] Unit and BLoC tests cover success and failure paths.
 - [ ] `fvm flutter test` passes successfully.

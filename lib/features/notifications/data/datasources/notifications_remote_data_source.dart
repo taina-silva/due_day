@@ -10,7 +10,8 @@ abstract class NotificationsRemoteDataSource {
   Stream<List<NotificationModel>> getNotifications();
 }
 
-class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource {
+class NotificationsRemoteDataSourceImpl
+    implements NotificationsRemoteDataSource {
   final FirebaseFirestore firestore;
   final FirebaseAuth firebaseAuth;
 
@@ -61,10 +62,10 @@ class NotificationsRemoteDataSourceImpl implements NotificationsRemoteDataSource
           .orderBy('timestamp', descending: true)
           .snapshots()
           .map((snapshot) {
-        return snapshot.docs
-            .map((doc) => NotificationModel.fromJson(doc.data()))
-            .toList();
-      });
+            return snapshot.docs
+                .map((doc) => NotificationModel.fromJson(doc.data()))
+                .toList();
+          });
     });
   }
 }

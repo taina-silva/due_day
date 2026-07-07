@@ -31,20 +31,21 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
     Emitter<ScheduleState> emit,
   ) async {
     emit(ScheduleLoading());
-    
-    await emit.forEach<Either<Failure, (ScheduleSummary, Map<String, CategoryEntity>)>>(
-      Rx.combineLatest2(
-        getScheduleData.execute(),
-        getCategories.call(),
-        (scheduleResult, categoriesResult) {
-          return scheduleResult.flatMap((summary) {
-            return categoriesResult.map((categories) {
-              final categoryMap = {for (var c in categories) c.id: c};
-              return (summary, categoryMap);
-            });
+
+    await emit.forEach<
+      Either<Failure, (ScheduleSummary, Map<String, CategoryEntity>)>
+    >(
+      Rx.combineLatest2(getScheduleData.execute(), getCategories.call(), (
+        scheduleResult,
+        categoriesResult,
+      ) {
+        return scheduleResult.flatMap((summary) {
+          return categoriesResult.map((categories) {
+            final categoryMap = {for (var c in categories) c.id: c};
+            return (summary, categoryMap);
           });
-        },
-      ),
+        });
+      }),
       onData: (result) {
         return result.fold(
           (failure) => ScheduleError(failure.message),
@@ -82,5 +83,4 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       (_) => null, // The stream will auto-update the UI
     );
   }
-
 }

@@ -53,7 +53,8 @@ class TransactionEntity extends Equatable {
   final String id;
   final String userId;
   final TransactionType type;
-  final double amount; // Always positive. Impact on balance depends on transaction type.
+  final double
+  amount; // Always positive. Impact on balance depends on transaction type.
   final String? category; // reference to categoryId (if income/expense)
   final String? accountFrom; // accountId (if expense or transfer)
   final String? accountTo; // accountId (if income or transfer)

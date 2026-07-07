@@ -69,13 +69,9 @@ class ProfilePage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const LanguageSelector(),
-                SizedBox(
-                  height: context.spacing.mediumLarge.height,
-                ),
+                SizedBox(height: context.spacing.mediumLarge.height),
                 const ThemeSelector(),
-                SizedBox(
-                  height: context.spacing.mediumLarge.height,
-                ),
+                SizedBox(height: context.spacing.mediumLarge.height),
                 const NotificationSettings(),
               ],
             ),

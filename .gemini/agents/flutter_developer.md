@@ -30,4 +30,5 @@ You are a specialized AI assistant focused on implementing new features, pages, 
 - [ ] Does the UI contain zero hardcoded colors or sizing offsets?
 - [ ] Are all user-facing strings loaded from translation catalog files?
 - [ ] Do BLoC states and events extend `Equatable`?
-- [ ] Does `fvm flutter analyze` run clean without warnings?
+- [ ] Are all changed files formatted with `fvm dart format .` and clean of unused imports?
+- [ ] Does `fvm flutter analyze` run clean, ensuring all warnings and errors are resolved?

@@ -28,7 +28,7 @@ class GetDashboardSummary {
           monthlyIncome += tx.amount;
         } else if (tx.type == TransactionType.expense) {
           monthlyExpenses += tx.amount;
-          
+
           // Spending by category (only for expenses)
           if (tx.category != null) {
             spendingByCategory[tx.category!] =
@@ -39,22 +39,23 @@ class GetDashboardSummary {
     }
 
     // Upcoming dues: unpaid expenses due in the future
-    final upcomingDues =
-        transactions
-            .where(
-              (tx) =>
-                  tx.type == TransactionType.expense &&
-                  !tx.paid &&
-                  tx.dueDate != null &&
-                  tx.dueDate!.isAfter(now),
-            )
-            .toList();
+    final upcomingDues = transactions
+        .where(
+          (tx) =>
+              tx.type == TransactionType.expense &&
+              !tx.paid &&
+              tx.dueDate != null &&
+              tx.dueDate!.isAfter(now),
+        )
+        .toList();
     upcomingDues.sort((a, b) => a.dueDate!.compareTo(b.dueDate!));
 
     // Projected Balance: Current + Unpaid Incomes - Unpaid Expenses (for this month)
     double projectedBalance = currentBalance;
     for (final tx in transactions) {
-      if (!tx.paid && tx.dueDate != null && tx.dueDate!.isBefore(lastDayOfMonth)) {
+      if (!tx.paid &&
+          tx.dueDate != null &&
+          tx.dueDate!.isBefore(lastDayOfMonth)) {
         if (tx.type == TransactionType.income) {
           projectedBalance += tx.amount;
         } else if (tx.type == TransactionType.expense) {

@@ -24,7 +24,11 @@ class NotificationsLoaded extends NotificationsState {
   });
 
   @override
-  List<Object?> get props => [newNotifications, earlierNotifications, urgentCount];
+  List<Object?> get props => [
+    newNotifications,
+    earlierNotifications,
+    urgentCount,
+  ];
 }
 
 class NotificationsError extends NotificationsState {

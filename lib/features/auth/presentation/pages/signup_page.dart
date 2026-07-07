@@ -42,9 +42,7 @@ class _SignUpPageState extends State<SignUpPage> {
     final l10n = AppLocalizations.of(context);
 
     return CustomScaffold(
-      appBar: const CustomAppBar(
-        titleText: '',
-      ),
+      appBar: const CustomAppBar(titleText: ''),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           if (state is AuthAuthenticated) {

@@ -32,10 +32,18 @@ Make incremental changes. Run tests after refactoring each layer:
     - Clean up layouts and extract complex sub-widgets into smaller files.
     - Ensure design tokens, responsiveness extensions, and localizations are preserved.
 
-### Step 3: Run the Test Suite
-Verify that all changes are backward-compatible and compile correctly:
-```bash
-fvm flutter analyze
-fvm flutter test
-```
- Ensure all tests pass. If any tests fail, revert or fix the regression before checking in the code.
+### Step 3: Final Verification (Format, Lint, Tests)
+Verify that all changes are formatted, compile cleanly, and pass tests:
+1. Format all changed files and clean unused imports:
+   ```bash
+   fvm dart format .
+   ```
+2. Check for and resolve any linter warnings or errors in changed files:
+   ```bash
+   fvm flutter analyze
+   ```
+3. Ensure all tests pass:
+   ```bash
+   fvm flutter test
+   ```
+If any checks or tests fail, resolve them before committing the code.

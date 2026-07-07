@@ -38,8 +38,8 @@ class TransactionItem extends StatelessWidget {
       subtitle = noteText?.isNotEmpty == true
           ? noteText!
           : (isExpense
-              ? l10n.transactionsFilterExpense
-              : l10n.transactionsFilterIncome);
+                ? l10n.transactionsFilterExpense
+                : l10n.transactionsFilterIncome);
     } else if (noteText != null && noteText.isNotEmpty) {
       title = noteText;
       subtitle = isExpense
@@ -56,8 +56,8 @@ class TransactionItem extends StatelessWidget {
     final iconData = category != null
         ? CategoryIconUtils.parseIcon(category!.icon)
         : (isExpense
-            ? Icons.arrow_outward_rounded
-            : Icons.call_received_rounded);
+              ? Icons.arrow_outward_rounded
+              : Icons.call_received_rounded);
 
     final categoryColor = category != null
         ? CategoryColorUtils.parseColor(
@@ -70,16 +70,12 @@ class TransactionItem extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(
-          context.radius.medium,
-        ),
+        borderRadius: BorderRadius.circular(context.radius.medium),
         child: Container(
           padding: EdgeInsets.all(spacing.medium.width),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(
-              context.radius.medium,
-            ),
+            borderRadius: BorderRadius.circular(context.radius.medium),
           ),
           child: Row(
             children: [
@@ -119,7 +115,9 @@ class TransactionItem extends StatelessWidget {
               Text(
                 '${isExpense ? '-' : '+'}${NumberFormat.simpleCurrency(locale: context.localeString).format(transaction.amount.abs())}',
                 style: typography.body.large.copyWith(
-                  color: isExpense ? colors.system.error : colors.system.success,
+                  color: isExpense
+                      ? colors.system.error
+                      : colors.system.success,
                   fontWeight: FontWeight.bold,
                 ),
               ),

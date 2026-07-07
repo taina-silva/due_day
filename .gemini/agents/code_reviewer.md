@@ -29,4 +29,5 @@ You are a specialized AI assistant focused on reviewing code quality, compliance
 - [ ] Are all dimensions styled with responsive scaling extensions?
 - [ ] Are all user-facing texts localized?
 - [ ] Is there zero commented-out code or print statements?
-- [ ] Does the change pass analyzer rules cleanly?
+- [ ] Are all changed files formatted with `fvm dart format .` (no unused imports)?
+- [ ] Does the change pass `fvm flutter analyze` cleanly with zero warnings or errors resolved?

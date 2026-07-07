@@ -43,4 +43,3 @@ class UserModel with _$UserModel {
     );
   }
 }
-

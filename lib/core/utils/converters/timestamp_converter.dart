@@ -11,11 +11,11 @@ class TimestampConverter implements JsonConverter<DateTime, dynamic> {
   @override
   DateTime fromJson(dynamic json) {
     if (json == null) return DateTime.now();
-    
+
     if (json is int) {
       return DateTime.fromMillisecondsSinceEpoch(json);
     }
-    
+
     // To avoid direct dependency on cloud_firestore in models,
     // we use a dynamic check for the .toDate() method.
     try {
@@ -41,11 +41,11 @@ class NullableTimestampConverter implements JsonConverter<DateTime?, dynamic> {
   @override
   DateTime? fromJson(dynamic json) {
     if (json == null) return null;
-    
+
     if (json is int) {
       return DateTime.fromMillisecondsSinceEpoch(json);
     }
-    
+
     try {
       return json.toDate() as DateTime;
     } catch (_) {
