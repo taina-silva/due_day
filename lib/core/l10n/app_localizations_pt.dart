@@ -105,6 +105,24 @@ class AppLocalizationsPt extends AppLocalizations {
   String get loginErrorFallback => 'Ocorreu um erro ao fazer login.';
 
   @override
+  String get authErrorInvalidCredentials => 'E-mail ou senha incorretos.';
+
+  @override
+  String get authErrorEmailAlreadyInUse => 'Este e-mail já está em uso.';
+
+  @override
+  String get authErrorWeakPassword => 'A senha fornecida é muito fraca.';
+
+  @override
+  String get authErrorUserDisabled => 'Esta conta de usuário foi desativada.';
+
+  @override
+  String get authErrorCancelled => 'A autenticação foi cancelada.';
+
+  @override
+  String get authErrorUserNotFound => 'Conta de usuário não encontrada.';
+
+  @override
   String get signupTitle => 'Crie sua conta';
 
   @override

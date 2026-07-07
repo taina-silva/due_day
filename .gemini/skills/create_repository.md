@@ -52,10 +52,12 @@ class AccountRepositoryImpl implements AccountRepository {
       
       return Right(entities);
     } on ServerException catch (e) {
-      // Map domain exception to Failure container
-      return Left(ServerFailure(message: e.message));
+      if (e.code == 'account-limit-exceeded') {
+        return const Left(AccountLimitExceededFailure());
+      }
+      return Left(ServerFailure(e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'An unexpected error occurred: $e'));
+      return Left(GenericFailure(e.toString()));
     }
   }
 }

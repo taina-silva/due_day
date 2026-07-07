@@ -7,6 +7,7 @@ import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_event.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_state.dart';
+import 'package:due_day/features/auth/presentation/utils/auth_failure_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -46,7 +47,7 @@ class _LoginPageState extends State<LoginPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(
-                  state.message,
+                  state.failure.toLocalizedString(context),
                   style: typography.body.medium.copyWith(
                     color: colors.onDarkBackground,
                   ),

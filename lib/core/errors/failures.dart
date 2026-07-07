@@ -10,13 +10,13 @@ abstract class Failure extends Equatable {
 }
 
 class ServerFailure extends Failure {
-  const ServerFailure([super.message = 'Ocorreu um erro no servidor']);
+  const ServerFailure([super.message = 'A server error occurred']);
 }
 
 class CacheFailure extends Failure {
-  const CacheFailure([super.message = 'Erro de cache']);
+  const CacheFailure([super.message = 'Cache error']);
 }
 
 class GenericFailure extends Failure {
-  const GenericFailure([super.message = 'Ocorreu um erro inesperado']);
+  const GenericFailure([super.message = 'An unexpected error occurred']);
 }

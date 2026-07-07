@@ -1,9 +1,10 @@
 class ServerException implements Exception {
   final String message;
-  const ServerException([this.message = 'Ocorreu um erro no servidor']);
+  final String? code;
+  const ServerException([this.message = 'A server error occurred', this.code]);
 }
 
 class CacheException implements Exception {
   final String message;
-  const CacheException([this.message = 'Erro de cache']);
+  const CacheException([this.message = 'Cache error']);
 }

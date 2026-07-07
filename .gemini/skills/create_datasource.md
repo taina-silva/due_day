@@ -10,7 +10,7 @@ This guide describes how to implement a Remote or Local DataSource in the **Data
 Always declare an abstract class interface to define the DataSource contract first, followed by the concrete framework-tied implementation class. This facilitates unit testing by allowing the DataSource interface to be easily mocked.
 
 ### Rule 2: Exception handling
-DataSources deal with raw infrastructure exceptions (such as `FirebaseException` or local caching failures). They should not return `Either` or handle failures themselves. If an operation fails, the DataSource must throw a raw exception (e.g. `ServerException` or `CacheException`).
+DataSources deal with raw infrastructure exceptions (such as `FirebaseException` or local caching failures). They should not return `Either` or handle failures themselves. If an operation fails, the DataSource must throw a raw exception (e.g. `ServerException` or `CacheException`) using a technical English message for debugging/logging, and propagating the original or custom error code (`e.code`).
 
 ---
 
@@ -51,9 +51,11 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
       return snapshot.docs
           .map((doc) => AccountModel.fromJson(doc.data()..['id'] = doc.id))
           .toList();
+    } on FirebaseException catch (e) {
+      // DataSources throw raw exceptions with technical English messages and error codes
+      throw ServerException(e.message ?? 'Failed to fetch accounts.', e.code);
     } catch (e) {
-      // DataSources throw raw domain exceptions
-      throw ServerException(message: 'Failed to fetch accounts: $e');
+      throw ServerException('Failed to fetch accounts: $e');
     }
   }
 }

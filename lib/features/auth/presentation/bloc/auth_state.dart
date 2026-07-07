@@ -1,3 +1,4 @@
+import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/features/auth/domain/entities/user_entity.dart';
 import 'package:equatable/equatable.dart';
 
@@ -24,10 +25,10 @@ class AuthAuthenticated extends AuthState {
 class AuthUnauthenticated extends AuthState {}
 
 class AuthError extends AuthState {
-  final String message;
+  final Failure failure;
 
-  const AuthError({required this.message});
+  const AuthError({required this.failure});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }

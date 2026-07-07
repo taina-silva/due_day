@@ -82,12 +82,15 @@ User-facing texts must be localized. Never use literal strings inside widget lay
 
 ---
 
-## ⚡ 4. Error Handling Pattern (Functional Style)
+## ⚡ 4. Error Handling Pattern (Functional Style & i18n localization)
 
-DueDay implements functional error handling using `fpdart` and the `Either<L, R>` type to prevent unchecked exceptions from reaching the UI.
+DueDay implements functional error handling using `fpdart` and the `Either<L, R>` type to prevent unchecked exceptions from reaching the UI, while prioritizing English for technical logging and using localization at the Presentation layer.
 
-- **Data Layer:** Remote/Local DataSources throw raw exceptions (e.g., `ServerException`).
-- **Repository Implementation:** Captures exceptions using `try-catch` blocks and returns an instance of `Left(Failure)`:
+- **Data Layer:** Remote/Local DataSources throw raw exceptions (e.g., `ServerException`). 
+  - **Rule:** Messages passed to exceptions must be technical English strings (for debugging/Crashlytics/Sentry logs) and include an optional infrastructure error code (`e.code`).
+  - **Example:** `throw ServerException('Failed to fetch user.', e.code);`
+
+- **Repository Implementation:** Captures exceptions using `try-catch` blocks, maps the exception code to specific domain-level `Failure` subclasses, and returns an instance of `Left(Failure)`:
   ```dart
   @override
   Future<Either<Failure, UserEntity>> signIn(String email, String password) async {
@@ -95,18 +98,23 @@ DueDay implements functional error handling using `fpdart` and the `Either<L, R>
       final userModel = await dataSource.signInWithEmail(email, password);
       return Right(userModel.toEntity());
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
+      if (e.code == 'user-not-found' || e.code == 'wrong-password') {
+        return const Left(InvalidCredentialsFailure());
+      }
+      return Left(ServerFailure(e.message));
     }
   }
   ```
-- **BLoC & UI Layer:** The BLoC invokes the UseCase and folds the returned `Either` state:
+
+- **BLoC & UI Layer:** The BLoC invokes the UseCase, folds the returned `Either` state, and emits the failure object directly:
   ```dart
   final result = await signInUseCase(params);
   result.fold(
-    (failure) => emit(AuthError(message: failure.message)),
+    (failure) => emit(AuthError(failure: failure)),
     (user) => emit(AuthAuthenticated(user: user)),
   );
   ```
+  In the UI, display the error utilizing `failure.toLocalizedString(context)` to resolve the correct localization key.
 
 ---
 

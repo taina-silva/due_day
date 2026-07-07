@@ -3,6 +3,7 @@ import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:due_day/features/auth/data/models/user_model.dart';
 import 'package:due_day/features/auth/domain/entities/user_entity.dart';
+import 'package:due_day/features/auth/domain/errors/auth_failures.dart';
 import 'package:due_day/features/auth/domain/repositories/auth_repository.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -20,7 +21,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final userModel = await remoteDataSource.signInWithEmail(email, password);
       return Right(userModel.toEntity());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
+      return Left(_mapException(e));
     } catch (e) {
       return Left(GenericFailure(e.toString()));
     }
@@ -40,7 +41,7 @@ class AuthRepositoryImpl implements AuthRepository {
       );
       return Right(userModel.toEntity());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
+      return Left(_mapException(e));
     } catch (e) {
       return Left(GenericFailure(e.toString()));
     }
@@ -52,7 +53,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final userModel = await remoteDataSource.signInWithGoogle();
       return Right(userModel.toEntity());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
+      return Left(_mapException(e));
     } catch (e) {
       return Left(GenericFailure(e.toString()));
     }
@@ -64,7 +65,7 @@ class AuthRepositoryImpl implements AuthRepository {
       await remoteDataSource.signOut();
       return const Right(null);
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
+      return Left(_mapException(e));
     } catch (e) {
       return Left(GenericFailure(e.toString()));
     }
@@ -79,7 +80,7 @@ class AuthRepositoryImpl implements AuthRepository {
       }
       return const Right(null);
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
+      return Left(_mapException(e));
     } catch (e) {
       return Left(GenericFailure(e.toString()));
     }
@@ -91,9 +92,30 @@ class AuthRepositoryImpl implements AuthRepository {
       await remoteDataSource.updateUser(UserModel.fromEntity(user));
       return const Right(null);
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
+      return Left(_mapException(e));
     } catch (e) {
       return Left(GenericFailure(e.toString()));
+    }
+  }
+
+  Failure _mapException(ServerException e) {
+    switch (e.code) {
+      case 'user-not-found':
+      case 'wrong-password':
+      case 'invalid-credential':
+        return const InvalidCredentialsFailure();
+      case 'email-already-in-use':
+        return const EmailAlreadyInUseFailure();
+      case 'weak-password':
+        return const WeakPasswordFailure();
+      case 'user-disabled':
+        return const UserDisabledFailure();
+      case 'google-sign-in-canceled':
+        return const AuthCancelledFailure();
+      case 'user-not-found-firestore':
+        return const UserNotFoundFailure();
+      default:
+        return ServerFailure(e.message);
     }
   }
 }

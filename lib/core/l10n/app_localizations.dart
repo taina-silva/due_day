@@ -272,6 +272,42 @@ abstract class AppLocalizations {
   /// **'Ocorreu um erro ao fazer login.'**
   String get loginErrorFallback;
 
+  /// No description provided for @authErrorInvalidCredentials.
+  ///
+  /// In pt, this message translates to:
+  /// **'E-mail ou senha incorretos.'**
+  String get authErrorInvalidCredentials;
+
+  /// No description provided for @authErrorEmailAlreadyInUse.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este e-mail já está em uso.'**
+  String get authErrorEmailAlreadyInUse;
+
+  /// No description provided for @authErrorWeakPassword.
+  ///
+  /// In pt, this message translates to:
+  /// **'A senha fornecida é muito fraca.'**
+  String get authErrorWeakPassword;
+
+  /// No description provided for @authErrorUserDisabled.
+  ///
+  /// In pt, this message translates to:
+  /// **'Esta conta de usuário foi desativada.'**
+  String get authErrorUserDisabled;
+
+  /// No description provided for @authErrorCancelled.
+  ///
+  /// In pt, this message translates to:
+  /// **'A autenticação foi cancelada.'**
+  String get authErrorCancelled;
+
+  /// No description provided for @authErrorUserNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta de usuário não encontrada.'**
+  String get authErrorUserNotFound;
+
   /// No description provided for @signupTitle.
   ///
   /// In pt, this message translates to:

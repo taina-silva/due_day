@@ -104,6 +104,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginErrorFallback => 'An error occurred during login.';
 
   @override
+  String get authErrorInvalidCredentials => 'Invalid email or password.';
+
+  @override
+  String get authErrorEmailAlreadyInUse => 'This email is already in use.';
+
+  @override
+  String get authErrorWeakPassword => 'The password provided is too weak.';
+
+  @override
+  String get authErrorUserDisabled => 'This user account has been disabled.';
+
+  @override
+  String get authErrorCancelled => 'Authentication was cancelled.';
+
+  @override
+  String get authErrorUserNotFound => 'User account not found.';
+
+  @override
   String get signupTitle => 'Create your account';
 
   @override

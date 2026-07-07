@@ -46,7 +46,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     final result = await signInWithEmail(event.email, event.password);
     result.fold(
-      (failure) => emit(AuthError(message: failure.message)),
+      (failure) => emit(AuthError(failure: failure)),
       (user) => emit(AuthAuthenticated(user: user)),
     );
   }
@@ -62,7 +62,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       event.displayName,
     );
     result.fold(
-      (failure) => emit(AuthError(message: failure.message)),
+      (failure) => emit(AuthError(failure: failure)),
       (user) => emit(AuthAuthenticated(user: user)),
     );
   }
@@ -74,7 +74,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     final result = await signInWithGoogle();
     result.fold(
-      (failure) => emit(AuthError(message: failure.message)),
+      (failure) => emit(AuthError(failure: failure)),
       (user) => emit(AuthAuthenticated(user: user)),
     );
   }
@@ -86,7 +86,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(AuthLoading());
     final result = await signOut();
     result.fold(
-      (failure) => emit(AuthError(message: failure.message)),
+      (failure) => emit(AuthError(failure: failure)),
       (_) => emit(AuthUnauthenticated()),
     );
   }

@@ -66,11 +66,11 @@ class AccountLoaded extends AccountState {
 }
 
 class AccountError extends AccountState {
-  final String message;
-  const AccountError(this.message);
+  final Failure failure;
+  const AccountError(this.failure);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }
 ```
 
@@ -97,7 +97,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     final result = await getAccounts(event.userId);
     
     result.fold(
-      (failure) => emit(AccountError(failure.message)),
+      (failure) => emit(AccountError(failure)),
       (accounts) => emit(AccountLoaded(accounts)),
     );
   }

@@ -62,6 +62,12 @@
     "loginNoAccount": "Não tem uma conta? ",
     "loginCreateNow": "Criar agora",
     "loginErrorFallback": "Ocorreu um erro ao fazer login.",
+    "authErrorInvalidCredentials": "E-mail ou senha incorretos.",
+    "authErrorEmailAlreadyInUse": "Este e-mail já está em uso.",
+    "authErrorWeakPassword": "A senha fornecida é muito fraca.",
+    "authErrorUserDisabled": "Esta conta de usuário foi desativada.",
+    "authErrorCancelled": "A autenticação foi cancelada.",
+    "authErrorUserNotFound": "Conta de usuário não encontrada.",
 
     "signupTitle": "Crie sua conta",
     "signupSubtitle": "Comece a organizar suas finanças hoje.",

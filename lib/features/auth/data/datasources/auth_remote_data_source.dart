@@ -38,16 +38,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
       if (userCredential.user == null) {
         throw const ServerException(
-          'Usuário não encontrado no banco de dados.',
+          'User not found in database.',
+          'user-not-found-firestore',
         );
       }
 
       final user = userCredential.user!;
       return _getUserFromFirestore(user.uid, authUser: user);
     } on FirebaseAuthException catch (e) {
-      throw ServerException(e.message ?? 'Erro na autenticação.');
+      throw ServerException(e.message ?? 'Authentication error.', e.code);
     } catch (e) {
-      throw const ServerException('Erro inesperado ao fazer login.');
+      throw const ServerException('Unexpected login error.');
     }
   }
 
@@ -77,9 +78,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
       return newUser;
     } on FirebaseAuthException catch (e) {
-      throw ServerException(e.message ?? 'Erro ao criar conta.');
+      throw ServerException(e.message ?? 'Error creating account.', e.code);
     } catch (e) {
-      throw const ServerException('Erro inesperado ao criar conta.');
+      throw const ServerException('Unexpected error creating account.');
     }
   }
 
@@ -97,7 +98,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
           .signInWithCredential(credential);
       final User user = userCredential.user!;
 
-      // Verifica se o usúário já existe
       final doc = await firestore.collection('users').doc(user.uid).get();
       if (doc.exists && doc.data() != null) {
         final data = Map<String, dynamic>.from(doc.data()!);
@@ -119,14 +119,17 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         return newUser;
       }
     } on FirebaseAuthException catch (e) {
-      throw ServerException(e.message ?? 'Erro no login com Google.');
+      throw ServerException(e.message ?? 'Google sign-in error.', e.code);
     } on GoogleSignInException catch (e) {
       if (e.code == GoogleSignInExceptionCode.canceled) {
-        throw const ServerException('Login pelo Google cancelado.');
+        throw const ServerException('Google sign-in cancelled.', 'google-sign-in-canceled');
       }
-      throw ServerException(e.description ?? 'Erro na autenticação com Google.');
+      throw ServerException(
+        e.description ?? 'Google sign-in authentication error.',
+        e.code.name,
+      );
     } catch (e) {
-      throw const ServerException('Erro inesperado no login com Google.');
+      throw const ServerException('Unexpected Google sign-in error.');
     }
   }
 
@@ -135,7 +138,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     try {
       await Future.wait([firebaseAuth.signOut(), googleSignIn.signOut()]);
     } catch (e) {
-      throw const ServerException('Erro ao sair da conta.');
+      throw const ServerException('Error signing out.');
     }
   }
 
@@ -151,12 +154,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<void> updateUser(UserModel user) async {
     try {
-      await firestore
-          .collection('users')
-          .doc(user.uid)
-          .update(user.toJson());
+      await firestore.collection('users').doc(user.uid).update(user.toJson());
     } catch (e) {
-      throw const ServerException('Erro ao atualizar perfil do usuário.');
+      throw const ServerException('Error updating user profile.');
     }
   }
 
@@ -168,7 +168,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       data['email'] ??= authUser?.email ?? '';
       return UserModel.fromJson(data);
     } else {
-      throw const ServerException('Usuário não encontrado no banco de dados.');
+      throw const ServerException(
+        'User not found in database.',
+        'user-not-found-firestore',
+      );
     }
   }
 }

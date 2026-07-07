@@ -54,6 +54,12 @@
     "loginNoAccount": "Don't have an account? ",
     "loginCreateNow": "Create now",
     "loginErrorFallback": "An error occurred during login.",
+    "authErrorInvalidCredentials": "Invalid email or password.",
+    "authErrorEmailAlreadyInUse": "This email is already in use.",
+    "authErrorWeakPassword": "The password provided is too weak.",
+    "authErrorUserDisabled": "This user account has been disabled.",
+    "authErrorCancelled": "Authentication was cancelled.",
+    "authErrorUserNotFound": "User account not found.",
 
     "signupTitle": "Create your account",
     "signupSubtitle": "Start organizing your finances today.",
