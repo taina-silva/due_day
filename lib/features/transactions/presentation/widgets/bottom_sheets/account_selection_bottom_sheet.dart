@@ -3,6 +3,7 @@ import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_bloc.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_state.dart';
+import 'package:due_day/features/accounts/presentation/utils/account_failure_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -56,7 +57,9 @@ class AccountSelectionBottomSheet extends StatelessWidget {
                 if (state is AccountLoading || state is AccountInitial) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is AccountError) {
-                  return Center(child: Text(state.message));
+                  return Center(
+                    child: Text(state.failure.toLocalizedString(context)),
+                  );
                 } else if (state is AccountLoaded) {
                   final accounts = state.activeAccounts;
 

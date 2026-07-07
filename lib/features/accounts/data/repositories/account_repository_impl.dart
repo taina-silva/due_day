@@ -3,6 +3,7 @@ import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/features/accounts/data/datasources/account_remote_data_source.dart';
 import 'package:due_day/features/accounts/data/models/account_model.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
+import 'package:due_day/features/accounts/domain/errors/account_failures.dart';
 import 'package:due_day/features/accounts/domain/repositories/account_repository.dart';
 import 'package:fpdart/fpdart.dart';
 
@@ -10,6 +11,16 @@ class AccountRepositoryImpl implements AccountRepository {
   final AccountRemoteDataSource remoteDataSource;
 
   AccountRepositoryImpl({required this.remoteDataSource});
+
+  Failure _mapServerExceptionToFailure(ServerException e) {
+    if (e.code == 'unauthenticated' || e.message.contains('authenticated')) {
+      return const UserNotAuthenticatedFailure();
+    }
+    if (e.code == 'not-found' || e.message.contains('not found')) {
+      return const AccountNotFoundFailure();
+    }
+    return ServerFailure(e.message);
+  }
 
   @override
   Future<Either<Failure, AccountEntity>> addAccount(
@@ -20,7 +31,7 @@ class AccountRepositoryImpl implements AccountRepository {
       final result = await remoteDataSource.addAccount(model);
       return Right(result.toEntity());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
+      return Left(_mapServerExceptionToFailure(e));
     } catch (e) {
       return Left(GenericFailure(e.toString()));
     }
@@ -35,7 +46,7 @@ class AccountRepositoryImpl implements AccountRepository {
       final result = await remoteDataSource.updateAccount(model);
       return Right(result.toEntity());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
+      return Left(_mapServerExceptionToFailure(e));
     } catch (e) {
       return Left(GenericFailure(e.toString()));
     }
@@ -47,7 +58,7 @@ class AccountRepositoryImpl implements AccountRepository {
       await remoteDataSource.deleteAccount(accountId);
       return const Right(null);
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
+      return Left(_mapServerExceptionToFailure(e));
     } catch (e) {
       return Left(GenericFailure(e.toString()));
     }
@@ -61,25 +72,24 @@ class AccountRepositoryImpl implements AccountRepository {
       final result = await remoteDataSource.getAccountById(accountId);
       return Right(result.toEntity());
     } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
+      return Left(_mapServerExceptionToFailure(e));
     } catch (e) {
       return Left(GenericFailure(e.toString()));
     }
   }
 
   @override
-  Stream<Either<Failure, List<AccountEntity>>> getAccounts() {
-    return remoteDataSource
-        .getAccounts()
-        .map(
-          (models) => Right<Failure, List<AccountEntity>>(
-            models.map((m) => m.toEntity()).toList(),
-          ),
-        )
-        .handleError((error) {
-          return Left<Failure, List<AccountEntity>>(
-            ServerFailure(error.toString()),
-          );
-        });
+  Stream<Either<Failure, List<AccountEntity>>> getAccounts() async* {
+    try {
+      await for (final models in remoteDataSource.getAccounts()) {
+        yield Right<Failure, List<AccountEntity>>(
+          models.map((m) => m.toEntity()).toList(),
+        );
+      }
+    } on ServerException catch (e) {
+      yield Left<Failure, List<AccountEntity>>(_mapServerExceptionToFailure(e));
+    } catch (e) {
+      yield Left<Failure, List<AccountEntity>>(GenericFailure(e.toString()));
+    }
   }
 }

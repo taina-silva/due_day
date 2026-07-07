@@ -220,6 +220,20 @@ class AppLocalizationsPt extends AppLocalizations {
   String get accountsDueDateLabel => 'VENCIMENTO (FATURA/CARTÃO)';
 
   @override
+  String get accountsCategoryCreditCard => 'Cartão de Crédito';
+
+  @override
+  String get accountsErrorNotFound => 'Conta não encontrada.';
+
+  @override
+  String get accountsErrorNotAuthenticated =>
+      'Usuário não autenticado. Por favor, faça login novamente.';
+
+  @override
+  String get accountsErrorFallback =>
+      'Ocorreu um erro ao gerenciar suas contas.';
+
+  @override
   String get categoriesTitle => 'Categorias';
 
   @override

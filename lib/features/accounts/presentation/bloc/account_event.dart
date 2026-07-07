@@ -1,3 +1,4 @@
+import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:equatable/equatable.dart';
 
@@ -35,9 +36,9 @@ class DeleteAccountEvent extends AccountEvent {
 }
 
 class AccountLoadFailed extends AccountEvent {
-  final String message;
-  const AccountLoadFailed(this.message);
+  final Failure failure;
+  const AccountLoadFailed(this.failure);
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [failure];
 }

@@ -86,7 +86,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       );
       emit(DashboardLoaded(summary, selectedAccountIds: _selectedAccountIds));
     } else if (accountState is AccountError) {
-      emit(DashboardError(accountState.message));
+      emit(DashboardError(accountState.failure.message));
     } else if (transactionState is TransactionError) {
       emit(DashboardError(transactionState.message));
     } else {

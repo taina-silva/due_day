@@ -108,8 +108,8 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
           children: [
             Center(
               child: Container(
-                width: 40,
-                height: 4,
+                width: 40.w,
+                height: 4.h,
                 decoration: BoxDecoration(
                   color: Theme.of(
                     context,
@@ -169,7 +169,7 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
               ],
               validator: Validators.requiredField(l10n),
             ),
-            if (_selectedCategory == AccountCategory.dailyUse) ...[
+            if (_selectedCategory == AccountCategory.creditCard) ...[
               SizedBox(height: dimensions.spacing.large.height),
               AppTextField(
                 controller: _dueDayController,

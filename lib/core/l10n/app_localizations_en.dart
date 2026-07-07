@@ -220,6 +220,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountsDueDateLabel => 'DUE DATE (INVOICE/CARD)';
 
   @override
+  String get accountsCategoryCreditCard => 'Credit Card';
+
+  @override
+  String get accountsErrorNotFound => 'Account not found.';
+
+  @override
+  String get accountsErrorNotAuthenticated =>
+      'User not authenticated. Please log in again.';
+
+  @override
+  String get accountsErrorFallback =>
+      'An error occurred while managing your accounts.';
+
+  @override
   String get categoriesTitle => 'Categories';
 
   @override

@@ -7,7 +7,7 @@ part 'account_model.freezed.dart';
 part 'account_model.g.dart';
 
 @freezed
-class AccountModel with _$AccountModel {
+abstract class AccountModel with _$AccountModel {
   const AccountModel._();
 
   const factory AccountModel({

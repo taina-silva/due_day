@@ -500,6 +500,30 @@ abstract class AppLocalizations {
   /// **'VENCIMENTO (FATURA/CARTÃO)'**
   String get accountsDueDateLabel;
 
+  /// No description provided for @accountsCategoryCreditCard.
+  ///
+  /// In pt, this message translates to:
+  /// **'Cartão de Crédito'**
+  String get accountsCategoryCreditCard;
+
+  /// No description provided for @accountsErrorNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta não encontrada.'**
+  String get accountsErrorNotFound;
+
+  /// No description provided for @accountsErrorNotAuthenticated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usuário não autenticado. Por favor, faça login novamente.'**
+  String get accountsErrorNotAuthenticated;
+
+  /// No description provided for @accountsErrorFallback.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocorreu um erro ao gerenciar suas contas.'**
+  String get accountsErrorFallback;
+
   /// No description provided for @categoriesTitle.
   ///
   /// In pt, this message translates to:

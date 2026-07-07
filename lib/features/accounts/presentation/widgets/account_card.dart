@@ -48,7 +48,7 @@ class AccountCard extends StatelessWidget {
               child: Icon(
                 account.category.icon,
                 color: colors.resource.primary,
-                size: 28,
+                size: 28.scale,
               ),
             ),
             SizedBox(width: dimensions.spacing.medium.width),

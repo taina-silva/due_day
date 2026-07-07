@@ -23,7 +23,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
   String get _userId {
     final user = firebaseAuth.currentUser;
     if (user == null) {
-      throw const ServerException('Usuário não autenticado.');
+      throw const ServerException('User not authenticated.', 'unauthenticated');
     }
     return user.uid;
   }
@@ -37,8 +37,12 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
       final docRef = _collection.doc(account.id);
       await docRef.set(account.toJson());
       return account;
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(e.message ?? 'Failed to add account.', e.code);
     } catch (e) {
-      throw ServerException('Erro ao adicionar conta: $e');
+      throw ServerException('Failed to add account: $e');
     }
   }
 
@@ -48,8 +52,12 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
       final docRef = _collection.doc(account.id);
       await docRef.update(account.toJson());
       return account;
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(e.message ?? 'Failed to update account.', e.code);
     } catch (e) {
-      throw ServerException('Erro ao atualizar conta: $e');
+      throw ServerException('Failed to update account: $e');
     }
   }
 
@@ -59,8 +67,12 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
       await _collection.doc(accountId).update({
         'deletedAt': FieldValue.serverTimestamp(),
       });
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(e.message ?? 'Failed to delete account.', e.code);
     } catch (e) {
-      throw ServerException('Erro ao deletar conta: $e');
+      throw ServerException('Failed to delete account: $e');
     }
   }
 
@@ -69,11 +81,15 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     try {
       final doc = await _collection.doc(accountId).get();
       if (!doc.exists) {
-        throw const ServerException('Conta não encontrada.');
+        throw const ServerException('Account not found.', 'not-found');
       }
       return AccountModel.fromJson(doc.data()!);
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(e.message ?? 'Failed to retrieve account.', e.code);
     } catch (e) {
-      throw ServerException('Erro ao buscar conta: $e');
+      throw ServerException('Failed to retrieve account: $e');
     }
   }
 
@@ -85,8 +101,12 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
             .map((doc) => AccountModel.fromJson(doc.data()))
             .toList();
       });
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(e.message ?? 'Failed to fetch accounts.', e.code);
     } catch (e) {
-      throw ServerException('Erro ao buscar contas: $e');
+      throw ServerException('Failed to fetch accounts: $e');
     }
   }
 }
