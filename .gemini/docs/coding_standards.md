@@ -86,6 +86,8 @@ User-facing texts must be localized. Never use literal strings inside widget lay
 
 DueDay implements functional error handling using `fpdart` and the `Either<L, R>` type to prevent unchecked exceptions from reaching the UI, while prioritizing English for technical logging and using localization at the Presentation layer.
 
+- **Refactoring Requirement:** Any feature refactoring *must* include refactoring its error handling. Migrate legacy raw strings/exceptions to the typed `Failure` + i18n structure.
+
 - **Data Layer:** Remote/Local DataSources throw raw exceptions (e.g., `ServerException`). 
   - **Rule:** Messages passed to exceptions must be technical English strings (for debugging/Crashlytics/Sentry logs) and include an optional infrastructure error code (`e.code`).
   - **Example:** `throw ServerException('Failed to fetch user.', e.code);`
