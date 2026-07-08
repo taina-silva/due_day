@@ -21,7 +21,9 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
 
   String get _userId {
     final user = firebaseAuth.currentUser;
-    if (user == null) throw const ServerException('Usuário não autenticado.');
+    if (user == null) {
+      throw const ServerException('User not authenticated.', 'unauthenticated');
+    }
     return user.uid;
   }
 
@@ -34,8 +36,12 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
       final docRef = _collection.doc(category.id);
       await docRef.set(category.toJson());
       return category;
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(e.message ?? 'Failed to add category.', e.code);
     } catch (e) {
-      throw ServerException('Erro ao adicionar categoria: $e');
+      throw ServerException('Failed to add category: $e');
     }
   }
 
@@ -45,8 +51,12 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
       final docRef = _collection.doc(category.id);
       await docRef.update(category.toJson());
       return category;
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(e.message ?? 'Failed to update category.', e.code);
     } catch (e) {
-      throw ServerException('Erro ao atualizar categoria: $e');
+      throw ServerException('Failed to update category: $e');
     }
   }
 
@@ -54,8 +64,12 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
   Future<void> deleteCategory(String categoryId) async {
     try {
       await _collection.doc(categoryId).delete();
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(e.message ?? 'Failed to delete category.', e.code);
     } catch (e) {
-      throw ServerException('Erro ao deletar categoria: $e');
+      throw ServerException('Failed to delete category: $e');
     }
   }
 
@@ -67,8 +81,12 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
             .map((doc) => CategoryModel.fromJson(doc.data()))
             .toList();
       });
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(e.message ?? 'Failed to fetch categories.', e.code);
     } catch (e) {
-      throw ServerException('Erro ao buscar categorias: $e');
+      throw ServerException('Failed to fetch categories: $e');
     }
   }
 }

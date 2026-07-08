@@ -39,20 +39,20 @@ class CategoryCard extends StatelessWidget {
           vertical: dimensions.spacing.medium.height,
         ),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
+          color: context.surfaceColor,
           borderRadius: BorderRadius.circular(dimensions.radius.large),
         ),
         child: Row(
           children: [
             // Icon circle
             Container(
-              width: 44,
-              height: 44,
+              width: 44.scale,
+              height: 44.scale,
               decoration: BoxDecoration(
                 color: parsedColor.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
-              child: Icon(iconData, color: parsedColor, size: 22.fontSize),
+              child: Icon(iconData, color: parsedColor, size: 22.scale),
             ),
             SizedBox(width: dimensions.spacing.medium.width),
             Expanded(
@@ -67,7 +67,7 @@ class CategoryCard extends StatelessWidget {
             Text(
               transactionLabel,
               style: typography.label.medium.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                color: context.onSurfaceVariantColor,
                 fontWeight: FontWeight.w500,
               ),
             ),

@@ -24,8 +24,8 @@ class CategoryFormHeader extends StatelessWidget {
         // Drag Handle
         Center(
           child: Container(
-            width: 40,
-            height: 4,
+            width: 40.w,
+            height: 4.h,
             decoration: BoxDecoration(
               color: colors.resource.neutral.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(dimensions.radius.circle),
@@ -43,9 +43,18 @@ class CategoryFormHeader extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            GestureDetector(
-              onTap: onClose,
-              child: Icon(Icons.close_rounded, color: colors.resource.neutral),
+            IconButton(
+              onPressed: onClose,
+              icon: Icon(
+                Icons.close_rounded,
+                color: context.onSurfaceVariantColor,
+              ),
+              iconSize: 24.scale,
+              padding: EdgeInsets.all(dimensions.spacing.small.scale),
+              constraints: BoxConstraints(
+                minWidth: 44.scale,
+                minHeight: 44.scale,
+              ),
             ),
           ],
         ),

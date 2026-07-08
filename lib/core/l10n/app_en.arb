@@ -245,5 +245,8 @@
     "dateCustom": "Custom",
     "commonAdd": "Add",
     "commonSeeAll": "See All",
-    "profileDefaultUserName": "User"
+    "profileDefaultUserName": "User",
+    "categoriesErrorNotFound": "Category not found.",
+    "categoriesErrorNotAuthenticated": "User not authenticated. Please log in again.",
+    "categoriesErrorFallback": "An error occurred while managing your categories."
 }

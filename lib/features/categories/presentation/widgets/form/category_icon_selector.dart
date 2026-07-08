@@ -28,8 +28,8 @@ class CategoryIconSelector extends StatelessWidget {
         return GestureDetector(
           onTap: () => onIconSelected(icon),
           child: Container(
-            width: 48,
-            height: 48,
+            width: 48.scale,
+            height: 48.scale,
             decoration: BoxDecoration(
               color: isSelected
                   ? selectedColor.withValues(alpha: 0.15)
@@ -43,7 +43,7 @@ class CategoryIconSelector extends StatelessWidget {
             ),
             child: Icon(
               icon,
-              size: 22.fontSize,
+              size: 22.scale,
               color: isSelected ? selectedColor : colors.resource.neutral,
             ),
           ),

@@ -27,8 +27,8 @@ class CategoryColorSelector extends StatelessWidget {
           child: GestureDetector(
             onTap: () => onColorSelected(color),
             child: Container(
-              width: 40.scale,
-              height: 40.scale,
+              width: 44.scale,
+              height: 44.scale,
               decoration: BoxDecoration(
                 color: color,
                 shape: BoxShape.circle,
@@ -46,10 +46,10 @@ class CategoryColorSelector extends StatelessWidget {
                     : null,
               ),
               child: isSelected
-                  ? const Icon(
+                  ? Icon(
                       Icons.check_rounded,
-                      color: Colors.white,
-                      size: 20,
+                      color: colors.lightSurface,
+                      size: 20.scale,
                     )
                   : null,
             ),

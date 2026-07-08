@@ -638,4 +638,15 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get profileDefaultUserName => 'Usuário';
+
+  @override
+  String get categoriesErrorNotFound => 'Categoria não encontrada.';
+
+  @override
+  String get categoriesErrorNotAuthenticated =>
+      'Usuário não autenticado. Por favor, faça login novamente.';
+
+  @override
+  String get categoriesErrorFallback =>
+      'Ocorreu um erro ao gerenciar suas categorias.';
 }

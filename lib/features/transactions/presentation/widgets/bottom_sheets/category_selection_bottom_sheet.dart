@@ -2,6 +2,7 @@ import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_state.dart';
+import 'package:due_day/features/categories/presentation/utils/category_failure_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -63,7 +64,9 @@ class CategorySelectionBottomSheet extends StatelessWidget {
                 if (state is CategoryLoading || state is CategoryInitial) {
                   return const Center(child: CircularProgressIndicator());
                 } else if (state is CategoryError) {
-                  return Center(child: Text(state.message));
+                  return Center(
+                    child: Text(state.failure.toLocalizedString(context)),
+                  );
                 } else if (state is CategoryLoaded) {
                   final categories = state.categories;
 

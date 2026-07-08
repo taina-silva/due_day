@@ -636,4 +636,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileDefaultUserName => 'User';
+
+  @override
+  String get categoriesErrorNotFound => 'Category not found.';
+
+  @override
+  String get categoriesErrorNotAuthenticated =>
+      'User not authenticated. Please log in again.';
+
+  @override
+  String get categoriesErrorFallback =>
+      'An error occurred while managing your categories.';
 }

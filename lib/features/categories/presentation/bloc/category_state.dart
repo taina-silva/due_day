@@ -1,3 +1,4 @@
+import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
 import 'package:equatable/equatable.dart';
 
@@ -22,10 +23,10 @@ class CategoryLoaded extends CategoryState {
 }
 
 class CategoryError extends CategoryState {
-  final String message;
+  final Failure failure;
 
-  const CategoryError({required this.message});
+  const CategoryError({required this.failure});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [failure];
 }
