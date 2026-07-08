@@ -10,7 +10,7 @@ This checklist outlines the criteria for reviewing feature implementations and c
 - [ ] No Presentation-layer widgets or pages access Repositories or DataSources directly (everything flows through BLoC ➔ UseCase).
 - [ ] UseCases reside in the Domain layer and contain no Flutter, Firebase, or external library imports.
 - [ ] DataSources handle raw database interactions and propagate exceptions instead of returning Either.
-- [ ] Repositories catch exceptions and return `Either<Failure, T>`.
+- [ ] Repositories catch exceptions and return `Either<Failure, T>`, mapping raw exceptions to typed domain `Failure`s (ensuring no raw exceptions or strings reach BLoC/UI).
 
 ### 2. Design System & Layout Tokens
 - [ ] No hardcoded colors (`Colors.white` or hex literals) are used in UI code. All colors reference `DueDayTheme.colors`.

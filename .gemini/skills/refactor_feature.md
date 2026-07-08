@@ -26,8 +26,9 @@ Make incremental changes. Run tests after refactoring each layer:
 2.  **Refactor Domain Logic:**
     - Update entity properties or UseCase signatures.
     - Update UseCase tests to align with the new signatures.
-3.  **Refactor Repositories & DataSources:**
-    - Clean up API calls and improve error handling.
+3.  **Refactor Repositories & DataSources (Error Handling):**
+    - Map all raw database/API exceptions to typed domain `Failure`s.
+    - Ensure BLoC states propagate `Failure` objects (never raw strings) and the UI localizes them.
 4.  **Refactor BLoC & Presentation Widgets:**
     - Clean up layouts and extract complex sub-widgets into smaller files.
     - Ensure design tokens, responsiveness extensions, and localizations are preserved.
