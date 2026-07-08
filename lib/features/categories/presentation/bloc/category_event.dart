@@ -1,3 +1,4 @@
+import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
 import 'package:equatable/equatable.dart';
 
@@ -40,4 +41,12 @@ class CategoriesUpdated extends CategoryEvent {
 
   @override
   List<Object> get props => [categories];
+}
+
+class CategoryLoadFailed extends CategoryEvent {
+  final Failure failure;
+  const CategoryLoadFailed(this.failure);
+
+  @override
+  List<Object> get props => [failure];
 }

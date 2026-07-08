@@ -1315,6 +1315,24 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Usuário'**
   String get profileDefaultUserName;
+
+  /// No description provided for @categoriesErrorNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria não encontrada.'**
+  String get categoriesErrorNotFound;
+
+  /// No description provided for @categoriesErrorNotAuthenticated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usuário não autenticado. Por favor, faça login novamente.'**
+  String get categoriesErrorNotAuthenticated;
+
+  /// No description provided for @categoriesErrorFallback.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocorreu um erro ao gerenciar suas categorias.'**
+  String get categoriesErrorFallback;
 }
 
 class _AppLocalizationsDelegate

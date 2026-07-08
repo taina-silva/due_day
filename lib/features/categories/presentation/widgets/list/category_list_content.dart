@@ -69,7 +69,7 @@ class CategoryListContent extends StatelessWidget {
               child: Text(
                 l10n.categoriesEmpty,
                 style: typography.body.medium.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  color: context.onSurfaceVariantColor,
                 ),
               ),
             ),

@@ -5,6 +5,7 @@ import 'package:due_day/features/categories/domain/entities/category_entity.dart
 import 'package:due_day/features/categories/presentation/bloc/category_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_event.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_state.dart';
+import 'package:due_day/features/categories/presentation/utils/category_failure_extension.dart';
 import 'package:due_day/features/categories/presentation/widgets/bottom_sheets/add_edit_category_bottom_sheet.dart';
 import 'package:due_day/features/categories/presentation/widgets/list/category_list_content.dart';
 import 'package:due_day/features/dashboard/presentation/widgets/dashboard_app_bar.dart';
@@ -33,7 +34,10 @@ class CategoriesPage extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             } else if (state is CategoryError) {
               return Center(
-                child: Text(state.message, style: typography.body.medium),
+                child: Text(
+                  state.failure.toLocalizedString(context),
+                  style: typography.body.medium,
+                ),
               );
             } else if (state is CategoryLoaded) {
               return CategoryListContent(
@@ -64,7 +68,7 @@ class CategoriesPage extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       useRootNavigator: true,
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: context.surfaceColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(context.radius.extraLarge),

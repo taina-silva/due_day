@@ -25,6 +25,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     on<UpdateCategoryEvent>(_onUpdateCategory);
     on<DeleteCategoryEvent>(_onDeleteCategory);
     on<CategoriesUpdated>(_onCategoriesUpdated);
+    on<CategoryLoadFailed>(_onCategoryLoadFailed);
   }
 
   void _onLoadCategories(LoadCategories event, Emitter<CategoryState> emit) {
@@ -32,10 +33,17 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     _categoriesSubscription?.cancel();
     _categoriesSubscription = getCategories().listen((result) {
       result.fold(
-        (failure) => addError(failure.message),
+        (failure) => add(CategoryLoadFailed(failure)),
         (categories) => add(CategoriesUpdated(categories)),
       );
     });
+  }
+
+  void _onCategoryLoadFailed(
+    CategoryLoadFailed event,
+    Emitter<CategoryState> emit,
+  ) {
+    emit(CategoryError(failure: event.failure));
   }
 
   void _onCategoriesUpdated(
@@ -52,10 +60,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     Emitter<CategoryState> emit,
   ) async {
     final result = await addCategory(event.category);
-    result.fold(
-      (failure) => emit(CategoryError(message: failure.message)),
-      (_) {},
-    );
+    result.fold((failure) => emit(CategoryError(failure: failure)), (_) {});
   }
 
   Future<void> _onUpdateCategory(
@@ -63,10 +68,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     Emitter<CategoryState> emit,
   ) async {
     final result = await updateCategory(event.category);
-    result.fold(
-      (failure) => emit(CategoryError(message: failure.message)),
-      (_) {},
-    );
+    result.fold((failure) => emit(CategoryError(failure: failure)), (_) {});
   }
 
   Future<void> _onDeleteCategory(
@@ -74,10 +76,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     Emitter<CategoryState> emit,
   ) async {
     final result = await deleteCategory(event.categoryId);
-    result.fold(
-      (failure) => emit(CategoryError(message: failure.message)),
-      (_) {},
-    );
+    result.fold((failure) => emit(CategoryError(failure: failure)), (_) {});
   }
 
   @override

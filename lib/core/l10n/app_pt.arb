@@ -253,5 +253,8 @@
     "dateCustom": "Personalizado",
     "commonAdd": "Adicionar",
     "commonSeeAll": "Ver tudo",
-    "profileDefaultUserName": "Usuário"
+    "profileDefaultUserName": "Usuário",
+    "categoriesErrorNotFound": "Categoria não encontrada.",
+    "categoriesErrorNotAuthenticated": "Usuário não autenticado. Por favor, faça login novamente.",
+    "categoriesErrorFallback": "Ocorreu um erro ao gerenciar suas categorias."
 }

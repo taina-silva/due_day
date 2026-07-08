@@ -69,20 +69,20 @@ class CategoryHeroCard extends StatelessWidget {
                 Text(
                   transactionLabel,
                   style: typography.label.medium.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    color: context.onSurfaceVariantColor,
                   ),
                 ),
               ],
             ),
           ),
           Container(
-            width: 56,
-            height: 56,
+            width: 56.scale,
+            height: 56.scale,
             decoration: BoxDecoration(
               color: parsedColor.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(dimensions.radius.large),
             ),
-            child: Icon(iconData, color: parsedColor, size: 28.fontSize),
+            child: Icon(iconData, color: parsedColor, size: 28.scale),
           ),
         ],
       ),
