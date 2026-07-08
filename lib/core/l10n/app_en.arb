@@ -248,5 +248,6 @@
     "profileDefaultUserName": "User",
     "categoriesErrorNotFound": "Category not found.",
     "categoriesErrorNotAuthenticated": "User not authenticated. Please log in again.",
-    "categoriesErrorFallback": "An error occurred while managing your categories."
+    "categoriesErrorFallback": "An error occurred while managing your categories.",
+    "dashboardErrorFallback": "An error occurred while loading the dashboard."
 }

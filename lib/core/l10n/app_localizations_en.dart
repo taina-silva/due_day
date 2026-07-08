@@ -647,4 +647,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get categoriesErrorFallback =>
       'An error occurred while managing your categories.';
+
+  @override
+  String get dashboardErrorFallback =>
+      'An error occurred while loading the dashboard.';
 }

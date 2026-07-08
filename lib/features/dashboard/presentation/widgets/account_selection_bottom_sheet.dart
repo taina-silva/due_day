@@ -4,6 +4,7 @@ import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AccountSelectionBottomSheet extends StatefulWidget {
   final List<AccountEntity> allAccounts;
@@ -47,14 +48,18 @@ class _AccountSelectionBottomSheetState
     final spacing = context.spacing;
     final l10n = AppLocalizations.of(context);
 
+    final radius = context.radius;
+
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: spacing.large.width,
         vertical: spacing.large.height,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+        color: context.surfaceColor,
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(radius.extraLarge),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -101,13 +106,13 @@ class _AccountSelectionBottomSheetState
                   title: Text(
                     account.name,
                     style: typography.body.large.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface,
+                      color: context.onSurfaceColor,
                     ),
                   ),
                   subtitle: Text(
                     account.category.localizedName(l10n),
                     style: typography.body.small.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: context.onSurfaceVariantColor,
                     ),
                   ),
                   activeColor: colors.resource.primary,
@@ -122,7 +127,7 @@ class _AccountSelectionBottomSheetState
             width: double.infinity,
             child: AppTextButtonPrimary(
               label: l10n.apply,
-              onPressed: () => Navigator.of(context).pop(_selectedIds),
+              onPressed: () => context.pop(_selectedIds),
             ),
           ),
           SizedBox(height: spacing.medium.height),

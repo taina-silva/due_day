@@ -49,12 +49,17 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         GestureDetector(
           onTap: () => context.push('/profile'),
-          child: Padding(
-            padding: EdgeInsets.only(right: spacing.largeExtraLarge.width),
-            child: CircleAvatar(
-              backgroundColor: colors.resource.primaryWith15Opacity,
-              child: Icon(Icons.person, color: colors.resource.primary),
+          behavior: HitTestBehavior.opaque,
+          child: Container(
+            alignment: Alignment.center,
+            width: 44.scale,
+            height: 44.scale,
+            margin: EdgeInsets.only(right: spacing.largeExtraLarge.width),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: colors.resource.primaryWith15Opacity,
             ),
+            child: Icon(Icons.person, color: colors.resource.primary),
           ),
         ),
       ],

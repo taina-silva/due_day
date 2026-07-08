@@ -256,5 +256,6 @@
     "profileDefaultUserName": "Usuário",
     "categoriesErrorNotFound": "Categoria não encontrada.",
     "categoriesErrorNotAuthenticated": "Usuário não autenticado. Por favor, faça login novamente.",
-    "categoriesErrorFallback": "Ocorreu um erro ao gerenciar suas categorias."
+    "categoriesErrorFallback": "Ocorreu um erro ao gerenciar suas categorias.",
+    "dashboardErrorFallback": "Ocorreu um erro ao carregar o painel."
 }

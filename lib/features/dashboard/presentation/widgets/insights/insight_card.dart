@@ -66,7 +66,7 @@ class InsightCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(icon, color: iconColor, size: 28),
+          Icon(icon, color: iconColor, size: 28.scale),
           SizedBox(width: spacing.mediumLarge.width),
           Expanded(
             child: Text(

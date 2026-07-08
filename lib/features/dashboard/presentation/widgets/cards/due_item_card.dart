@@ -20,8 +20,6 @@ class DueItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final typography = context.typography;
     final colors = context.colors;
     final spacing = context.spacing;
@@ -31,7 +29,7 @@ class DueItemCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(spacing.mediumLarge.width),
       decoration: BoxDecoration(
-        color: colorScheme.surface,
+        color: context.surfaceColor,
         borderRadius: BorderRadius.circular(radius.extraLarge),
       ),
       child: Row(
@@ -39,13 +37,13 @@ class DueItemCard extends StatelessWidget {
           Container(
             padding: EdgeInsets.all(spacing.medium.width),
             decoration: BoxDecoration(
-              color: colorScheme.onSurface.withValues(alpha: 0.1),
+              color: context.onSurfaceColor.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: Icon(
               icon,
-              color: colorScheme.onSurface,
-              size: size.largeExtraLarge,
+              color: context.onSurfaceColor,
+              size: size.largeExtraLarge.scale,
             ),
           ),
           SizedBox(width: spacing.mediumLarge.width),
@@ -57,7 +55,7 @@ class DueItemCard extends StatelessWidget {
                   title,
                   style: typography.body.large.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: colorScheme.onSurface,
+                    color: context.onSurfaceColor,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -67,7 +65,7 @@ class DueItemCard extends StatelessWidget {
                   style: typography.label.medium.copyWith(
                     color: isWarning
                         ? colors.system.warning
-                        : colorScheme.onSurfaceVariant,
+                        : context.onSurfaceVariantColor,
                   ),
                 ),
               ],
@@ -77,7 +75,7 @@ class DueItemCard extends StatelessWidget {
             amount,
             style: typography.body.large.copyWith(
               fontWeight: FontWeight.bold,
-              color: colorScheme.onSurface,
+              color: context.onSurfaceColor,
             ),
           ),
         ],

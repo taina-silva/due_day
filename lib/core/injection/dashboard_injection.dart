@@ -18,9 +18,9 @@ void initDashboard() {
     () => DashboardBloc(
       getDashboardSummary: sl(),
       syncRecurringTransactions: sl(),
-      accountBloc: sl(),
-      transactionBloc: sl(),
-      authBloc: sl(),
+      getAccounts: sl(),
+      getTransactions: sl(),
+      getCurrentUser: sl(),
     ),
   );
 }

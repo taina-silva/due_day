@@ -26,7 +26,7 @@ class SummaryCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(spacing.mediumLarge.width),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: context.surfaceColor,
         borderRadius: BorderRadius.circular(radius.extraLarge),
       ),
       child: Column(
@@ -38,22 +38,19 @@ class SummaryCard extends StatelessWidget {
               color: color.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: color, size: size.large),
+            child: Icon(icon, color: color, size: size.large.scale),
           ),
           SizedBox(height: spacing.mediumLarge.height),
           Text(
             title,
             style: typography.label.medium.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: context.onSurfaceVariantColor,
             ),
           ),
           SizedBox(height: spacing.small.height),
           Text(
             amount,
-            style: typography.body.large.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: 16.fontSize,
-            ),
+            style: typography.body.medium.copyWith(fontWeight: FontWeight.bold),
             overflow: TextOverflow.ellipsis,
           ),
         ],
