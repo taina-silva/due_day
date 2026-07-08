@@ -68,7 +68,7 @@ class FinancialHealthCard extends StatelessWidget {
                 Icon(
                   Icons.filter_list_rounded,
                   color: colors.onDarkBackground.withValues(alpha: 0.8),
-                  size: 20,
+                  size: 20.scale,
                 ),
               ],
             ),
@@ -97,7 +97,7 @@ class FinancialHealthCard extends StatelessWidget {
                 Icon(
                   Icons.analytics_outlined,
                   color: colors.onDarkBackground.withValues(alpha: 0.6),
-                  size: 20,
+                  size: 20.scale,
                 ),
                 SizedBox(width: spacing.small.width),
                 Text(

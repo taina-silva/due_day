@@ -649,4 +649,7 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get categoriesErrorFallback =>
       'Ocorreu um erro ao gerenciar suas categorias.';
+
+  @override
+  String get dashboardErrorFallback => 'Ocorreu um erro ao carregar o painel.';
 }

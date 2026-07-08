@@ -68,7 +68,7 @@ class CategorySpendingList extends StatelessWidget {
                   valueColor: AlwaysStoppedAnimation<Color>(
                     colors.resource.primary,
                   ),
-                  minHeight: 6,
+                  minHeight: 6.scale,
                 ),
               ),
             ],

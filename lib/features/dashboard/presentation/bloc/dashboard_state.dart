@@ -1,3 +1,4 @@
+import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/features/dashboard/domain/entities/dashboard_summary.dart';
 import 'package:equatable/equatable.dart';
 
@@ -23,10 +24,10 @@ class DashboardLoaded extends DashboardState {
 }
 
 class DashboardError extends DashboardState {
-  final String message;
+  final Failure failure;
 
-  const DashboardError(this.message);
+  const DashboardError(this.failure);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }

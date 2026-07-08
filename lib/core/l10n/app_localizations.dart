@@ -1333,6 +1333,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Ocorreu um erro ao gerenciar suas categorias.'**
   String get categoriesErrorFallback;
+
+  /// No description provided for @dashboardErrorFallback.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocorreu um erro ao carregar o painel.'**
+  String get dashboardErrorFallback;
 }
 
 class _AppLocalizationsDelegate

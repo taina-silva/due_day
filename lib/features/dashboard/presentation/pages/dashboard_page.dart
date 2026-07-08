@@ -14,6 +14,7 @@ import 'package:due_day/features/categories/presentation/bloc/category_state.dar
 import 'package:due_day/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:due_day/features/dashboard/presentation/bloc/dashboard_event.dart';
 import 'package:due_day/features/dashboard/presentation/bloc/dashboard_state.dart';
+import 'package:due_day/features/dashboard/presentation/utils/dashboard_failure_extension.dart';
 import 'package:due_day/features/dashboard/presentation/widgets/account_selection_bottom_sheet.dart';
 import 'package:due_day/features/dashboard/presentation/widgets/cards/due_item_card.dart';
 import 'package:due_day/features/dashboard/presentation/widgets/cards/financial_health_card.dart';
@@ -75,9 +76,9 @@ class _DashboardPageState extends State<DashboardPage> {
             if (state is DashboardError) {
               return Center(
                 child: Text(
-                  state.message,
+                  state.failure.toLocalizedString(context),
                   style: typography.body.medium.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: context.onSurfaceColor,
                   ),
                   textAlign: TextAlign.center,
                 ),
