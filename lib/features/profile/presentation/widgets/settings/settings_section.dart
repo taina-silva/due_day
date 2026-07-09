@@ -25,9 +25,14 @@ class SettingsSection extends StatelessWidget {
     final radius = context.radius;
 
     return Container(
-      padding: padding ?? EdgeInsets.all(spacing.mediumLarge.width),
+      padding:
+          padding ??
+          EdgeInsets.symmetric(
+            horizontal: spacing.mediumLarge.width,
+            vertical: spacing.mediumLarge.height,
+          ),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: context.surfaceColor,
         borderRadius: BorderRadius.circular(radius.extraLarge),
       ),
       child: Column(
@@ -36,7 +41,7 @@ class SettingsSection extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: EdgeInsets.all(spacing.small.width),
+                padding: EdgeInsets.all(spacing.small.scale),
                 decoration: BoxDecoration(
                   color: iconColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(radius.medium),
@@ -44,7 +49,12 @@ class SettingsSection extends StatelessWidget {
                 child: Icon(icon, color: iconColor),
               ),
               SizedBox(width: spacing.smallMedium.width),
-              Text(title, style: typography.title.small),
+              Text(
+                title,
+                style: typography.title.small.copyWith(
+                  color: context.onSurfaceColor,
+                ),
+              ),
             ],
           ),
           SizedBox(height: spacing.mediumLarge.height),

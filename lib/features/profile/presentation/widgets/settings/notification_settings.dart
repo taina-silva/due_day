@@ -34,6 +34,7 @@ class NotificationSettings extends StatelessWidget {
                         l10n.profilePushAlerts,
                         style: typography.body.large.copyWith(
                           fontWeight: FontWeight.bold,
+                          color: context.onSurfaceColor,
                         ),
                       ),
                       Text(

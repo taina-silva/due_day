@@ -734,6 +734,18 @@ abstract class AppLocalizations {
   /// **'Ativa para todas as transações'**
   String get profileSecurityDesc;
 
+  /// No description provided for @profileBiometricsNotSupported.
+  ///
+  /// In pt, this message translates to:
+  /// **'Este dispositivo não possui suporte biométrico ativo.'**
+  String get profileBiometricsNotSupported;
+
+  /// No description provided for @profileBiometricsAuthFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Autenticação cancelada ou incorreta.'**
+  String get profileBiometricsAuthFailed;
+
   /// No description provided for @profileTheme.
   ///
   /// In pt, this message translates to:

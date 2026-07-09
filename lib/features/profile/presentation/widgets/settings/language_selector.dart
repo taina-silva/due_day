@@ -69,8 +69,6 @@ class _RadioOption extends StatelessWidget {
     final spacing = context.spacing;
     final isSelected = value == groupValue;
 
-    final colorScheme = Theme.of(context).colorScheme;
-
     return GestureDetector(
       onTap: () => onChanged(value),
       child: Container(
@@ -80,7 +78,7 @@ class _RadioOption extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? colorScheme.primary.withValues(alpha: 0.1)
+              ? colors.resource.primary.withValues(alpha: 0.1)
               : Colors.transparent,
           borderRadius: BorderRadius.circular(radius.large),
         ),
@@ -91,18 +89,19 @@ class _RadioOption extends StatelessWidget {
               label,
               style: typography.body.medium.copyWith(
                 fontWeight: FontWeight.w600,
+                color: context.onSurfaceColor,
               ),
             ),
             if (isSelected)
               Icon(
                 Icons.check_circle,
                 color: colors.resource.primary,
-                size: 20.width,
+                size: 20.scale,
               )
             else
               Container(
-                width: 20.width,
-                height: 20.height,
+                width: 20.scale,
+                height: 20.scale,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(color: colors.resource.neutral),

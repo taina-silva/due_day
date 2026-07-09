@@ -15,8 +15,6 @@ class SecurityBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
     final colors = context.colors;
     final typography = context.typography;
@@ -26,17 +24,20 @@ class SecurityBlock extends StatelessWidget {
     return BlocBuilder<SettingsBloc, SettingsState>(
       builder: (context, state) {
         return Container(
-          padding: EdgeInsets.all(spacing.largeExtraLarge.width),
+          padding: EdgeInsets.symmetric(
+            horizontal: spacing.largeExtraLarge.width,
+            vertical: spacing.mediumLarge.height,
+          ),
           decoration: BoxDecoration(
-            color: colorScheme.surface,
+            color: context.surfaceColor,
             borderRadius: BorderRadius.circular(radius.extraLarge),
           ),
           child: Row(
             children: [
               Container(
-                padding: EdgeInsets.all(spacing.mediumLarge.width),
+                padding: EdgeInsets.all(spacing.mediumLarge.scale),
                 decoration: BoxDecoration(
-                  color: colorScheme.onSurface.withValues(alpha: 0.1),
+                  color: context.onSurfaceColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(radius.large),
                 ),
                 child: Icon(
@@ -53,11 +54,14 @@ class SecurityBlock extends StatelessWidget {
                       l10n.profileSecurity,
                       style: typography.body.large.copyWith(
                         fontWeight: FontWeight.bold,
+                        color: context.onSurfaceColor,
                       ),
                     ),
                     Text(
                       l10n.profileSecurityDesc,
-                      style: typography.label.small,
+                      style: typography.label.small.copyWith(
+                        color: colors.resource.secondary,
+                      ),
                     ),
                   ],
                 ),
@@ -73,10 +77,14 @@ class SecurityBlock extends StatelessWidget {
                   if (!isSupported) {
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           content: Text(
-                            'Este dispositivo não possui suporte biométrico ativo.',
+                            l10n.profileBiometricsNotSupported,
+                            style: typography.body.medium.copyWith(
+                              color: colors.onDarkBackground,
+                            ),
                           ),
+                          backgroundColor: colors.system.error,
                         ),
                       );
                     }
@@ -94,8 +102,14 @@ class SecurityBlock extends StatelessWidget {
                   } else {
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Autenticação cancelada ou incorreta.'),
+                        SnackBar(
+                          content: Text(
+                            l10n.profileBiometricsAuthFailed,
+                            style: typography.body.medium.copyWith(
+                              color: colors.onDarkBackground,
+                            ),
+                          ),
+                          backgroundColor: colors.system.error,
                         ),
                       );
                     }
