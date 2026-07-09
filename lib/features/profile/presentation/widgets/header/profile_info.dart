@@ -20,7 +20,12 @@ class ProfileInfo extends StatelessWidget {
     return Column(
       children: [
         SizedBox(height: spacing.mediumLarge.height),
-        Text(userName, style: typography.headline.small),
+        Text(
+          userName,
+          style: typography.headline.small.copyWith(
+            color: context.onSurfaceColor,
+          ),
+        ),
         SizedBox(height: spacing.small.height),
         Text(
           userEmail,

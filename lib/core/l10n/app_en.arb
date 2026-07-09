@@ -144,6 +144,8 @@
     "profileDeleteAccount": "Delete Account",
     "profileSecurity": "Biometric Security",
     "profileSecurityDesc": "Active for all transactions",
+    "profileBiometricsNotSupported": "This device does not have active biometric support.",
+    "profileBiometricsAuthFailed": "Authentication cancelled or incorrect.",
     "profileTheme": "Theme",
     "profileThemeSystem": "System Default",
     "profileThemeLight": "Light Mode",

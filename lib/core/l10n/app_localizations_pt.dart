@@ -344,6 +344,14 @@ class AppLocalizationsPt extends AppLocalizations {
   String get profileSecurityDesc => 'Ativa para todas as transações';
 
   @override
+  String get profileBiometricsNotSupported =>
+      'Este dispositivo não possui suporte biométrico ativo.';
+
+  @override
+  String get profileBiometricsAuthFailed =>
+      'Autenticação cancelada ou incorreta.';
+
+  @override
   String get profileTheme => 'Tema';
 
   @override

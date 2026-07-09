@@ -16,8 +16,8 @@ class ProfileAvatar extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          width: 120.width,
-          height: 120.height,
+          width: 120.scale,
+          height: 120.scale,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: colors.resource.primaryWith15Opacity,
@@ -36,13 +36,13 @@ class ProfileAvatar extends StatelessWidget {
           bottom: 0,
           right: 0,
           child: Container(
-            padding: EdgeInsets.all(spacing.medium.width),
+            padding: EdgeInsets.all(spacing.medium.scale),
             decoration: BoxDecoration(
-              color: colors.lightSurface,
+              color: context.surfaceColor,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
+                  color: context.onSurfaceColor.withValues(alpha: 0.1),
                   blurRadius: 4,
                 ),
               ],

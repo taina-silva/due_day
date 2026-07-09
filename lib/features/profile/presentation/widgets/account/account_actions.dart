@@ -11,8 +11,6 @@ class AccountActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
     final l10n = AppLocalizations.of(context);
     final colors = context.colors;
     final typography = context.typography;
@@ -20,7 +18,7 @@ class AccountActions extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: colorScheme.surface,
+        color: context.surfaceColor,
         borderRadius: BorderRadius.circular(radius.extraLarge),
       ),
       child: Column(
@@ -28,18 +26,18 @@ class AccountActions extends StatelessWidget {
           ListTile(
             leading: Icon(
               Icons.logout,
-              color: colorScheme.onSurface.withValues(alpha: 0.5),
+              color: context.onSurfaceColor.withValues(alpha: 0.5),
             ),
             title: Text(
               l10n.profileLogOut,
               style: typography.body.large.copyWith(
                 fontWeight: FontWeight.bold,
-                color: colorScheme.onSurface,
+                color: context.onSurfaceColor,
               ),
             ),
             trailing: Icon(
               Icons.chevron_right,
-              color: colorScheme.onSurface.withValues(alpha: 0.3),
+              color: context.onSurfaceColor.withValues(alpha: 0.3),
             ),
             onTap: () {
               context.read<AuthBloc>().add(AuthSignOutEvent());
@@ -81,22 +79,27 @@ class AccountActions extends StatelessWidget {
         content: Text(l10n.profileConfirmDeleteDesc),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(cntx),
+            onPressed: () => cntx.pop(),
             child: Text(l10n.profileCancel),
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(cntx);
+              cntx.pop();
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(l10n.profileExcludeDevAlert),
-                  backgroundColor: Colors.red,
+                  content: Text(
+                    l10n.profileExcludeDevAlert,
+                    style: context.typography.body.medium.copyWith(
+                      color: context.colors.onDarkBackground,
+                    ),
+                  ),
+                  backgroundColor: context.colors.system.error,
                 ),
               );
             },
             child: Text(
               l10n.profileExclude,
-              style: const TextStyle(color: Colors.red),
+              style: TextStyle(color: context.colors.system.error),
             ),
           ),
         ],
