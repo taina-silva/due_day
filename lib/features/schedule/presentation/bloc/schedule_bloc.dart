@@ -48,11 +48,13 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
       }),
       onData: (result) {
         return result.fold(
-          (failure) => ScheduleError(failure.message),
+          (failure) => ScheduleError(failure),
           (data) => ScheduleLoaded(data.$1, categories: data.$2),
         );
       },
-      onError: (error, stackTrace) => ScheduleError(error.toString()),
+      onError: (error, stackTrace) => ScheduleError(
+        error is Failure ? error : ServerFailure(error.toString()),
+      ),
     );
   }
 
@@ -79,7 +81,7 @@ class ScheduleBloc extends Bloc<ScheduleEvent, ScheduleState> {
 
     final result = await updateTransaction(updatedTx);
     result.fold(
-      (failure) => emit(ScheduleError(failure.message)),
+      (failure) => emit(ScheduleError(failure)),
       (_) => null, // The stream will auto-update the UI
     );
   }

@@ -31,11 +31,11 @@ class WeeklyOverviewCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(spacing.extraLarge.width),
       decoration: BoxDecoration(
-        color: colors.lightSurface,
+        color: context.surfaceColor,
         borderRadius: BorderRadius.circular(radius.extraLarge),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: colors.resource.neutral.withValues(alpha: 0.05),
             blurRadius: 40,
             offset: const Offset(0, 20),
           ),

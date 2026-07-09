@@ -1,3 +1,4 @@
+import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
 import 'package:due_day/features/schedule/domain/entities/schedule_summary.dart';
 import 'package:equatable/equatable.dart';
@@ -24,10 +25,10 @@ class ScheduleLoaded extends ScheduleState {
 }
 
 class ScheduleError extends ScheduleState {
-  final String message;
+  final Failure failure;
 
-  const ScheduleError(this.message);
+  const ScheduleError(this.failure);
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }

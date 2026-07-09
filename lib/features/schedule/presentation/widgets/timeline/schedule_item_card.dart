@@ -83,7 +83,7 @@ class ScheduleItemCard extends StatelessWidget {
                   dayFormat.format(date),
                   style: typography.title.large.copyWith(
                     fontWeight: FontWeight.bold,
-                    color: colors.onLightBackground,
+                    color: context.onSurfaceColor,
                   ),
                 ),
               ],
@@ -95,11 +95,11 @@ class ScheduleItemCard extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.all(spacing.mediumLarge.width),
               decoration: BoxDecoration(
-                color: colors.lightSurface,
+                color: context.surfaceColor,
                 borderRadius: BorderRadius.circular(radius.large),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.01),
+                    color: colors.resource.neutral.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -141,7 +141,7 @@ class ScheduleItemCard extends StatelessWidget {
                               transaction.notes ?? categoryName ?? '',
                               style: typography.body.medium.copyWith(
                                 fontWeight: FontWeight.bold,
-                                color: colors.onLightBackground,
+                                color: context.onSurfaceColor,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -156,7 +156,7 @@ class ScheduleItemCard extends StatelessWidget {
                             currencyFormat.format(transaction.amount),
                             style: typography.title.small.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: colors.onLightBackground,
+                              color: context.onSurfaceColor,
                             ),
                           ),
                           SizedBox(height: 4.height),
@@ -177,6 +177,7 @@ class ScheduleItemCard extends StatelessWidget {
                       child: TextButton(
                         onPressed: onMarkAsPaid,
                         style: TextButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 44),
                           padding: EdgeInsets.symmetric(
                             vertical: spacing.small.height,
                           ),

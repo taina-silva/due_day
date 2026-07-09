@@ -7,6 +7,7 @@ import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/schedule/presentation/bloc/schedule_bloc.dart';
 import 'package:due_day/features/schedule/presentation/bloc/schedule_event.dart';
 import 'package:due_day/features/schedule/presentation/bloc/schedule_state.dart';
+import 'package:due_day/features/schedule/presentation/utils/schedule_failure_extension.dart';
 import 'package:due_day/features/schedule/presentation/widgets/summary/next_income_card.dart';
 import 'package:due_day/features/schedule/presentation/widgets/summary/weekly_overview_card.dart';
 import 'package:due_day/features/schedule/presentation/widgets/timeline/timeline_section.dart';
@@ -58,7 +59,9 @@ class ScheduleView extends StatelessWidget {
             }
 
             if (state is ScheduleError) {
-              return Center(child: Text(state.message));
+              return Center(
+                child: Text(state.failure.toLocalizedString(context)),
+              );
             }
 
             if (state is ScheduleLoaded) {

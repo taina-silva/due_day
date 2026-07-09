@@ -660,4 +660,7 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get dashboardErrorFallback => 'Ocorreu um erro ao carregar o painel.';
+
+  @override
+  String get scheduleErrorFallback => 'Ocorreu um erro ao carregar sua agenda.';
 }
