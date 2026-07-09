@@ -24,6 +24,8 @@ class NextIncomeCard extends StatelessWidget {
 
     final dateFormat = DateFormat.MMMMd(context.localeString);
 
+    final onPrimary = Theme.of(context).colorScheme.onPrimary;
+
     return Container(
       padding: EdgeInsets.all(spacing.extraLarge.width),
       decoration: BoxDecoration(
@@ -47,7 +49,7 @@ class NextIncomeCard extends StatelessWidget {
               width: 150.width,
               height: 150.width,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.1),
+                color: onPrimary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
             ),
@@ -59,7 +61,7 @@ class NextIncomeCard extends StatelessWidget {
                 children: [
                   Icon(
                     Icons.payments_outlined,
-                    color: Colors.white.withValues(alpha: 0.8),
+                    color: onPrimary.withValues(alpha: 0.8),
                     size: 20.width,
                   ),
                   SizedBox(width: spacing.small.width),
@@ -68,7 +70,7 @@ class NextIncomeCard extends StatelessWidget {
                     style: typography.label.small.copyWith(
                       letterSpacing: 2,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white.withValues(alpha: 0.8),
+                      color: onPrimary.withValues(alpha: 0.8),
                     ),
                   ),
                 ],
@@ -78,7 +80,7 @@ class NextIncomeCard extends StatelessWidget {
                 currencyFormat.format(amount),
                 style: typography.headline.medium.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: onPrimary,
                   fontSize: 32.width,
                 ),
               ),
@@ -89,7 +91,7 @@ class NextIncomeCard extends StatelessWidget {
                   Text(
                     l10n.scheduleSummaryEstimatedArrival,
                     style: typography.label.small.copyWith(
-                      color: Colors.white.withValues(alpha: 0.7),
+                      color: onPrimary.withValues(alpha: 0.7),
                     ),
                   ),
                   Text(
@@ -98,7 +100,7 @@ class NextIncomeCard extends StatelessWidget {
                         : l10n.notAvailable,
                     style: typography.body.large.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: onPrimary,
                     ),
                   ),
                 ],

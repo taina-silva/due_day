@@ -66,7 +66,7 @@ class TimelineSection extends StatelessWidget {
                 l10n.scheduleTimelineTitle,
                 style: typography.title.large.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: colors.onLightBackground,
+                  color: context.onSurfaceColor,
                 ),
               ),
             ],

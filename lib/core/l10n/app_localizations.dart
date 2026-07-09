@@ -1351,6 +1351,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Ocorreu um erro ao carregar o painel.'**
   String get dashboardErrorFallback;
+
+  /// No description provided for @scheduleErrorFallback.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocorreu um erro ao carregar sua agenda.'**
+  String get scheduleErrorFallback;
 }
 
 class _AppLocalizationsDelegate

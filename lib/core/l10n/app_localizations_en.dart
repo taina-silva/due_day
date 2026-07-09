@@ -659,4 +659,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get dashboardErrorFallback =>
       'An error occurred while loading the dashboard.';
+
+  @override
+  String get scheduleErrorFallback =>
+      'An error occurred while loading your schedule.';
 }
