@@ -9,6 +9,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignInWithGoogle signInWithGoogle;
   final SignOut signOut;
   final GetCurrentUser getCurrentUser;
+  final Duration minimumSplashDuration;
 
   AuthBloc({
     required this.signInWithEmail,
@@ -16,6 +17,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required this.signInWithGoogle,
     required this.signOut,
     required this.getCurrentUser,
+    this.minimumSplashDuration = const Duration(milliseconds: 1000),
   }) : super(AuthInitial()) {
     on<AuthCheckRequested>(_onAuthCheckRequested);
     on<AuthSignInEmailEvent>(_onSignInEmail);
@@ -29,7 +31,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     emit(AuthLoading());
+    final startTime = DateTime.now();
     final result = await getCurrentUser();
+
+    final elapsedTime = DateTime.now().difference(startTime);
+    if (elapsedTime < minimumSplashDuration) {
+      await Future.delayed(minimumSplashDuration - elapsedTime);
+    }
+
     result.fold((failure) => emit(AuthUnauthenticated()), (user) {
       if (user != null) {
         emit(AuthAuthenticated(user: user));

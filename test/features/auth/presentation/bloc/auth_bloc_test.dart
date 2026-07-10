@@ -30,6 +30,7 @@ void main() {
       signInWithGoogle: mockSignInWithGoogle,
       signOut: mockSignOut,
       getCurrentUser: mockGetCurrentUser,
+      minimumSplashDuration: Duration.zero,
     );
   });
 
