@@ -1,5 +1,5 @@
 import 'package:due_day/core/design_system/theme/theme.dart';
-import 'package:due_day/core/l10n/app_localizations.dart';
+import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -41,9 +41,8 @@ class _SplashPageState extends State<SplashPage>
   Widget build(BuildContext context) {
     final colors = context.colors;
     final typography = context.typography;
-    final size = context.sizes;
     final spacing = context.spacing;
-    final l10n = AppLocalizations.of(context);
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: colors.resource.primary,
@@ -65,7 +64,6 @@ class _SplashPageState extends State<SplashPage>
                   l10n.splashAppName,
                   style: typography.headline.large.copyWith(
                     color: colors.onDarkBackground,
-                    fontSize: size.twoExtraLarge.fontSize,
                     fontWeight: FontWeight.w700,
                     letterSpacing: -0.5,
                     height: 1,
