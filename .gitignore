@@ -24,3 +24,5 @@ coverage/*
 # Agent Plans
 .gemini/plans/*
 
+# Docs
+docs/
