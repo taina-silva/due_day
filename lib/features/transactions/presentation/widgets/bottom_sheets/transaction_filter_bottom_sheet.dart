@@ -1,5 +1,6 @@
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
+import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:due_day/features/transactions/presentation/widgets/bottom_sheets/category_selection_bottom_sheet.dart';
@@ -58,6 +59,7 @@ class _TransactionFilterBottomSheetState
     final l10n = context.l10n;
     final spacing = context.spacing;
     final colors = context.colors;
+    final radius = context.radius;
     final typography = context.typography;
 
     final selectedCategory = widget.categories
@@ -66,14 +68,16 @@ class _TransactionFilterBottomSheetState
 
     return Container(
       padding: EdgeInsets.only(
-        top: spacing.medium,
-        left: spacing.medium,
-        right: spacing.medium,
-        bottom: MediaQuery.of(context).padding.bottom + spacing.medium,
+        top: spacing.medium.height,
+        left: spacing.medium.width,
+        right: spacing.medium.width,
+        bottom: MediaQuery.of(context).padding.bottom + spacing.medium.height,
       ),
       decoration: BoxDecoration(
         color: colors.lightBackground,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(radius.extraLarge),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -81,15 +85,15 @@ class _TransactionFilterBottomSheetState
         children: [
           Center(
             child: Container(
-              width: 40,
-              height: 4,
+              width: 40.w,
+              height: 4.h,
               decoration: BoxDecoration(
                 color: colors.resource.neutral.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(radius.circle),
               ),
             ),
           ),
-          SizedBox(height: spacing.medium),
+          SizedBox(height: spacing.medium.height),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -108,7 +112,7 @@ class _TransactionFilterBottomSheetState
               ),
             ],
           ),
-          SizedBox(height: spacing.medium),
+          SizedBox(height: spacing.medium.height),
 
           // Transaction Type Filter
           TransactionSelectionField(
@@ -129,7 +133,7 @@ class _TransactionFilterBottomSheetState
               }
             },
           ),
-          SizedBox(height: spacing.medium),
+          SizedBox(height: spacing.medium.height),
 
           // Category Filter
           TransactionSelectionField(
@@ -156,7 +160,7 @@ class _TransactionFilterBottomSheetState
               }
             },
           ),
-          SizedBox(height: spacing.medium),
+          SizedBox(height: spacing.medium.height),
 
           // Frequency Filter
           TransactionSelectionField(
@@ -178,7 +182,7 @@ class _TransactionFilterBottomSheetState
               }
             },
           ),
-          SizedBox(height: spacing.medium),
+          SizedBox(height: spacing.medium.height),
 
           // Date Range Filter
           TransactionSelectionField(
@@ -204,7 +208,7 @@ class _TransactionFilterBottomSheetState
               }
             },
           ),
-          SizedBox(height: spacing.large),
+          SizedBox(height: spacing.large.height),
 
           ElevatedButton(
             onPressed: () {
@@ -218,18 +222,18 @@ class _TransactionFilterBottomSheetState
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: colors.system.info,
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.all(spacing.medium),
+              foregroundColor: colors.onDarkBackground,
+              padding: EdgeInsets.all(spacing.medium.scale),
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(radius.large),
               ),
             ),
             child: Text(
               l10n.apply,
               style: typography.body.medium.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: colors.onDarkBackground,
               ),
             ),
           ),

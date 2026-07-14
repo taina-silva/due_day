@@ -1100,6 +1100,85 @@ abstract class AppLocalizations {
   /// **'Detalhes da Transação'**
   String get transactionsDetailTitle;
 
+  /// No description provided for @transactionsErrorNotFound.
+  ///
+  /// In pt, this message translates to:
+  /// **'Transação não encontrada.'**
+  String get transactionsErrorNotFound;
+
+  /// No description provided for @transactionsErrorNotAuthenticated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usuário não autenticado. Faça login novamente.'**
+  String get transactionsErrorNotAuthenticated;
+
+  /// No description provided for @transactionsErrorFallback.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocorreu um erro ao gerenciar suas transações.'**
+  String get transactionsErrorFallback;
+
+  /// No description provided for @transactionsNotificationOverdueTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta atrasada!'**
+  String get transactionsNotificationOverdueTitle;
+
+  /// No description provided for @transactionsNotificationOverdueBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'A transação \'{description}\' de {amount} está atrasada desde {date}.'**
+  String transactionsNotificationOverdueBody(
+    String description,
+    String amount,
+    String date,
+  );
+
+  /// No description provided for @transactionsNotificationDueTodayTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta vence hoje!'**
+  String get transactionsNotificationDueTodayTitle;
+
+  /// No description provided for @transactionsNotificationDueTodayBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua transação \'{description}\' de {amount} vence hoje. Realize o pagamento!'**
+  String transactionsNotificationDueTodayBody(
+    String description,
+    String amount,
+  );
+
+  /// No description provided for @transactionsNotificationDueTomorrowTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta vence amanhã!'**
+  String get transactionsNotificationDueTomorrowTitle;
+
+  /// No description provided for @transactionsNotificationDueTomorrowBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua transação \'{description}\' de {amount} vence amanhã.'**
+  String transactionsNotificationDueTomorrowBody(
+    String description,
+    String amount,
+  );
+
+  /// No description provided for @transactionsNotificationRecurringDebitedTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta recorrente debitada'**
+  String get transactionsNotificationRecurringDebitedTitle;
+
+  /// No description provided for @transactionsNotificationRecurringDebitedBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'O débito recorrente \'{description}\' de {amount} foi debitado e pago automaticamente.'**
+  String transactionsNotificationRecurringDebitedBody(
+    String description,
+    String amount,
+  );
+
   /// No description provided for @scheduleTitle.
   ///
   /// In pt, this message translates to:

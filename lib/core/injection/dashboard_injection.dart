@@ -21,6 +21,8 @@ void initDashboard() {
       getAccounts: sl(),
       getTransactions: sl(),
       getCurrentUser: sl(),
+      addNotification: sl(),
+      settingsBloc: sl(),
     ),
   );
 }

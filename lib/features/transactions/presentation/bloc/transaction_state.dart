@@ -1,3 +1,4 @@
+import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:equatable/equatable.dart';
 
@@ -22,10 +23,10 @@ class TransactionLoaded extends TransactionState {
 }
 
 class TransactionError extends TransactionState {
-  final String message;
+  final Failure failure;
 
-  const TransactionError({required this.message});
+  const TransactionError({required this.failure});
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [failure];
 }

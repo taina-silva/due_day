@@ -532,6 +532,63 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transactionsDetailTitle => 'Transaction Details';
 
   @override
+  String get transactionsErrorNotFound => 'Transaction not found.';
+
+  @override
+  String get transactionsErrorNotAuthenticated =>
+      'User not authenticated. Please log in again.';
+
+  @override
+  String get transactionsErrorFallback =>
+      'An error occurred while managing your transactions.';
+
+  @override
+  String get transactionsNotificationOverdueTitle => 'Overdue bill!';
+
+  @override
+  String transactionsNotificationOverdueBody(
+    String description,
+    String amount,
+    String date,
+  ) {
+    return 'The transaction \'$description\' of $amount is overdue since $date.';
+  }
+
+  @override
+  String get transactionsNotificationDueTodayTitle => 'Bill due today!';
+
+  @override
+  String transactionsNotificationDueTodayBody(
+    String description,
+    String amount,
+  ) {
+    return 'Your transaction \'$description\' of $amount is due today. Make the payment!';
+  }
+
+  @override
+  String get transactionsNotificationDueTomorrowTitle => 'Bill due tomorrow!';
+
+  @override
+  String transactionsNotificationDueTomorrowBody(
+    String description,
+    String amount,
+  ) {
+    return 'Your transaction \'$description\' of $amount is due tomorrow.';
+  }
+
+  @override
+  String get transactionsNotificationRecurringDebitedTitle =>
+      'Recurring bill debited';
+
+  @override
+  String transactionsNotificationRecurringDebitedBody(
+    String description,
+    String amount,
+  ) {
+    return 'The recurring debit \'$description\' of $amount was automatically debited and paid.';
+  }
+
+  @override
   String get scheduleTitle => 'Financial Schedule';
 
   @override

@@ -28,7 +28,9 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
 
   String get _userId {
     final user = firebaseAuth.currentUser;
-    if (user == null) throw const ServerException('Usuário não autenticado.');
+    if (user == null) {
+      throw const ServerException('User not authenticated.', 'unauthenticated');
+    }
     return user.uid;
   }
 
@@ -55,8 +57,12 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
 
       await batch.commit();
       return transaction;
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(e.message ?? 'Failed to add transaction.', e.code);
     } catch (e) {
-      throw ServerException('Erro ao adicionar transação: $e');
+      throw ServerException('Failed to add transaction: $e');
     }
   }
 
@@ -94,8 +100,15 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
 
       await batch.commit();
       return transaction;
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(
+        e.message ?? 'Failed to update transaction.',
+        e.code,
+      );
     } catch (e) {
-      throw ServerException('Erro ao atualizar transação: $e');
+      throw ServerException('Failed to update transaction: $e');
     }
   }
 
@@ -117,8 +130,15 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
       }
 
       await batch.commit();
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(
+        e.message ?? 'Failed to delete transaction.',
+        e.code,
+      );
     } catch (e) {
-      throw ServerException('Erro ao deletar transação: $e');
+      throw ServerException('Failed to delete transaction: $e');
     }
   }
 
@@ -127,11 +147,18 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
     try {
       final doc = await _collection.doc(transactionId).get();
       if (!doc.exists) {
-        throw const ServerException('Transação não encontrada.');
+        throw const ServerException('Transaction not found.', 'not-found');
       }
       return TransactionModel.fromJson(doc.data()!);
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(
+        e.message ?? 'Failed to fetch transaction.',
+        e.code,
+      );
     } catch (e) {
-      throw ServerException('Erro ao buscar transação: $e');
+      throw ServerException('Failed to fetch transaction: $e');
     }
   }
 
@@ -173,8 +200,15 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
             .map((doc) => TransactionModel.fromJson(doc.data()))
             .toList();
       });
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(
+        e.message ?? 'Failed to fetch transactions.',
+        e.code,
+      );
     } catch (e) {
-      throw ServerException('Erro ao buscar transações: $e');
+      throw ServerException('Failed to fetch transactions: $e');
     }
   }
 }

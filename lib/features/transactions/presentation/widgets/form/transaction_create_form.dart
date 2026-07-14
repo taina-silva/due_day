@@ -17,6 +17,8 @@ import 'package:due_day/features/categories/presentation/bloc/category_state.dar
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_state.dart';
+import 'package:due_day/features/transactions/presentation/utils/transaction_failure_extension.dart';
 import 'package:due_day/features/transactions/presentation/widgets/bottom_sheets/account_selection_bottom_sheet.dart';
 import 'package:due_day/features/transactions/presentation/widgets/bottom_sheets/category_selection_bottom_sheet.dart';
 import 'package:due_day/features/transactions/presentation/widgets/form/transaction_amount_input.dart';
@@ -150,6 +152,17 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
           listener: (context, state) {
             if (state is AccountLoaded) {
               setState(() => _updateEntitiesFromState());
+            }
+          },
+        ),
+        BlocListener<TransactionBloc, TransactionState>(
+          listener: (context, state) {
+            if (state is TransactionError) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(state.failure.toLocalizedString(context)),
+                ),
+              );
             }
           },
         ),

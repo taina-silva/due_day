@@ -16,6 +16,7 @@ class AccountSelectionBottomSheet extends StatelessWidget {
     final colors = context.colors;
     final typography = context.typography;
     final spacing = context.spacing;
+    final radius = context.radius;
     final l10n = AppLocalizations.of(context);
     final localeStr = Localizations.localeOf(context).toString();
 
@@ -31,7 +32,7 @@ class AccountSelectionBottomSheet extends StatelessWidget {
               height: 4.height,
               decoration: BoxDecoration(
                 color: colors.resource.secondary.withValues(alpha: 0.2),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(radius.circle),
               ),
             ),
           ),
