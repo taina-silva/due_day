@@ -32,3 +32,13 @@ class MarkNotificationAsRead {
     return repository.markAsRead(notificationId);
   }
 }
+
+class DeleteNotification {
+  final NotificationsRepository repository;
+
+  DeleteNotification(this.repository);
+
+  Future<Either<Failure, void>> call(String notificationId) {
+    return repository.deleteNotification(notificationId);
+  }
+}

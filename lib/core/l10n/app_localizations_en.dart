@@ -417,6 +417,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsEnd => 'End of notifications';
 
   @override
+  String get notificationsEmptyTitle => 'All caught up!';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'You have no pending notifications right now.';
+
+  @override
+  String get notificationsErrorLoading => 'Error loading notifications.';
+
+  @override
+  String notifMinutesAgo(int count) {
+    return '$count minute(s) ago';
+  }
+
+  @override
+  String notifHoursAgoCount(int count) {
+    return '$count hour(s) ago';
+  }
+
+  @override
+  String notifDaysAgoCount(int count) {
+    return '$count day(s) ago';
+  }
+
+  @override
   String get transactionsTitle => 'Transactions';
 
   @override

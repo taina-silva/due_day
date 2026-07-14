@@ -28,6 +28,15 @@ class MarkAsReadEvent extends NotificationsEvent {
   List<Object?> get props => [id];
 }
 
+class DeleteNotificationEvent extends NotificationsEvent {
+  final String id;
+
+  const DeleteNotificationEvent(this.id);
+
+  @override
+  List<Object?> get props => [id];
+}
+
 class NotificationsErrorOccurred extends NotificationsEvent {
   final String message;
 

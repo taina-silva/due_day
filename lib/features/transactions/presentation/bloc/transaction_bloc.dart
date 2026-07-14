@@ -1,16 +1,19 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:due_day/core/l10n/l10n_resolver.dart';
 import 'package:due_day/core/services/notification_service.dart';
 import 'package:due_day/core/settings/settings_bloc.dart';
 import 'package:due_day/features/notifications/domain/entities/notification_entity.dart';
 import 'package:due_day/features/notifications/domain/usecases/notification_usecases.dart';
-import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
+import 'package:due_day/features/transactions/domain/usecases/classify_transaction_reminders.dart';
 import 'package:due_day/features/transactions/domain/usecases/transaction_usecases.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+
+const _remindersEquality = ListEquality<TransactionReminder>();
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final AddTransaction addTransaction;
@@ -20,8 +23,10 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final SettingsBloc settingsBloc;
   final NotificationService notificationService;
   final AddNotification addNotification;
+  final ClassifyTransactionReminders classifyTransactionReminders;
 
   StreamSubscription? _transactionsSubscription;
+  List<TransactionReminder>? _lastReminders;
 
   TransactionBloc({
     required this.addTransaction,
@@ -31,6 +36,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     required this.settingsBloc,
     required this.notificationService,
     required this.addNotification,
+    required this.classifyTransactionReminders,
   }) : super(TransactionInitial()) {
     on<LoadTransactions>(_onLoadTransactions);
     on<AddTransactionEvent>(_onAddTransaction);
@@ -76,9 +82,20 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(TransactionLoaded(transactions: event.transactions));
 
     try {
+      final pushEnabled = settingsBloc.state.pushNotificationsEnabled;
+      final reminders = pushEnabled
+          ? classifyTransactionReminders(event.transactions)
+          : const <TransactionReminder>[];
+
+      if (_lastReminders != null &&
+          _remindersEquality.equals(_lastReminders, reminders)) {
+        return;
+      }
+      _lastReminders = reminders;
+
       await notificationService.cancelAll();
 
-      if (!settingsBloc.state.pushNotificationsEnabled) {
+      if (!pushEnabled) {
         return;
       }
 
@@ -92,148 +109,91 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
       final dateFormat = DateFormat.Md(languageCode);
 
       int seqId = 0;
-      for (var t in event.transactions) {
-        if (t.dueDate == null ||
-            t.paid != false ||
-            t.type != TransactionType.expense) {
-          continue;
-        }
-
-        final dueDate = t.dueDate!;
+      for (final reminder in reminders) {
+        final t = reminder.transaction;
         final description = t.notes?.isNotEmpty == true
             ? t.notes!
             : l10n.defaultTransaction;
         final amount = currencyFormat.format(t.amount);
-        final today = DateTime.now();
-        final todayMidnight = DateTime(today.year, today.month, today.day);
-        final dueDateMidnight = DateTime(
-          dueDate.year,
-          dueDate.month,
-          dueDate.day,
-        );
 
-        // 1 day before, at 8:00 AM
-        final dayBefore = dueDate.subtract(const Duration(days: 1));
-        final notifyDayBefore = DateTime(
-          dayBefore.year,
-          dayBefore.month,
-          dayBefore.day,
-          8,
-          0,
-        );
-
-        // On the due date, at 8:00 AM
-        final notifyDueDay = DateTime(
-          dueDate.year,
-          dueDate.month,
-          dueDate.day,
-          8,
-          0,
-        );
-
-        if (dueDateMidnight.isBefore(todayMidnight)) {
-          // Overdue: only record history in Firestore
-          await addNotification(
-            NotificationEntity(
-              id: '${t.id}_overdue',
-              userId: t.userId,
-              title: l10n.transactionsNotificationOverdueTitle,
-              description: l10n.transactionsNotificationOverdueBody(
-                description,
-                amount,
-                dateFormat.format(dueDate),
+        switch (reminder.urgency) {
+          case ReminderUrgency.overdue:
+            // Overdue: only record history, no OS reminder.
+            await addNotification(
+              NotificationEntity(
+                id: '${t.id}_overdue',
+                userId: t.userId,
+                title: l10n.transactionsNotificationOverdueTitle,
+                description: l10n.transactionsNotificationOverdueBody(
+                  description,
+                  amount,
+                  dateFormat.format(t.dueDate!),
+                ),
+                timestamp: reminder.notifyAt,
+                read: false,
+                isUrgent: true,
+                type: NotificationType.overdue,
               ),
-              timestamp: dueDate,
-              read: false,
-              isUrgent: true,
-              type: NotificationType.overdue,
-            ),
-          );
-        } else if (dueDateMidnight.isAtSameMomentAs(todayMidnight)) {
-          // Due today!
-          if (notifyDueDay.isAfter(DateTime.now())) {
-            await notificationService.scheduleTransactionReminder(
-              id: seqId++,
-              title: l10n.transactionsNotificationDueTodayTitle,
-              body: l10n.transactionsNotificationDueTodayBody(
-                description,
-                amount,
-              ),
-              scheduledDate: notifyDueDay,
             );
-          }
-          await addNotification(
-            NotificationEntity(
-              id: '${t.id}_due_today',
-              userId: t.userId,
-              title: l10n.transactionsNotificationDueTodayTitle,
-              description: l10n.transactionsNotificationDueTodayBody(
-                description,
-                amount,
-              ),
-              timestamp: notifyDueDay,
-              read: false,
-              isUrgent: true,
-              type: NotificationType.dueToday,
-            ),
-          );
-        } else {
-          // Due in the future!
-          // 1. One day before
-          if (notifyDayBefore.isAfter(DateTime.now())) {
-            await notificationService.scheduleTransactionReminder(
-              id: seqId++,
-              title: l10n.transactionsNotificationDueTomorrowTitle,
-              body: l10n.transactionsNotificationDueTomorrowBody(
-                description,
-                amount,
-              ),
-              scheduledDate: notifyDayBefore,
-            );
-          }
-          await addNotification(
-            NotificationEntity(
-              id: '${t.id}_day_before',
-              userId: t.userId,
-              title: l10n.transactionsNotificationDueTomorrowTitle,
-              description: l10n.transactionsNotificationDueTomorrowBody(
-                description,
-                amount,
-              ),
-              timestamp: notifyDayBefore,
-              read: false,
-              isUrgent: false,
-              type: NotificationType.upcomingDue,
-            ),
-          );
+            break;
 
-          // 2. On the due date itself
-          if (notifyDueDay.isAfter(DateTime.now())) {
-            await notificationService.scheduleTransactionReminder(
-              id: seqId++,
-              title: l10n.transactionsNotificationDueTodayTitle,
-              body: l10n.transactionsNotificationDueTodayBody(
-                description,
-                amount,
+          case ReminderUrgency.dueToday:
+            if (reminder.notifyAt.isAfter(DateTime.now())) {
+              await notificationService.scheduleTransactionReminder(
+                id: seqId++,
+                title: l10n.transactionsNotificationDueTodayTitle,
+                body: l10n.transactionsNotificationDueTodayBody(
+                  description,
+                  amount,
+                ),
+                scheduledDate: reminder.notifyAt,
+              );
+            }
+            await addNotification(
+              NotificationEntity(
+                id: '${t.id}_due_today',
+                userId: t.userId,
+                title: l10n.transactionsNotificationDueTodayTitle,
+                description: l10n.transactionsNotificationDueTodayBody(
+                  description,
+                  amount,
+                ),
+                timestamp: reminder.notifyAt,
+                read: false,
+                isUrgent: true,
+                type: NotificationType.dueToday,
               ),
-              scheduledDate: notifyDueDay,
             );
-          }
-          await addNotification(
-            NotificationEntity(
-              id: '${t.id}_due_day',
-              userId: t.userId,
-              title: l10n.transactionsNotificationDueTodayTitle,
-              description: l10n.transactionsNotificationDueTodayBody(
-                description,
-                amount,
+            break;
+
+          case ReminderUrgency.dueTomorrow:
+            if (reminder.notifyAt.isAfter(DateTime.now())) {
+              await notificationService.scheduleTransactionReminder(
+                id: seqId++,
+                title: l10n.transactionsNotificationDueTomorrowTitle,
+                body: l10n.transactionsNotificationDueTomorrowBody(
+                  description,
+                  amount,
+                ),
+                scheduledDate: reminder.notifyAt,
+              );
+            }
+            await addNotification(
+              NotificationEntity(
+                id: '${t.id}_day_before',
+                userId: t.userId,
+                title: l10n.transactionsNotificationDueTomorrowTitle,
+                description: l10n.transactionsNotificationDueTomorrowBody(
+                  description,
+                  amount,
+                ),
+                timestamp: reminder.notifyAt,
+                read: false,
+                isUrgent: false,
+                type: NotificationType.upcomingDue,
               ),
-              timestamp: notifyDueDay,
-              read: false,
-              isUrgent: true,
-              type: NotificationType.dueToday,
-            ),
-          );
+            );
+            break;
         }
       }
     } catch (_) {}

@@ -1,15 +1,15 @@
 import 'package:dartz/dartz.dart';
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/core/errors/failures.dart';
-import 'package:due_day/features/notifications/data/datasources/notifications_remote_data_source.dart';
+import 'package:due_day/features/notifications/data/datasources/notifications_local_data_source.dart';
 import 'package:due_day/features/notifications/data/models/notification_model.dart';
 import 'package:due_day/features/notifications/domain/entities/notification_entity.dart';
 import 'package:due_day/features/notifications/domain/repositories/notifications_repository.dart';
 
 class NotificationsRepositoryImpl implements NotificationsRepository {
-  final NotificationsRemoteDataSource remoteDataSource;
+  final NotificationsLocalDataSource localDataSource;
 
-  NotificationsRepositoryImpl({required this.remoteDataSource});
+  NotificationsRepositoryImpl({required this.localDataSource});
 
   @override
   Future<Either<Failure, void>> addNotification(
@@ -17,10 +17,10 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
   ) async {
     try {
       final model = NotificationModel.fromEntity(notification);
-      await remoteDataSource.addNotification(model);
+      await localDataSource.addNotification(model);
       return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
+    } on CacheException catch (e) {
+      return Left(CacheFailure(e.message));
     } catch (e) {
       return Left(GenericFailure(e.toString()));
     }
@@ -29,10 +29,24 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
   @override
   Future<Either<Failure, void>> markAsRead(String notificationId) async {
     try {
-      await remoteDataSource.markAsRead(notificationId);
+      await localDataSource.markAsRead(notificationId);
       return const Right(null);
-    } on ServerException catch (e) {
-      return Left(ServerFailure(e.message));
+    } on CacheException catch (e) {
+      return Left(CacheFailure(e.message));
+    } catch (e) {
+      return Left(GenericFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> deleteNotification(
+    String notificationId,
+  ) async {
+    try {
+      await localDataSource.deleteNotification(notificationId);
+      return const Right(null);
+    } on CacheException catch (e) {
+      return Left(CacheFailure(e.message));
     } catch (e) {
       return Left(GenericFailure(e.toString()));
     }
@@ -41,11 +55,11 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
   @override
   Stream<Either<Failure, List<NotificationEntity>>> getNotifications() async* {
     try {
-      await for (final models in remoteDataSource.getNotifications()) {
+      await for (final models in localDataSource.getNotifications()) {
         yield Right(models.map((m) => m.toEntity()).toList());
       }
     } catch (error) {
-      yield Left(ServerFailure(error.toString()));
+      yield Left(CacheFailure(error.toString()));
     }
   }
 }
