@@ -5,6 +5,7 @@ import 'package:due_day/core/settings/settings_state.dart';
 import 'package:due_day/features/notifications/domain/entities/notification_entity.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:due_day/features/transactions/domain/errors/transaction_failures.dart';
+import 'package:due_day/features/transactions/domain/usecases/classify_transaction_reminders.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_state.dart';
@@ -23,11 +24,13 @@ void main() {
   late MockSettingsBloc mockSettingsBloc;
   late MockNotificationService mockNotificationService;
   late MockAddNotification mockAddNotification;
+  late MockClassifyTransactionReminders mockClassifyTransactionReminders;
   late TransactionBloc transactionBloc;
 
   setUpAll(() async {
     await initializeDateFormatting('en');
     registerFallbackValue(tTransactionEntity);
+    registerFallbackValue(<TransactionEntity>[]);
     registerFallbackValue(
       NotificationEntity(
         id: 'fallback',
@@ -50,11 +53,15 @@ void main() {
     mockSettingsBloc = MockSettingsBloc();
     mockNotificationService = MockNotificationService();
     mockAddNotification = MockAddNotification();
+    mockClassifyTransactionReminders = MockClassifyTransactionReminders();
 
     when(() => mockNotificationService.cancelAll()).thenAnswer((_) async {});
     when(
       () => mockAddNotification(any()),
     ).thenAnswer((_) async => const dartz.Right(null));
+    when(
+      () => mockClassifyTransactionReminders(any()),
+    ).thenReturn(const []);
 
     transactionBloc = TransactionBloc(
       addTransaction: mockAddTransaction,
@@ -64,6 +71,7 @@ void main() {
       settingsBloc: mockSettingsBloc,
       notificationService: mockNotificationService,
       addNotification: mockAddNotification,
+      classifyTransactionReminders: mockClassifyTransactionReminders,
     );
   });
 
@@ -150,6 +158,13 @@ void main() {
           isRecurring: false,
           createdAt: tDateTime,
         );
+        when(() => mockClassifyTransactionReminders(any())).thenReturn([
+          TransactionReminder(
+            transaction: overdueTx,
+            urgency: ReminderUrgency.overdue,
+            notifyAt: overdueTx.dueDate!,
+          ),
+        ]);
         when(
           () => mockGetTransactions(
             startDate: any(named: 'startDate'),
@@ -165,6 +180,62 @@ void main() {
       wait: const Duration(milliseconds: 50),
       expect: () => [TransactionLoading(), isA<TransactionLoaded>()],
       verify: (_) {
+        verify(() => mockAddNotification(any())).called(1);
+      },
+    );
+
+    blocTest<TransactionBloc, TransactionState>(
+      'should not call cancelAll or addNotification again when the same '
+      'transactions are emitted twice in a row',
+      build: () {
+        when(() => mockSettingsBloc.state).thenReturn(
+          const SettingsState(
+            pushNotificationsEnabled: true,
+            languageCode: 'en',
+          ),
+        );
+        final overdueTx = TransactionEntity(
+          id: 'overdue-1',
+          userId: 'user-1',
+          type: TransactionType.expense,
+          amount: 30.0,
+          dueDate: DateTime.now().subtract(const Duration(days: 2)),
+          paid: false,
+          isRecurring: false,
+          createdAt: tDateTime,
+        );
+        when(() => mockClassifyTransactionReminders(any())).thenReturn([
+          TransactionReminder(
+            transaction: overdueTx,
+            urgency: ReminderUrgency.overdue,
+            notifyAt: overdueTx.dueDate!,
+          ),
+        ]);
+        when(
+          () => mockGetTransactions(
+            startDate: any(named: 'startDate'),
+            endDate: any(named: 'endDate'),
+            categoryId: any(named: 'categoryId'),
+            type: any(named: 'type'),
+            frequency: any(named: 'frequency'),
+          ),
+        ).thenAnswer(
+          (_) => Stream.fromIterable([
+            Right([overdueTx]),
+            Right([overdueTx]),
+          ]),
+        );
+        return transactionBloc;
+      },
+      act: (bloc) => bloc.add(const LoadTransactions()),
+      wait: const Duration(milliseconds: 50),
+      // Bloc only notifies listeners once for the two stream emissions since
+      // both TransactionLoaded states are equal (Bloc skips emitting
+      // duplicate states) — the real assertion here is that cancelAll/
+      // addNotification aren't repeated for the second, identical emission.
+      expect: () => [TransactionLoading(), isA<TransactionLoaded>()],
+      verify: (_) {
+        verify(() => mockNotificationService.cancelAll()).called(1);
         verify(() => mockAddNotification(any())).called(1);
       },
     );

@@ -10,6 +10,7 @@ import 'package:due_day/core/services/security_service.dart';
 import 'package:due_day/core/settings/settings_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
+import 'package:hive_ce_flutter/hive_flutter.dart';
 import 'package:local_auth/local_auth.dart';
 
 final sl = GetIt.instance; // sl stands for Service Locator
@@ -19,6 +20,11 @@ Future<void> init() async {
   sl.registerLazySingleton<NotificationService>(() => NotificationService());
   // Inicializamos na hora
   await sl<NotificationService>().init();
+
+  // --- Local storage (Hive) ---
+  await Hive.initFlutter();
+  final notificationsBox = await Hive.openBox<Map>('notifications_box');
+  sl.registerLazySingleton<Box<Map>>(() => notificationsBox);
 
   // --- Security ---
   sl.registerLazySingleton<FlutterSecureStorage>(

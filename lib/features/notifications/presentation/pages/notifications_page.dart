@@ -2,6 +2,7 @@ import 'package:due_day/core/design_system/components/structure/custom_app_bar.d
 import 'package:due_day/core/design_system/components/structure/custom_scaffold.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
+import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/notifications/domain/entities/notification_entity.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_bloc.dart';
@@ -85,6 +86,11 @@ class _NotificationsView extends StatelessWidget {
                                 MarkAsReadEvent(notif.id),
                               );
                             },
+                            onDismissed: () {
+                              context.read<NotificationsBloc>().add(
+                                DeleteNotificationEvent(notif.id),
+                              );
+                            },
                           );
                         },
                       ),
@@ -106,6 +112,11 @@ class _NotificationsView extends StatelessWidget {
                           return _NotificationCard(
                             notification: notif,
                             time: _formatTime(notif.timestamp, l10n),
+                            onDismissed: () {
+                              context.read<NotificationsBloc>().add(
+                                DeleteNotificationEvent(notif.id),
+                              );
+                            },
                           );
                         },
                       ),
@@ -145,7 +156,7 @@ class _NotificationsView extends StatelessWidget {
 
             return Center(
               child: Text(
-                'Erro ao carregar notificações.',
+                l10n.notificationsErrorLoading,
                 style: typography.body.medium,
               ),
             );
@@ -183,7 +194,7 @@ class _NotificationsView extends StatelessWidget {
             ),
             SizedBox(height: spacing.largeExtraLarge.height),
             Text(
-              'Tudo em dia!',
+              l10n.notificationsEmptyTitle,
               style: typography.title.medium.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -191,7 +202,7 @@ class _NotificationsView extends StatelessWidget {
             ),
             SizedBox(height: spacing.smallMedium.height),
             Text(
-              'Você não tem nenhuma notificação pendente no momento.',
+              l10n.notificationsEmptyDesc,
               style: typography.body.medium.copyWith(
                 color: colors.resource.secondary,
               ),
@@ -210,17 +221,13 @@ class _NotificationsView extends StatelessWidget {
     if (difference.inSeconds < 60) {
       return l10n.notifJustNow;
     } else if (difference.inMinutes < 60) {
-      return difference.inMinutes == 1
-          ? 'Há 1 minuto'
-          : 'Há ${difference.inMinutes} minutos';
+      return l10n.notifMinutesAgo(difference.inMinutes);
     } else if (difference.inHours < 24) {
-      return difference.inHours == 1
-          ? 'Há 1 hora'
-          : 'Há ${difference.inHours} horas';
+      return l10n.notifHoursAgoCount(difference.inHours);
     } else if (difference.inDays < 7) {
       return difference.inDays == 1
           ? l10n.notifYesterday
-          : 'Há ${difference.inDays} dias';
+          : l10n.notifDaysAgoCount(difference.inDays);
     } else {
       return '${timestamp.day.toString().padLeft(2, '0')}/${timestamp.month.toString().padLeft(2, '0')}/${timestamp.year}';
     }
@@ -255,15 +262,42 @@ class _NotificationCard extends StatelessWidget {
   final NotificationEntity notification;
   final String time;
   final VoidCallback? onMarkAsRead;
+  final VoidCallback? onDismissed;
 
   const _NotificationCard({
     required this.notification,
     required this.time,
     this.onMarkAsRead,
+    this.onDismissed,
   });
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
+    final radius = context.radius;
+    final spacing = context.spacing;
+
+    return Dismissible(
+      key: ValueKey(notification.id),
+      direction: DismissDirection.endToStart,
+      onDismissed: (_) => onDismissed?.call(),
+      background: Container(
+        alignment: Alignment.centerRight,
+        padding: EdgeInsets.symmetric(horizontal: spacing.large.width),
+        decoration: BoxDecoration(
+          color: colors.system.error,
+          borderRadius: BorderRadius.circular(radius.extraLarge),
+        ),
+        child: Icon(
+          Icons.delete_outline_rounded,
+          color: colors.onDarkBackground,
+        ),
+      ),
+      child: _buildCard(context),
+    );
+  }
+
+  Widget _buildCard(BuildContext context) {
     final colors = context.colors;
     final typography = context.typography;
     final radius = context.radius;
@@ -358,7 +392,7 @@ class _NotificationCard extends StatelessWidget {
                                 ),
                               ),
                               child: Text(
-                                'URGENTE',
+                                context.l10n.notificationsUrgent,
                                 style: typography.label.small.copyWith(
                                   color: colors.onDarkBackground,
                                   fontWeight: FontWeight.bold,

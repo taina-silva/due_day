@@ -28,16 +28,23 @@ Use `NotificationService` to schedule alarms for payment due dates:
     await notificationService.cancelAll();
     ```
 
-### Phase 2: Remote Push Alerts
-1.  **Configure FCM Handler:** Add custom events inside `lib/features/notifications/presentation/bloc/notifications_bloc.dart` to handle incoming foreground messages:
+### Phase 2: Local Notification History (Inbox)
+Record the same event in the local notifications inbox (`hive_ce`-backed, no network round-trip) so it shows up in the "Notificações" page:
+
+1.  **Add to history:** Resolve `AddNotification` from the service locator and call it with a `NotificationEntity`:
     ```dart
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      add(PushReceivedEvent(message.data));
-    });
+    await sl<AddNotification>()(
+      NotificationEntity(
+        id: '${transaction.id}_due_today',
+        userId: transaction.userId,
+        title: l10n.transactionsNotificationDueTodayTitle,
+        description: l10n.transactionsNotificationDueTodayBody(description, amount),
+        timestamp: DateTime.now(),
+        read: false,
+        isUrgent: true,
+        type: NotificationType.dueToday,
+      ),
+    );
     ```
-2.  **Register Device FCM Token:** Sync client tokens with Firestore when users sign in:
-    ```dart
-    final token = await FirebaseMessaging.instance.getToken();
-    await firestore.collection('users').doc(userId).update({'fcm_token': token});
-    ```
-3.  **Handle Click Action:** Define route redirection on clicks inside `app_router.dart`.
+2.  **Delete when no longer relevant:** Use `DeleteNotification` (same pattern) to remove an entry — e.g. triggered by swipe-to-dismiss on `NotificationsPage`.
+3.  Only the last 100 notifications are retained on-device; older entries are pruned automatically on insert.

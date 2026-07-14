@@ -168,6 +168,33 @@
     "notificationsGroupEarlier": "Earlier",
     "notificationsUrgent": "URGENT",
     "notificationsEnd": "End of notifications",
+    "notificationsEmptyTitle": "All caught up!",
+    "notificationsEmptyDesc": "You have no pending notifications right now.",
+    "notificationsErrorLoading": "Error loading notifications.",
+    "notifMinutesAgo": "{count} minute(s) ago",
+    "@notifMinutesAgo": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "notifHoursAgoCount": "{count} hour(s) ago",
+    "@notifHoursAgoCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "notifDaysAgoCount": "{count} day(s) ago",
+    "@notifDaysAgoCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
 
     "transactionsTitle": "Transactions",
     "transactionsFilterAll": "All",

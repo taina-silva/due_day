@@ -176,6 +176,33 @@
     "notificationsGroupEarlier": "Anteriores",
     "notificationsUrgent": "URGENTE",
     "notificationsEnd": "Fim das notificações",
+    "notificationsEmptyTitle": "Tudo em dia!",
+    "notificationsEmptyDesc": "Você não tem nenhuma notificação pendente no momento.",
+    "notificationsErrorLoading": "Erro ao carregar notificações.",
+    "notifMinutesAgo": "Há {count} minuto(s)",
+    "@notifMinutesAgo": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "notifHoursAgoCount": "Há {count} hora(s)",
+    "@notifHoursAgoCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "notifDaysAgoCount": "Há {count} dia(s)",
+    "@notifDaysAgoCount": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
 
     "transactionsTitle": "Transações",
     "transactionsFilterAll": "Todas",

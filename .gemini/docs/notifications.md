@@ -1,6 +1,6 @@
 # Notifications Configuration (notifications.md)
 
-This document describes how notifications are handled in **DueDay**, covering local reminders for due dates, push notifications via Firebase Cloud Messaging (FCM), and permission configuration.
+This document describes how notifications are handled in **DueDay**, covering local OS reminders for due dates, the local (Hive-backed) notifications inbox, and permission configuration. There is no push/FCM integration — everything is on-device.
 
 ---
 
@@ -46,14 +46,19 @@ Future<void> scheduleTransactionReminder({
 
 ---
 
-## ☁️ 2. Firebase Cloud Messaging (FCM)
+## 📥 2. Inbox de Notificações (Local/Hive)
 
-For server-triggered push alerts, the application integrates with `firebase_messaging`.
+O histórico de notificações exibido na tela "Notificações" (`lib/features/notifications/`) é 100% local, persistido em um `Box<Map>` do Hive (`hive_ce`/`hive_ce_flutter`) — não depende de rede nem do Firestore. A autenticação continua via `FirebaseAuth` apenas para filtrar notificações do usuário atual.
 
-### 2.1. FCM Bloc Integration (`NotificationsBloc`)
-The notifications feature folder (`lib/features/notifications/`) uses `NotificationsBloc` to manage token generation and push payload events:
-- **`LoadNotifications`:** Triggers token registration, updates user settings in Firestore `/users/{userId}`, and requests permissions.
-- **`firebase_messaging` Streams:** BLoCs listen to foreground message alerts (`FirebaseMessaging.onMessage`) and click redirections (`FirebaseMessaging.onMessageOpenedApp`).
+### 2.1. Camada de dados
+- **`NotificationsLocalDataSource`** (`data/datasources/notifications_local_data_source.dart`): interface com `addNotification`, `markAsRead`, `deleteNotification` e `getNotifications()` (stream reativa via `box.watch()`).
+- A box é aberta uma única vez em `injection_container.dart` (`Hive.initFlutter()` + `Hive.openBox<Map>('notifications_box')`) e injetada como `Box<Map>` singleton.
+- `NotificationModel` já serializa para `Map<String, dynamic>` puro via `toJson()`/`fromJson()` (sem `TypeAdapter`/codegen do Hive necessário).
+- Retém apenas as últimas 100 notificações no dispositivo — ao inserir, entradas mais antigas além do limite são removidas automaticamente.
+- Exceções: `CacheException` → mapeada para `CacheFailure` no repositório (`NotificationsRepositoryImpl`).
+
+### 2.2. Bloc (`NotificationsBloc`)
+Eventos: `LoadNotifications`, `MarkAsReadEvent`, `DeleteNotificationEvent`. A página (`NotificationsPage`) permite excluir uma notificação com swipe (`Dismissible`).
 
 ---
 

@@ -14,6 +14,7 @@ import 'package:due_day/features/transactions/data/datasources/transaction_remot
 import 'package:due_day/features/transactions/data/models/transaction_model.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:due_day/features/transactions/domain/repositories/transaction_repository.dart';
+import 'package:due_day/features/transactions/domain/usecases/classify_transaction_reminders.dart';
 import 'package:due_day/features/transactions/domain/usecases/transaction_usecases.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mocktail/mocktail.dart';
@@ -53,6 +54,9 @@ class MockAccountRepository extends Mock implements AccountRepository {}
 class MockAddNotification extends Mock implements AddNotification {}
 
 class MockNotificationService extends Mock implements NotificationService {}
+
+class MockClassifyTransactionReminders extends Mock
+    implements ClassifyTransactionReminders {}
 
 class MockSettingsBloc extends MockBloc<SettingsEvent, SettingsState>
     implements SettingsBloc {}

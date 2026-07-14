@@ -419,6 +419,31 @@ class AppLocalizationsPt extends AppLocalizations {
   String get notificationsEnd => 'Fim das notificações';
 
   @override
+  String get notificationsEmptyTitle => 'Tudo em dia!';
+
+  @override
+  String get notificationsEmptyDesc =>
+      'Você não tem nenhuma notificação pendente no momento.';
+
+  @override
+  String get notificationsErrorLoading => 'Erro ao carregar notificações.';
+
+  @override
+  String notifMinutesAgo(int count) {
+    return 'Há $count minuto(s)';
+  }
+
+  @override
+  String notifHoursAgoCount(int count) {
+    return 'Há $count hora(s)';
+  }
+
+  @override
+  String notifDaysAgoCount(int count) {
+    return 'Há $count dia(s)';
+  }
+
+  @override
   String get transactionsTitle => 'Transações';
 
   @override

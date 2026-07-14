@@ -57,6 +57,6 @@ Business features are isolated into modular directories under `lib/features/`. E
 - **`categories/`**: User custom category labels, selection pages, and color settings.
 - **`dashboard/`**: Orchestrates balance totals and next-to-expire reminders. Consumes other features' UseCases.
 - **`schedule/`**: Chronological timelines displaying transactions grouped by payment due dates.
-- **`notifications/`**: App settings for push notifications and Firestore FCM registration tokens.
+- **`notifications/`**: Local (Hive-backed) notifications inbox — history, read/unread state, delete.
 - **`profile/`**: User settings summary, themes, language updates, and session logout controls.
 - **`splash/`**: Root loading screen displaying logo while authentication initializes.

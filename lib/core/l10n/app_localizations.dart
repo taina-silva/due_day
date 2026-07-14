@@ -872,6 +872,42 @@ abstract class AppLocalizations {
   /// **'Fim das notificações'**
   String get notificationsEnd;
 
+  /// No description provided for @notificationsEmptyTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tudo em dia!'**
+  String get notificationsEmptyTitle;
+
+  /// No description provided for @notificationsEmptyDesc.
+  ///
+  /// In pt, this message translates to:
+  /// **'Você não tem nenhuma notificação pendente no momento.'**
+  String get notificationsEmptyDesc;
+
+  /// No description provided for @notificationsErrorLoading.
+  ///
+  /// In pt, this message translates to:
+  /// **'Erro ao carregar notificações.'**
+  String get notificationsErrorLoading;
+
+  /// No description provided for @notifMinutesAgo.
+  ///
+  /// In pt, this message translates to:
+  /// **'Há {count} minuto(s)'**
+  String notifMinutesAgo(int count);
+
+  /// No description provided for @notifHoursAgoCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'Há {count} hora(s)'**
+  String notifHoursAgoCount(int count);
+
+  /// No description provided for @notifDaysAgoCount.
+  ///
+  /// In pt, this message translates to:
+  /// **'Há {count} dia(s)'**
+  String notifDaysAgoCount(int count);
+
   /// No description provided for @transactionsTitle.
   ///
   /// In pt, this message translates to:
