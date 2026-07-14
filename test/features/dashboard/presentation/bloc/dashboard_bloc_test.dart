@@ -1,8 +1,10 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:due_day/core/errors/failures.dart';
+import 'package:due_day/core/settings/settings_state.dart';
 import 'package:due_day/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:due_day/features/dashboard/presentation/bloc/dashboard_event.dart';
 import 'package:due_day/features/dashboard/presentation/bloc/dashboard_state.dart';
+import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mocktail/mocktail.dart';
@@ -15,6 +17,8 @@ void main() {
   late MockGetAccounts mockGetAccounts;
   late MockGetTransactions mockGetTransactions;
   late MockGetCurrentUser mockGetCurrentUser;
+  late MockAddNotification mockAddNotification;
+  late MockSettingsBloc mockSettingsBloc;
   late DashboardBloc dashboardBloc;
 
   setUp(() {
@@ -23,6 +27,9 @@ void main() {
     mockGetAccounts = MockGetAccounts();
     mockGetTransactions = MockGetTransactions();
     mockGetCurrentUser = MockGetCurrentUser();
+    mockAddNotification = MockAddNotification();
+    mockSettingsBloc = MockSettingsBloc();
+    when(() => mockSettingsBloc.state).thenReturn(const SettingsState());
 
     dashboardBloc = DashboardBloc(
       getDashboardSummary: mockGetDashboardSummary,
@@ -30,6 +37,8 @@ void main() {
       getAccounts: mockGetAccounts,
       getTransactions: mockGetTransactions,
       getCurrentUser: mockGetCurrentUser,
+      addNotification: mockAddNotification,
+      settingsBloc: mockSettingsBloc,
     );
   });
 
@@ -122,7 +131,7 @@ void main() {
         ).thenAnswer((_) async => Right(tUserEntity));
         when(
           () => mockSyncRecurringTransactions(any()),
-        ).thenAnswer((_) async => const Right(null));
+        ).thenAnswer((_) async => <TransactionEntity>[]);
         return dashboardBloc;
       },
       act: (bloc) => bloc.add(DashboardSyncRecurringRequested()),

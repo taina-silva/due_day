@@ -1,5 +1,6 @@
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
+import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_state.dart';
 import 'package:due_day/features/categories/presentation/utils/category_failure_extension.dart';
@@ -21,18 +22,21 @@ class CategorySelectionBottomSheet extends StatelessWidget {
     final l10n = context.l10n;
     final spacing = context.spacing;
     final colors = context.colors;
+    final radius = context.radius;
     final typography = context.typography;
 
     return Container(
       padding: EdgeInsets.only(
-        top: spacing.medium,
-        left: spacing.medium,
-        right: spacing.medium,
-        bottom: MediaQuery.of(context).padding.bottom + spacing.medium,
+        top: spacing.medium.height,
+        left: spacing.medium.width,
+        right: spacing.medium.width,
+        bottom: MediaQuery.of(context).padding.bottom + spacing.medium.height,
       ),
       decoration: BoxDecoration(
         color: colors.lightBackground,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(radius.extraLarge),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -40,21 +44,21 @@ class CategorySelectionBottomSheet extends StatelessWidget {
         children: [
           Center(
             child: Container(
-              width: 40,
-              height: 4,
+              width: 40.w,
+              height: 4.h,
               decoration: BoxDecoration(
                 color: colors.resource.neutral.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(radius.circle),
               ),
             ),
           ),
-          SizedBox(height: spacing.medium),
+          SizedBox(height: spacing.medium.height),
           Text(
             l10n.categoriesTitle,
             style: typography.title.medium,
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: spacing.medium),
+          SizedBox(height: spacing.medium.height),
           ConstrainedBox(
             constraints: BoxConstraints(
               maxHeight: MediaQuery.of(context).size.height * 0.6,
@@ -98,7 +102,7 @@ class CategorySelectionBottomSheet extends StatelessWidget {
                       if (categories.isEmpty && !showAllOption)
                         Center(
                           child: Padding(
-                            padding: EdgeInsets.all(spacing.large),
+                            padding: EdgeInsets.all(spacing.large.scale),
                             child: Text(
                               l10n.categoriesEmpty,
                               style: typography.body.medium,
@@ -136,15 +140,16 @@ class _CategoryItem extends StatelessWidget {
     final colors = context.colors;
     final spacing = context.spacing;
     final radius = context.radius;
+    final stroke = context.stroke;
     final typography = context.typography;
 
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.only(bottom: spacing.small),
+        margin: EdgeInsets.only(bottom: spacing.small.height),
         padding: EdgeInsets.symmetric(
-          horizontal: spacing.medium,
-          vertical: spacing.medium,
+          horizontal: spacing.medium.width,
+          vertical: spacing.medium.height,
         ),
         decoration: BoxDecoration(
           color: isSelected
@@ -153,20 +158,20 @@ class _CategoryItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(radius.medium),
           border: Border.all(
             color: isSelected ? color : Colors.transparent,
-            width: 1.5,
+            width: stroke.medium,
           ),
         ),
         child: Row(
           children: [
             Container(
-              padding: EdgeInsets.all(spacing.small),
+              padding: EdgeInsets.all(spacing.small.scale),
               decoration: BoxDecoration(
                 color: color.withValues(alpha: 0.15),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.category_rounded, color: color, size: 20),
+              child: Icon(Icons.category_rounded, color: color, size: 20.scale),
             ),
-            SizedBox(width: spacing.medium),
+            SizedBox(width: spacing.medium.width),
             Expanded(
               child: Text(
                 name,
@@ -177,7 +182,7 @@ class _CategoryItem extends StatelessWidget {
               ),
             ),
             if (isSelected)
-              Icon(Icons.check_circle_rounded, color: color, size: 20),
+              Icon(Icons.check_circle_rounded, color: color, size: 20.scale),
           ],
         ),
       ),

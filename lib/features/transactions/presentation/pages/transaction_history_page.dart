@@ -9,6 +9,7 @@ import 'package:due_day/features/transactions/domain/entities/transaction_entity
 import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_state.dart';
+import 'package:due_day/features/transactions/presentation/utils/transaction_failure_extension.dart';
 import 'package:due_day/features/transactions/presentation/widgets/bottom_sheets/category_selection_bottom_sheet.dart';
 import 'package:due_day/features/transactions/presentation/widgets/bottom_sheets/date_selection_bottom_sheet.dart';
 import 'package:due_day/features/transactions/presentation/widgets/bottom_sheets/frequency_selection_bottom_sheet.dart';
@@ -96,6 +97,13 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                     builder: (context, state) {
                       if (state is TransactionLoading) {
                         return const Center(child: CircularProgressIndicator());
+                      } else if (state is TransactionError) {
+                        return Center(
+                          child: Text(
+                            state.failure.toLocalizedString(context),
+                            style: typography.body.medium,
+                          ),
+                        );
                       } else if (state is TransactionLoaded) {
                         final transactions = state.transactions;
                         if (transactions.isEmpty) {

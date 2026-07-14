@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:due_day/core/l10n/l10n_resolver.dart';
 import 'package:due_day/core/services/notification_service.dart';
 import 'package:due_day/core/settings/settings_bloc.dart';
 import 'package:due_day/features/notifications/domain/entities/notification_entity.dart';
@@ -9,13 +10,16 @@ import 'package:due_day/features/transactions/domain/usecases/transaction_usecas
 import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get_it/get_it.dart';
+import 'package:intl/intl.dart';
 
 class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final AddTransaction addTransaction;
   final UpdateTransaction updateTransaction;
   final DeleteTransaction deleteTransaction;
   final GetTransactions getTransactions;
+  final SettingsBloc settingsBloc;
+  final NotificationService notificationService;
+  final AddNotification addNotification;
 
   StreamSubscription? _transactionsSubscription;
 
@@ -24,6 +28,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     required this.updateTransaction,
     required this.deleteTransaction,
     required this.getTransactions,
+    required this.settingsBloc,
+    required this.notificationService,
+    required this.addNotification,
   }) : super(TransactionInitial()) {
     on<LoadTransactions>(_onLoadTransactions);
     on<AddTransactionEvent>(_onAddTransaction);
@@ -49,7 +56,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
           frequency: event.frequency,
         ).listen((result) {
           result.fold(
-            (failure) => add(TransactionLoadFailed(failure.message)),
+            (failure) => add(TransactionLoadFailed(failure)),
             (transactions) => add(TransactionsUpdated(transactions)),
           );
         });
@@ -59,7 +66,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     TransactionLoadFailed event,
     Emitter<TransactionState> emit,
   ) {
-    emit(TransactionError(message: event.message));
+    emit(TransactionError(failure: event.failure));
   }
 
   void _onTransactionsUpdated(
@@ -69,134 +76,164 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     emit(TransactionLoaded(transactions: event.transactions));
 
     try {
-      final settingsBloc = GetIt.instance<SettingsBloc>();
-      final notificationService = GetIt.instance<NotificationService>();
-      final addNotification = GetIt.instance<AddNotification>();
-
       await notificationService.cancelAll();
 
       if (!settingsBloc.state.pushNotificationsEnabled) {
         return;
       }
 
+      final languageCode = settingsBloc.state.languageCode;
+      final l10n = resolveLocalizations(languageCode);
+      final currencyFormat = NumberFormat.currency(
+        locale: languageCode,
+        symbol: '\$',
+        decimalDigits: 2,
+      );
+      final dateFormat = DateFormat.Md(languageCode);
+
       int seqId = 0;
       for (var t in event.transactions) {
-        if (t.dueDate != null &&
-            t.paid == false &&
-            t.type == TransactionType.expense) {
-          final dueDate = t.dueDate!;
-          final today = DateTime.now();
-          final todayMidnight = DateTime(today.year, today.month, today.day);
-          final dueDateMidnight = DateTime(
-            dueDate.year,
-            dueDate.month,
-            dueDate.day,
-          );
+        if (t.dueDate == null ||
+            t.paid != false ||
+            t.type != TransactionType.expense) {
+          continue;
+        }
 
-          // 1 dia antes às 8:00 AM
-          final dayBefore = dueDate.subtract(const Duration(days: 1));
-          final notifyDayBefore = DateTime(
-            dayBefore.year,
-            dayBefore.month,
-            dayBefore.day,
-            8,
-            0,
-          );
+        final dueDate = t.dueDate!;
+        final description = t.notes?.isNotEmpty == true
+            ? t.notes!
+            : l10n.defaultTransaction;
+        final amount = currencyFormat.format(t.amount);
+        final today = DateTime.now();
+        final todayMidnight = DateTime(today.year, today.month, today.day);
+        final dueDateMidnight = DateTime(
+          dueDate.year,
+          dueDate.month,
+          dueDate.day,
+        );
 
-          // No dia do vencimento às 8:00 AM
-          final notifyDueDay = DateTime(
-            dueDate.year,
-            dueDate.month,
-            dueDate.day,
-            8,
-            0,
-          );
+        // 1 day before, at 8:00 AM
+        final dayBefore = dueDate.subtract(const Duration(days: 1));
+        final notifyDayBefore = DateTime(
+          dayBefore.year,
+          dayBefore.month,
+          dayBefore.day,
+          8,
+          0,
+        );
 
-          if (dueDateMidnight.isBefore(todayMidnight)) {
-            // Atrasada! Criar apenas histórico no Firestore
-            final notifOverdue = NotificationEntity(
+        // On the due date, at 8:00 AM
+        final notifyDueDay = DateTime(
+          dueDate.year,
+          dueDate.month,
+          dueDate.day,
+          8,
+          0,
+        );
+
+        if (dueDateMidnight.isBefore(todayMidnight)) {
+          // Overdue: only record history in Firestore
+          await addNotification(
+            NotificationEntity(
               id: '${t.id}_overdue',
               userId: t.userId,
-              title: 'Conta atrasada!',
-              description:
-                  "A transação '${t.notes ?? 'Despesa'}' de R\$ ${t.amount.toStringAsFixed(2)} está atrasada desde ${dueDate.day}/${dueDate.month}.",
+              title: l10n.transactionsNotificationOverdueTitle,
+              description: l10n.transactionsNotificationOverdueBody(
+                description,
+                amount,
+                dateFormat.format(dueDate),
+              ),
               timestamp: dueDate,
               read: false,
               isUrgent: true,
               type: NotificationType.overdue,
+            ),
+          );
+        } else if (dueDateMidnight.isAtSameMomentAs(todayMidnight)) {
+          // Due today!
+          if (notifyDueDay.isAfter(DateTime.now())) {
+            await notificationService.scheduleTransactionReminder(
+              id: seqId++,
+              title: l10n.transactionsNotificationDueTodayTitle,
+              body: l10n.transactionsNotificationDueTodayBody(
+                description,
+                amount,
+              ),
+              scheduledDate: notifyDueDay,
             );
-            await addNotification(notifOverdue);
-          } else if (dueDateMidnight.isAtSameMomentAs(todayMidnight)) {
-            // Vence hoje!
-            if (notifyDueDay.isAfter(DateTime.now())) {
-              await notificationService.scheduleTransactionReminder(
-                id: seqId++,
-                title: 'Conta vence hoje!',
-                body:
-                    "Sua transação '${t.notes ?? 'Despesa'}' de R\$ ${t.amount.toStringAsFixed(2)} vence hoje. Realize o pagamento!",
-                scheduledDate: notifyDueDay,
-              );
-            }
-            final notifDueToday = NotificationEntity(
+          }
+          await addNotification(
+            NotificationEntity(
               id: '${t.id}_due_today',
               userId: t.userId,
-              title: 'Conta vence hoje!',
-              description:
-                  "Sua transação '${t.notes ?? 'Despesa'}' de R\$ ${t.amount.toStringAsFixed(2)} vence hoje. Realize o pagamento!",
+              title: l10n.transactionsNotificationDueTodayTitle,
+              description: l10n.transactionsNotificationDueTodayBody(
+                description,
+                amount,
+              ),
               timestamp: notifyDueDay,
               read: false,
               isUrgent: true,
               type: NotificationType.dueToday,
+            ),
+          );
+        } else {
+          // Due in the future!
+          // 1. One day before
+          if (notifyDayBefore.isAfter(DateTime.now())) {
+            await notificationService.scheduleTransactionReminder(
+              id: seqId++,
+              title: l10n.transactionsNotificationDueTomorrowTitle,
+              body: l10n.transactionsNotificationDueTomorrowBody(
+                description,
+                amount,
+              ),
+              scheduledDate: notifyDayBefore,
             );
-            await addNotification(notifDueToday);
-          } else {
-            // Vence no futuro!
-            // 1. Um dia antes
-            if (notifyDayBefore.isAfter(DateTime.now())) {
-              await notificationService.scheduleTransactionReminder(
-                id: seqId++,
-                title: 'Conta vence amanhã!',
-                body:
-                    "Sua transação '${t.notes ?? 'Despesa'}' de R\$ ${t.amount.toStringAsFixed(2)} vence amanhã.",
-                scheduledDate: notifyDayBefore,
-              );
-            }
-            final notifDayBeforeObj = NotificationEntity(
+          }
+          await addNotification(
+            NotificationEntity(
               id: '${t.id}_day_before',
               userId: t.userId,
-              title: 'Conta vence amanhã!',
-              description:
-                  "Sua transação '${t.notes ?? 'Despesa'}' de R\$ ${t.amount.toStringAsFixed(2)} vence amanhã.",
+              title: l10n.transactionsNotificationDueTomorrowTitle,
+              description: l10n.transactionsNotificationDueTomorrowBody(
+                description,
+                amount,
+              ),
               timestamp: notifyDayBefore,
               read: false,
               isUrgent: false,
               type: NotificationType.upcomingDue,
-            );
-            await addNotification(notifDayBeforeObj);
+            ),
+          );
 
-            // 2. No próprio dia
-            if (notifyDueDay.isAfter(DateTime.now())) {
-              await notificationService.scheduleTransactionReminder(
-                id: seqId++,
-                title: 'Conta vence hoje!',
-                body:
-                    "Sua transação '${t.notes ?? 'Despesa'}' de R\$ ${t.amount.toStringAsFixed(2)} vence hoje. Realize o pagamento!",
-                scheduledDate: notifyDueDay,
-              );
-            }
-            final notifDueDayObj = NotificationEntity(
+          // 2. On the due date itself
+          if (notifyDueDay.isAfter(DateTime.now())) {
+            await notificationService.scheduleTransactionReminder(
+              id: seqId++,
+              title: l10n.transactionsNotificationDueTodayTitle,
+              body: l10n.transactionsNotificationDueTodayBody(
+                description,
+                amount,
+              ),
+              scheduledDate: notifyDueDay,
+            );
+          }
+          await addNotification(
+            NotificationEntity(
               id: '${t.id}_due_day',
               userId: t.userId,
-              title: 'Conta vence hoje!',
-              description:
-                  "Sua transação '${t.notes ?? 'Despesa'}' de R\$ ${t.amount.toStringAsFixed(2)} vence hoje. Realize o pagamento!",
+              title: l10n.transactionsNotificationDueTodayTitle,
+              description: l10n.transactionsNotificationDueTodayBody(
+                description,
+                amount,
+              ),
               timestamp: notifyDueDay,
               read: false,
               isUrgent: true,
               type: NotificationType.dueToday,
-            );
-            await addNotification(notifDueDayObj);
-          }
+            ),
+          );
         }
       }
     } catch (_) {}
@@ -207,10 +244,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     Emitter<TransactionState> emit,
   ) async {
     final result = await addTransaction(event.transaction);
-    result.fold(
-      (failure) => emit(TransactionError(message: failure.message)),
-      (_) {},
-    );
+    result.fold((failure) => emit(TransactionError(failure: failure)), (_) {});
   }
 
   Future<void> _onUpdateTransaction(
@@ -218,10 +252,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     Emitter<TransactionState> emit,
   ) async {
     final result = await updateTransaction(event.transaction);
-    result.fold(
-      (failure) => emit(TransactionError(message: failure.message)),
-      (_) {},
-    );
+    result.fold((failure) => emit(TransactionError(failure: failure)), (_) {});
   }
 
   Future<void> _onDeleteTransaction(
@@ -229,10 +260,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     Emitter<TransactionState> emit,
   ) async {
     final result = await deleteTransaction(event.transactionId);
-    result.fold(
-      (failure) => emit(TransactionError(message: failure.message)),
-      (_) {},
-    );
+    result.fold((failure) => emit(TransactionError(failure: failure)), (_) {});
   }
 
   @override

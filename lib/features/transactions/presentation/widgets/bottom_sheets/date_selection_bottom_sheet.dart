@@ -1,5 +1,6 @@
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
+import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/transactions/presentation/widgets/shared/selection_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -35,18 +36,21 @@ class _DateSelectionBottomSheetState extends State<DateSelectionBottomSheet> {
     final l10n = context.l10n;
     final spacing = context.spacing;
     final colors = context.colors;
+    final radius = context.radius;
     final typography = context.typography;
 
     return Container(
       padding: EdgeInsets.only(
-        top: spacing.medium,
-        left: spacing.medium,
-        right: spacing.medium,
-        bottom: MediaQuery.of(context).padding.bottom + spacing.medium,
+        top: spacing.medium.height,
+        left: spacing.medium.width,
+        right: spacing.medium.width,
+        bottom: MediaQuery.of(context).padding.bottom + spacing.medium.height,
       ),
       decoration: BoxDecoration(
         color: colors.lightBackground,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(radius.extraLarge),
+        ),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -54,26 +58,26 @@ class _DateSelectionBottomSheetState extends State<DateSelectionBottomSheet> {
         children: [
           Center(
             child: Container(
-              width: 40,
-              height: 4,
+              width: 40.w,
+              height: 4.h,
               decoration: BoxDecoration(
                 color: colors.resource.neutral.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(radius.circle),
               ),
             ),
           ),
-          SizedBox(height: spacing.medium),
+          SizedBox(height: spacing.medium.height),
           Text(
             l10n.period,
             style: typography.title.medium,
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: spacing.medium),
+          SizedBox(height: spacing.medium.height),
 
           // Shortcuts
           Wrap(
-            spacing: spacing.small,
-            runSpacing: spacing.small,
+            spacing: spacing.small.width,
+            runSpacing: spacing.small.height,
             alignment: WrapAlignment.center,
             children: [
               _DateShortcutChip(
@@ -135,7 +139,7 @@ class _DateSelectionBottomSheetState extends State<DateSelectionBottomSheet> {
               ),
             ],
           ),
-          SizedBox(height: spacing.large),
+          SizedBox(height: spacing.large.height),
 
           // Custom Range Picker Field
           TransactionSelectionField(
@@ -155,7 +159,7 @@ class _DateSelectionBottomSheetState extends State<DateSelectionBottomSheet> {
                     data: Theme.of(context).copyWith(
                       colorScheme: ColorScheme.light(
                         primary: colors.system.info,
-                        onPrimary: Colors.white,
+                        onPrimary: colors.onDarkBackground,
                         surface: colors.lightSurface,
                         onSurface: colors.onLightBackground,
                       ),
@@ -169,7 +173,7 @@ class _DateSelectionBottomSheetState extends State<DateSelectionBottomSheet> {
               }
             },
           ),
-          SizedBox(height: spacing.large),
+          SizedBox(height: spacing.large.height),
 
           ElevatedButton(
             onPressed: () {
@@ -180,18 +184,18 @@ class _DateSelectionBottomSheetState extends State<DateSelectionBottomSheet> {
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: colors.system.info,
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.all(spacing.medium),
+              foregroundColor: colors.onDarkBackground,
+              padding: EdgeInsets.all(spacing.medium.scale),
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(radius.large),
               ),
             ),
             child: Text(
               l10n.apply,
               style: typography.body.medium.copyWith(
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: colors.onDarkBackground,
               ),
             ),
           ),
@@ -277,6 +281,7 @@ class _DateShortcutChip extends StatelessWidget {
     final colors = context.colors;
     final spacing = context.spacing;
     final radius = context.radius;
+    final stroke = context.stroke;
     final typography = context.typography;
 
     return GestureDetector(
@@ -284,8 +289,8 @@ class _DateShortcutChip extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: EdgeInsets.symmetric(
-          horizontal: spacing.medium,
-          vertical: spacing.small,
+          horizontal: spacing.medium.width,
+          vertical: spacing.small.height,
         ),
         decoration: BoxDecoration(
           color: isSelected
@@ -294,7 +299,7 @@ class _DateShortcutChip extends StatelessWidget {
           borderRadius: BorderRadius.circular(radius.medium),
           border: Border.all(
             color: isSelected ? colors.system.info : colors.resource.neutral,
-            width: 1.5,
+            width: stroke.medium,
           ),
         ),
         child: Text(

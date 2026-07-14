@@ -1,3 +1,7 @@
+import 'package:bloc_test/bloc_test.dart';
+import 'package:due_day/core/settings/settings_bloc.dart';
+import 'package:due_day/core/settings/settings_event.dart';
+import 'package:due_day/core/settings/settings_state.dart';
 import 'package:due_day/features/accounts/domain/entities/account_category.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:due_day/features/accounts/domain/usecases/account_usecases.dart';
@@ -5,6 +9,7 @@ import 'package:due_day/features/auth/domain/entities/user_entity.dart';
 import 'package:due_day/features/auth/domain/usecases/auth_usecases.dart';
 import 'package:due_day/features/dashboard/domain/entities/dashboard_summary.dart';
 import 'package:due_day/features/dashboard/domain/usecases/get_dashboard_summary.dart';
+import 'package:due_day/features/notifications/domain/usecases/notification_usecases.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:due_day/features/transactions/domain/usecases/sync_recurring_transactions.dart';
 import 'package:due_day/features/transactions/domain/usecases/transaction_usecases.dart';
@@ -21,6 +26,11 @@ class MockGetDashboardSummary extends Mock implements GetDashboardSummary {}
 
 class MockSyncRecurringTransactions extends Mock
     implements SyncRecurringTransactions {}
+
+class MockAddNotification extends Mock implements AddNotification {}
+
+class MockSettingsBloc extends MockBloc<SettingsEvent, SettingsState>
+    implements SettingsBloc {}
 
 // Test Data
 final tDateTime = DateTime(2026, 7, 7);

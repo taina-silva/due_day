@@ -216,6 +216,60 @@
     "transactionsDeleteTransaction": "Excluir Transação",
     "transactionsConfirmDelete": "Tem certeza que deseja excluir esta transação?",
     "transactionsDetailTitle": "Detalhes da Transação",
+    "transactionsErrorNotFound": "Transação não encontrada.",
+    "transactionsErrorNotAuthenticated": "Usuário não autenticado. Faça login novamente.",
+    "transactionsErrorFallback": "Ocorreu um erro ao gerenciar suas transações.",
+    "transactionsNotificationOverdueTitle": "Conta atrasada!",
+    "transactionsNotificationOverdueBody": "A transação '{description}' de {amount} está atrasada desde {date}.",
+    "@transactionsNotificationOverdueBody": {
+        "placeholders": {
+            "description": {
+                "type": "String"
+            },
+            "amount": {
+                "type": "String"
+            },
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "transactionsNotificationDueTodayTitle": "Conta vence hoje!",
+    "transactionsNotificationDueTodayBody": "Sua transação '{description}' de {amount} vence hoje. Realize o pagamento!",
+    "@transactionsNotificationDueTodayBody": {
+        "placeholders": {
+            "description": {
+                "type": "String"
+            },
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "transactionsNotificationDueTomorrowTitle": "Conta vence amanhã!",
+    "transactionsNotificationDueTomorrowBody": "Sua transação '{description}' de {amount} vence amanhã.",
+    "@transactionsNotificationDueTomorrowBody": {
+        "placeholders": {
+            "description": {
+                "type": "String"
+            },
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "transactionsNotificationRecurringDebitedTitle": "Conta recorrente debitada",
+    "transactionsNotificationRecurringDebitedBody": "O débito recorrente '{description}' de {amount} foi debitado e pago automaticamente.",
+    "@transactionsNotificationRecurringDebitedBody": {
+        "placeholders": {
+            "description": {
+                "type": "String"
+            },
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
     "scheduleTitle": "Agenda Financeira",
     "scheduleSummaryWeeklyOverview": "Visão Semanal",
     "scheduleSummaryTotalPaid": "Total Pago",

@@ -37,7 +37,7 @@ class TransactionTypeSelector extends StatelessWidget {
             label: l10n.transactionsTypeIncome,
             icon: Icons.account_balance_outlined,
             isSelected: selectedType == TransactionType.income,
-            activeColor: Colors.blue, // As per design
+            activeColor: colors.resource.primary,
             onTap: () => onTypeChanged(TransactionType.income),
           ),
         ),

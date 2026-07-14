@@ -1,10 +1,7 @@
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:due_day/features/accounts/domain/repositories/account_repository.dart';
-import 'package:due_day/features/notifications/domain/entities/notification_entity.dart';
-import 'package:due_day/features/notifications/domain/usecases/notification_usecases.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:due_day/features/transactions/domain/repositories/transaction_repository.dart';
-import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
 class SyncRecurringTransactions {
@@ -16,42 +13,46 @@ class SyncRecurringTransactions {
     required this.accountRepository,
   });
 
-  Future<void> call(String userId) async {
-    // 1. Get all recurring transactions for the user
-    // In a real app, we would query only templates.
-    // For now, let's assume we fetch all and filter in memory or via repository.
+  /// Creates the next due instance for every active recurring template and
+  /// returns the newly created instances so the caller can notify the user
+  /// (notification content requires localization, which is a Presentation
+  /// layer concern).
+  Future<List<TransactionEntity>> call(String userId) async {
     final transactionsResult = await transactionRepository
         .getTransactions()
         .first;
 
-    transactionsResult.fold(
-      (failure) => null, // Handle error
-      (transactions) async {
-        final now = DateTime.now();
-        final templates = transactions
-            .where((tx) => tx.isRecurring && tx.parentRecurringId == null)
-            .toList();
-
-        for (final template in templates) {
-          final nextDate = _calculateNextDate(template);
-
-          if (nextDate != null && nextDate.isBefore(now)) {
-            // Check if we already created an instance for this date
-            final alreadyExists = transactions.any(
-              (tx) =>
-                  tx.parentRecurringId == template.id &&
-                  tx.dueDate?.year == nextDate.year &&
-                  tx.dueDate?.month == nextDate.month &&
-                  tx.dueDate?.day == nextDate.day,
-            );
-
-            if (!alreadyExists) {
-              await _createInstance(template, nextDate);
-            }
-          }
-        }
-      },
+    final transactions = transactionsResult.getOrElse(
+      (_) => <TransactionEntity>[],
     );
+
+    final now = DateTime.now();
+    final templates = transactions
+        .where((tx) => tx.isRecurring && tx.parentRecurringId == null)
+        .toList();
+
+    final createdInstances = <TransactionEntity>[];
+
+    for (final template in templates) {
+      final nextDate = _calculateNextDate(template);
+
+      if (nextDate != null && nextDate.isBefore(now)) {
+        final alreadyExists = transactions.any(
+          (tx) =>
+              tx.parentRecurringId == template.id &&
+              tx.dueDate?.year == nextDate.year &&
+              tx.dueDate?.month == nextDate.month &&
+              tx.dueDate?.day == nextDate.day,
+        );
+
+        if (!alreadyExists) {
+          final instance = await _createInstance(template, nextDate);
+          createdInstances.add(instance);
+        }
+      }
+    }
+
+    return createdInstances;
   }
 
   DateTime? _calculateNextDate(TransactionEntity template) {
@@ -81,7 +82,7 @@ class SyncRecurringTransactions {
     }
   }
 
-  Future<void> _createInstance(
+  Future<TransactionEntity> _createInstance(
     TransactionEntity template,
     DateTime dueDate,
   ) async {
@@ -98,33 +99,18 @@ class SyncRecurringTransactions {
       paid: template.paid, // Inherit "automatic" status from template
       isRecurring: false, // Instances are not recurring templates themselves
       frequency: TransactionFrequency.none,
-      notes: 'Generated from recurring: ${template.notes ?? ""}',
+      notes: template.notes,
       parentRecurringId: template.id,
       createdAt: DateTime.now(),
     );
 
     await transactionRepository.addTransaction(newTransaction);
 
-    // If paid, update account balance
     if (newTransaction.paid) {
       await _updateAccountBalance(newTransaction);
-      try {
-        final addNotification = GetIt.instance<AddNotification>();
-        await addNotification(
-          NotificationEntity(
-            id: '${newTransaction.id}_recurring_debited',
-            userId: newTransaction.userId,
-            title: 'Conta Recorrente Debitada',
-            description:
-                "O débito recorrente '${template.notes ?? 'Despesa'}' de R\$ ${newTransaction.amount.toStringAsFixed(2)} foi debitado e pago automaticamente.",
-            timestamp: DateTime.now(),
-            read: false,
-            isUrgent: false,
-            type: NotificationType.recurringDebited,
-          ),
-        );
-      } catch (_) {}
     }
+
+    return newTransaction;
   }
 
   Future<void> _updateAccountBalance(TransactionEntity tx) async {

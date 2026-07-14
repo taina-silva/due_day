@@ -15,6 +15,9 @@ void initTransactions() {
       updateTransaction: sl(),
       deleteTransaction: sl(),
       getTransactions: sl(),
+      settingsBloc: sl(),
+      notificationService: sl(),
+      addNotification: sl(),
     ),
   );
 

@@ -321,20 +321,21 @@ class _DetailRow extends StatelessWidget {
     final colors = context.colors;
     final typography = context.typography;
     final spacing = context.spacing;
+    final radius = context.radius;
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: spacing.small),
+      padding: EdgeInsets.symmetric(vertical: spacing.small.height),
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.all(spacing.extraSmall),
+            padding: EdgeInsets.all(spacing.extraSmall.scale),
             decoration: BoxDecoration(
               color: colors.resource.secondary.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(radius.small),
             ),
-            child: Icon(icon, size: 20, color: colors.resource.secondary),
+            child: Icon(icon, size: 20.scale, color: colors.resource.secondary),
           ),
-          SizedBox(width: spacing.medium),
+          SizedBox(width: spacing.medium.width),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

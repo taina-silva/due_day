@@ -75,12 +75,12 @@ class _FrequencyItem extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: spacing.medium.height),
           decoration: BoxDecoration(
             color: isSelected
-                ? Colors.blue.withValues(alpha: 0.1)
+                ? colors.resource.primary.withValues(alpha: 0.1)
                 : colors.lightSurface,
             borderRadius: BorderRadius.circular(radius.medium),
             border: Border.all(
               color: isSelected
-                  ? Colors.blue
+                  ? colors.resource.primary
                   : colors.resource.secondary.withValues(alpha: 0.1),
               width: 1,
             ),
@@ -89,7 +89,9 @@ class _FrequencyItem extends StatelessWidget {
             child: Text(
               label,
               style: typography.label.small.copyWith(
-                color: isSelected ? Colors.blue : colors.resource.secondary,
+                color: isSelected
+                    ? colors.resource.primary
+                    : colors.resource.secondary,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
             ),

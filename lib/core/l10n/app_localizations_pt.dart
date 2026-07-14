@@ -534,6 +534,63 @@ class AppLocalizationsPt extends AppLocalizations {
   String get transactionsDetailTitle => 'Detalhes da Transação';
 
   @override
+  String get transactionsErrorNotFound => 'Transação não encontrada.';
+
+  @override
+  String get transactionsErrorNotAuthenticated =>
+      'Usuário não autenticado. Faça login novamente.';
+
+  @override
+  String get transactionsErrorFallback =>
+      'Ocorreu um erro ao gerenciar suas transações.';
+
+  @override
+  String get transactionsNotificationOverdueTitle => 'Conta atrasada!';
+
+  @override
+  String transactionsNotificationOverdueBody(
+    String description,
+    String amount,
+    String date,
+  ) {
+    return 'A transação \'$description\' de $amount está atrasada desde $date.';
+  }
+
+  @override
+  String get transactionsNotificationDueTodayTitle => 'Conta vence hoje!';
+
+  @override
+  String transactionsNotificationDueTodayBody(
+    String description,
+    String amount,
+  ) {
+    return 'Sua transação \'$description\' de $amount vence hoje. Realize o pagamento!';
+  }
+
+  @override
+  String get transactionsNotificationDueTomorrowTitle => 'Conta vence amanhã!';
+
+  @override
+  String transactionsNotificationDueTomorrowBody(
+    String description,
+    String amount,
+  ) {
+    return 'Sua transação \'$description\' de $amount vence amanhã.';
+  }
+
+  @override
+  String get transactionsNotificationRecurringDebitedTitle =>
+      'Conta recorrente debitada';
+
+  @override
+  String transactionsNotificationRecurringDebitedBody(
+    String description,
+    String amount,
+  ) {
+    return 'O débito recorrente \'$description\' de $amount foi debitado e pago automaticamente.';
+  }
+
+  @override
   String get scheduleTitle => 'Agenda Financeira';
 
   @override

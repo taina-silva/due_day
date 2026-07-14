@@ -208,6 +208,60 @@
     "transactionsDeleteTransaction": "Delete Transaction",
     "transactionsConfirmDelete": "Are you sure you want to delete this transaction?",
     "transactionsDetailTitle": "Transaction Details",
+    "transactionsErrorNotFound": "Transaction not found.",
+    "transactionsErrorNotAuthenticated": "User not authenticated. Please log in again.",
+    "transactionsErrorFallback": "An error occurred while managing your transactions.",
+    "transactionsNotificationOverdueTitle": "Overdue bill!",
+    "transactionsNotificationOverdueBody": "The transaction '{description}' of {amount} is overdue since {date}.",
+    "@transactionsNotificationOverdueBody": {
+        "placeholders": {
+            "description": {
+                "type": "String"
+            },
+            "amount": {
+                "type": "String"
+            },
+            "date": {
+                "type": "String"
+            }
+        }
+    },
+    "transactionsNotificationDueTodayTitle": "Bill due today!",
+    "transactionsNotificationDueTodayBody": "Your transaction '{description}' of {amount} is due today. Make the payment!",
+    "@transactionsNotificationDueTodayBody": {
+        "placeholders": {
+            "description": {
+                "type": "String"
+            },
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "transactionsNotificationDueTomorrowTitle": "Bill due tomorrow!",
+    "transactionsNotificationDueTomorrowBody": "Your transaction '{description}' of {amount} is due tomorrow.",
+    "@transactionsNotificationDueTomorrowBody": {
+        "placeholders": {
+            "description": {
+                "type": "String"
+            },
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "transactionsNotificationRecurringDebitedTitle": "Recurring bill debited",
+    "transactionsNotificationRecurringDebitedBody": "The recurring debit '{description}' of {amount} was automatically debited and paid.",
+    "@transactionsNotificationRecurringDebitedBody": {
+        "placeholders": {
+            "description": {
+                "type": "String"
+            },
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
     "scheduleTitle": "Financial Schedule",
     "scheduleSummaryWeeklyOverview": "Weekly Overview",
     "scheduleSummaryTotalPaid": "Total Paid",
