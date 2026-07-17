@@ -746,6 +746,36 @@ abstract class AppLocalizations {
   /// **'Autenticação cancelada ou incorreta.'**
   String get profileBiometricsAuthFailed;
 
+  /// No description provided for @profileBiometricsLockedOut.
+  ///
+  /// In pt, this message translates to:
+  /// **'Muitas tentativas falhas. A autenticação biométrica foi bloqueada temporariamente.'**
+  String get profileBiometricsLockedOut;
+
+  /// No description provided for @profileBiometricsNotEnrolled.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhuma biometria cadastrada neste dispositivo. Configure a biometria nas configurações do sistema.'**
+  String get profileBiometricsNotEnrolled;
+
+  /// No description provided for @biometricLockTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Acesso Bloqueado'**
+  String get biometricLockTitle;
+
+  /// No description provided for @biometricLockDescription.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sua privacidade é nossa prioridade. Para acessar o DueDay, confirme sua identidade utilizando biometria.'**
+  String get biometricLockDescription;
+
+  /// No description provided for @biometricUnlockButton.
+  ///
+  /// In pt, this message translates to:
+  /// **'Desbloquear Aplicativo'**
+  String get biometricUnlockButton;
+
   /// No description provided for @profileTheme.
   ///
   /// In pt, this message translates to:

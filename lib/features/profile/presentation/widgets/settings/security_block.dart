@@ -92,8 +92,8 @@ class SecurityBlock extends StatelessWidget {
                   }
 
                   // Solicita biometria para autorizar a mudança de preferência
-                  final authenticated = await securityService.authenticate();
-                  if (authenticated) {
+                  final result = await securityService.authenticate();
+                  if (result == BiometricAuthResult.success) {
                     if (context.mounted) {
                       context.read<SettingsBloc>().add(
                         ToggleBiometricsEvent(value),
@@ -101,10 +101,19 @@ class SecurityBlock extends StatelessWidget {
                     }
                   } else {
                     if (context.mounted) {
+                      final String message = switch (result) {
+                        BiometricAuthResult.lockedOut =>
+                          l10n.profileBiometricsLockedOut,
+                        BiometricAuthResult.notEnrolled =>
+                          l10n.profileBiometricsNotEnrolled,
+                        BiometricAuthResult.notAvailable =>
+                          l10n.profileBiometricsNotSupported,
+                        _ => l10n.profileBiometricsAuthFailed,
+                      };
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            l10n.profileBiometricsAuthFailed,
+                            message,
                             style: typography.body.medium.copyWith(
                               color: colors.onDarkBackground,
                             ),

@@ -1,15 +1,24 @@
 import 'dart:ui';
 import 'package:due_day/core/design_system/theme/theme.dart';
+import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:flutter/material.dart';
 
 class BiometricLockOverlay extends StatelessWidget {
   final VoidCallback onAuthenticate;
+  final bool isAuthenticating;
+  final String? errorMessage;
 
-  const BiometricLockOverlay({required this.onAuthenticate, super.key});
+  const BiometricLockOverlay({
+    required this.onAuthenticate,
+    this.isAuthenticating = false,
+    this.errorMessage,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final colors = context.colors;
     final typography = context.typography;
     final spacing = context.spacing;
@@ -56,7 +65,7 @@ class BiometricLockOverlay extends StatelessWidget {
                     ),
                     SizedBox(height: spacing.threeExtraLarge.height),
                     Text(
-                      'Acesso Bloqueado',
+                      l10n.biometricLockTitle,
                       textAlign: TextAlign.center,
                       style: typography.headline.large.copyWith(
                         color: Colors.white,
@@ -65,17 +74,29 @@ class BiometricLockOverlay extends StatelessWidget {
                     ),
                     SizedBox(height: spacing.mediumLarge.height),
                     Text(
-                      'Sua privacidade é nossa prioridade. Para acessar o DueDay, confirme sua identidade utilizando biometria.',
+                      l10n.biometricLockDescription,
                       textAlign: TextAlign.center,
                       style: typography.body.medium.copyWith(
                         color: Colors.white.withValues(alpha: 0.7),
                         height: 1.4,
                       ),
                     ),
+                    if (errorMessage != null) ...[
+                      SizedBox(height: spacing.mediumLarge.height),
+                      Text(
+                        errorMessage!,
+                        textAlign: TextAlign.center,
+                        style: typography.body.medium.copyWith(
+                          color: colors.system.error,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                     SizedBox(height: spacing.threeExtraLarge.height),
                     // Botão de Autenticação com o design system do app
                     InkWell(
-                      onTap: onAuthenticate,
+                      key: const Key('biometric_unlock_button'),
+                      onTap: isAuthenticating ? null : onAuthenticate,
                       borderRadius: BorderRadius.circular(radius.extraLarge),
                       child: Container(
                         width: double.infinity,
@@ -83,7 +104,9 @@ class BiometricLockOverlay extends StatelessWidget {
                           vertical: spacing.large.height,
                         ),
                         decoration: BoxDecoration(
-                          color: colors.resource.primary,
+                          color: isAuthenticating
+                              ? colors.resource.primary.withValues(alpha: 0.5)
+                              : colors.resource.primary,
                           borderRadius: BorderRadius.circular(
                             radius.extraLarge,
                           ),
@@ -98,13 +121,24 @@ class BiometricLockOverlay extends StatelessWidget {
                           ],
                         ),
                         child: Center(
-                          child: Text(
-                            'Desbloquear Aplicativo',
-                            style: typography.body.large.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                          child: isAuthenticating
+                              ? SizedBox(
+                                  width: 24.scale,
+                                  height: 24.scale,
+                                  child: const CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white,
+                                    ),
+                                  ),
+                                )
+                              : Text(
+                                  l10n.biometricUnlockButton,
+                                  style: typography.body.large.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                         ),
                       ),
                     ),

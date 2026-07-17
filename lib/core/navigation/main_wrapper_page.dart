@@ -1,5 +1,6 @@
 import 'package:due_day/core/design_system/components/navbar/floating_bottom_nav.dart';
 import 'package:due_day/core/injection/injection_container.dart';
+import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/navigation/biometric_lock_overlay.dart';
 import 'package:due_day/core/services/security_service.dart';
 import 'package:due_day/core/settings/settings_bloc.dart';
@@ -26,6 +27,8 @@ class MainWrapperPage extends StatefulWidget {
 class _MainWrapperPageState extends State<MainWrapperPage>
     with WidgetsBindingObserver {
   bool _isLocked = false;
+  bool _isAuthenticating = false;
+  BiometricAuthResult? _lastAuthResult;
 
   @override
   void initState() {
@@ -70,21 +73,57 @@ class _MainWrapperPageState extends State<MainWrapperPage>
   }
 
   Future<void> _authenticate() async {
-    final securityService = sl<SecurityService>();
-    final bool canAuth = await securityService.canAuthenticate();
-    if (!canAuth) {
-      // Dispositivo não suporta ou não tem cadastro biométrico ativo
-      setState(() {
-        _isLocked = false;
-      });
-      return;
-    }
+    if (_isAuthenticating) return;
+    setState(() {
+      _isAuthenticating = true;
+      _lastAuthResult = null;
+    });
 
-    final bool authenticated = await securityService.authenticate();
-    if (authenticated) {
-      setState(() {
-        _isLocked = false;
-      });
+    try {
+      final securityService = sl<SecurityService>();
+      final bool canAuth = await securityService.canAuthenticate();
+      if (!canAuth) {
+        // Sem biometria disponível no dispositivo: permanece bloqueado em vez
+        // de liberar o acesso sem autenticação.
+        return;
+      }
+
+      final result = await securityService.authenticate();
+      if (!mounted) return;
+      if (result == BiometricAuthResult.success) {
+        setState(() {
+          _isLocked = false;
+        });
+      } else {
+        setState(() {
+          _lastAuthResult = result;
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isAuthenticating = false;
+        });
+      } else {
+        _isAuthenticating = false;
+      }
+    }
+  }
+
+  String? _errorMessageFor(BiometricAuthResult? result) {
+    if (result == null) return null;
+    final l10n = AppLocalizations.of(context);
+    switch (result) {
+      case BiometricAuthResult.lockedOut:
+        return l10n.profileBiometricsLockedOut;
+      case BiometricAuthResult.notEnrolled:
+        return l10n.profileBiometricsNotEnrolled;
+      case BiometricAuthResult.notAvailable:
+        return l10n.profileBiometricsNotSupported;
+      case BiometricAuthResult.success:
+      case BiometricAuthResult.canceled:
+      case BiometricAuthResult.error:
+        return l10n.profileBiometricsAuthFailed;
     }
   }
 
@@ -113,7 +152,11 @@ class _MainWrapperPageState extends State<MainWrapperPage>
               ),
               if (_isLocked && state.isBiometricsEnabled)
                 Positioned.fill(
-                  child: BiometricLockOverlay(onAuthenticate: _authenticate),
+                  child: BiometricLockOverlay(
+                    onAuthenticate: _authenticate,
+                    isAuthenticating: _isAuthenticating,
+                    errorMessage: _errorMessageFor(_lastAuthResult),
+                  ),
                 ),
             ],
           ),
