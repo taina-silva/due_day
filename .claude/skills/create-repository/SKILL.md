@@ -1,4 +1,9 @@
-# Standard Procedure: Create Repository (create_repository.md)
+---
+name: create-repository
+description: Use when implementing a repository in DueDay that bridges the Data and Domain layers. Covers separating the domain-facing interface from the data-layer implementation and converting exceptions into Either<Failure, T>.
+---
+
+# Standard Procedure: Create Repository
 
 This guide describes how to implement a repository in the **DueDay** application, bridging the Data and Domain layers.
 

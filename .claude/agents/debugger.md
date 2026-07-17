@@ -1,4 +1,10 @@
-# Agent: Debugger (`debugger.md`)
+---
+name: debugger
+description: Use when investigating a DueDay bug, exception, or stack trace — BLoC state issues, Firestore failures, or secure-storage/keychain problems. Fixes issues and adds regression tests.
+tools: Read, Edit, Bash, Grep, Glob
+---
+
+# Agent: Debugger
 
 Investigate bugs, resolve exceptions, analyze stack traces, and fix issues.
 

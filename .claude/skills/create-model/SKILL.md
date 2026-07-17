@@ -1,4 +1,9 @@
-# Standard Procedure: Create Model (create_model.md)
+---
+name: create-model
+description: Use when creating a Data-layer model in DueDay backed by freezed/json_serializable. Covers immutability annotations, JSON/Firestore serialization, and the fromEntity/toEntity mapping helpers.
+---
+
+# Standard Procedure: Create Model
 
 This guide describes how to implement a data model in **DueDay** using `freezed` and `json_serializable` for type-safety and automated parsing.
 
@@ -25,8 +30,8 @@ A model must always supply conversion methods to map it to and from its pure dom
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 
-part '../../skills/account_model.freezed.dart';
-part '../../skills/account_model.g.dart';
+part 'account_model.freezed.dart';
+part 'account_model.g.dart';
 
 @freezed
 class AccountModel with _$AccountModel {

@@ -1,4 +1,9 @@
-# Standard Procedure: Create Screen (create_screen.md)
+---
+name: create-screen
+description: Use when building a new page or widget in DueDay's Presentation layer. Covers DueDayTheme design tokens, responsive sizing extensions (.w/.h/.sp/.fs), localization, and touch-target accessibility.
+---
+
+# Standard Procedure: Create Screen
 
 This guide describes how to build page layouts and widgets in the **Presentation Layer** of **DueDay** using design tokens, responsiveness, and localization.
 

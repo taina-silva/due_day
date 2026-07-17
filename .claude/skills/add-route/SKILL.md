@@ -1,4 +1,9 @@
-# Standard Procedure: Add Route (add_route.md)
+---
+name: add-route
+description: Use when adding a new page/route or navigating between screens in DueDay. Covers declaring GoRoute entries in app_router.dart (standalone vs nested shell-branch routes) and the go/push/pop/extra navigation API.
+---
+
+# Standard Procedure: Add Route
 
 This guide describes how to declare, parameterize, and navigate to new pages using **GoRouter** in **DueDay**.
 

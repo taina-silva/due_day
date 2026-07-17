@@ -1,4 +1,9 @@
-# Standard Procedure: Refactor Feature (refactor_feature.md)
+---
+name: refactor-feature
+description: Use when safely refactoring an existing DueDay feature without introducing regressions. Covers baseline test verification, layer-by-layer refactor order (models → domain → data → presentation), and final format/lint/test checks.
+---
+
+# Standard Procedure: Refactor Feature
 
 This guide describes how to safely refactor existing features in **DueDay** to improve code quality without introducing regressions.
 
