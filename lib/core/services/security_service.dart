@@ -2,9 +2,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
 
+enum BiometricAuthResult {
+  success,
+  canceled,
+  lockedOut,
+  notEnrolled,
+  notAvailable,
+  error,
+}
+
 abstract class SecurityService {
   Future<bool> canAuthenticate();
-  Future<bool> authenticate();
+  Future<BiometricAuthResult> authenticate();
   Future<bool> isBiometricsEnabled();
   Future<void> setBiometricsEnabled(bool enabled);
 }
@@ -32,18 +41,39 @@ class SecurityServiceImpl implements SecurityService {
   }
 
   @override
-  Future<bool> authenticate() async {
+  Future<BiometricAuthResult> authenticate() async {
     try {
       final bool didAuthenticate = await localAuth.authenticate(
         localizedReason: 'Por favor, autentique-se para acessar suas finanças.',
         biometricOnly: true,
         persistAcrossBackgrounding: true,
       );
-      return didAuthenticate;
+      return didAuthenticate
+          ? BiometricAuthResult.success
+          : BiometricAuthResult.canceled;
+    } on LocalAuthException catch (e) {
+      switch (e.code) {
+        case LocalAuthExceptionCode.userCanceled:
+        case LocalAuthExceptionCode.timeout:
+        case LocalAuthExceptionCode.systemCanceled:
+        case LocalAuthExceptionCode.userRequestedFallback:
+          return BiometricAuthResult.canceled;
+        case LocalAuthExceptionCode.temporaryLockout:
+        case LocalAuthExceptionCode.biometricLockout:
+          return BiometricAuthResult.lockedOut;
+        case LocalAuthExceptionCode.noBiometricsEnrolled:
+          return BiometricAuthResult.notEnrolled;
+        case LocalAuthExceptionCode.noCredentialsSet:
+        case LocalAuthExceptionCode.noBiometricHardware:
+        case LocalAuthExceptionCode.biometricHardwareTemporarilyUnavailable:
+          return BiometricAuthResult.notAvailable;
+        default:
+          return BiometricAuthResult.error;
+      }
     } on PlatformException catch (_) {
-      return false;
+      return BiometricAuthResult.error;
     } catch (_) {
-      return false;
+      return BiometricAuthResult.error;
     }
   }
 

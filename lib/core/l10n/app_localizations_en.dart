@@ -350,6 +350,24 @@ class AppLocalizationsEn extends AppLocalizations {
       'Authentication cancelled or incorrect.';
 
   @override
+  String get profileBiometricsLockedOut =>
+      'Too many failed attempts. Biometric authentication has been temporarily locked.';
+
+  @override
+  String get profileBiometricsNotEnrolled =>
+      'No biometrics enrolled on this device. Set up biometrics in your system settings.';
+
+  @override
+  String get biometricLockTitle => 'Access Locked';
+
+  @override
+  String get biometricLockDescription =>
+      'Your privacy is our priority. To access DueDay, confirm your identity using biometrics.';
+
+  @override
+  String get biometricUnlockButton => 'Unlock App';
+
+  @override
   String get profileTheme => 'Theme';
 
   @override

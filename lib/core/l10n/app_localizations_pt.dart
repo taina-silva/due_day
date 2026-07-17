@@ -352,6 +352,24 @@ class AppLocalizationsPt extends AppLocalizations {
       'Autenticação cancelada ou incorreta.';
 
   @override
+  String get profileBiometricsLockedOut =>
+      'Muitas tentativas falhas. A autenticação biométrica foi bloqueada temporariamente.';
+
+  @override
+  String get profileBiometricsNotEnrolled =>
+      'Nenhuma biometria cadastrada neste dispositivo. Configure a biometria nas configurações do sistema.';
+
+  @override
+  String get biometricLockTitle => 'Acesso Bloqueado';
+
+  @override
+  String get biometricLockDescription =>
+      'Sua privacidade é nossa prioridade. Para acessar o DueDay, confirme sua identidade utilizando biometria.';
+
+  @override
+  String get biometricUnlockButton => 'Desbloquear Aplicativo';
+
+  @override
   String get profileTheme => 'Tema';
 
   @override
