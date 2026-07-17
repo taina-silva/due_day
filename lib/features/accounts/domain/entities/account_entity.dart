@@ -7,7 +7,7 @@ class AccountEntity extends Equatable {
   final String name;
   final AccountCategory category;
   final double balance;
-  final int? dueDay; // para faturas de cartão de crédito (dia 1-31)
+  final int? dueDay; // for credit card bills (day 1-31)
   final DateTime createdAt;
   final DateTime? deletedAt;
 

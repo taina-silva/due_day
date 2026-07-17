@@ -70,7 +70,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   ) async {
     emit(state.copyWith(themeMode: event.themeMode));
 
-    // Persistência no Firestore
+    // Persist to Firestore
     final authState = authBloc.state;
     if (authState is AuthAuthenticated) {
       final updatedUser = authState.user.copyWith(
