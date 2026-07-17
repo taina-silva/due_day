@@ -1,4 +1,9 @@
-# Standard Procedure: Add Notification (add_notification.md)
+---
+name: add-notification
+description: Use when triggering or scheduling local/push notifications in DueDay (payment due reminders, notification inbox entries). Covers NotificationService scheduling, cancellation, and the Hive-backed notifications inbox.
+---
+
+# Standard Procedure: Add Notification
 
 This guide describes how to trigger and schedule local or push notifications in **DueDay**.
 

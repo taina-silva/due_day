@@ -1,4 +1,9 @@
-# Standard Procedure: Create BLoC (create_bloc.md)
+---
+name: create-bloc
+description: Use when creating a new BLoC (events, states, bloc class) for a DueDay feature's presentation layer. Covers Equatable event/state patterns, file layout under presentation/bloc/, and error-state handling.
+---
+
+# Standard Procedure: Create BLoC
 
 This guide describes how to create BLoCs, Events, and States using `flutter_bloc` and `Equatable` in the **DueDay** application.
 
@@ -78,8 +83,8 @@ class AccountError extends AccountState {
 ```dart
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:due_day/features/accounts/domain/usecases/get_accounts.dart';
-import '../../skills/account_event.dart';
-import '../../skills/account_state.dart';
+import 'account_event.dart';
+import 'account_state.dart';
 
 class AccountBloc extends Bloc<AccountEvent, AccountState> {
   final GetAccounts getAccounts;

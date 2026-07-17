@@ -1,4 +1,9 @@
-# Standard Procedure: Review Feature (review_feature.md)
+---
+name: review-feature
+description: Use as a checklist when reviewing a DueDay feature implementation or code submission. Covers architectural integrity, design-system/token compliance, clean-code/localization rules, and test/analyze checks.
+---
+
+# Standard Procedure: Review Feature
 
 This checklist outlines the criteria for reviewing feature implementations and code submissions in **DueDay**.
 

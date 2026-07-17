@@ -1,4 +1,10 @@
-# Agent: Testing Reviewer (`testing_reviewer.md`)
+---
+name: testing-reviewer
+description: Use to review DueDay test suite quality — coverage completeness, flaky/timezone-dependent tests, assertion precision, and standards compliance. Read-only; does not write fixes.
+tools: Read, Grep, Glob, Bash
+---
+
+# Agent: Testing Reviewer
 
 Review test suite quality, coverage completeness, execution stability, and standards compliance.
 

@@ -1,4 +1,9 @@
-# Standard Procedure: Create UseCase (create_usecase.md)
+---
+name: create-usecase
+description: Use when creating a Domain-layer UseCase in DueDay. Covers the pure-Dart, single-responsibility, callable-class (call(...)) pattern returning Future<Either<Failure, T>>.
+---
+
+# Standard Procedure: Create UseCase
 
 This guide describes how to create a Domain UseCase following the coding standards of the **DueDay** application.
 

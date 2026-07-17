@@ -1,4 +1,9 @@
-# Standard Procedure: Add Test Coverage (add_test_coverage_existing_feature.md)
+---
+name: add-test-coverage-existing-feature
+description: Use when a DueDay feature already exists but is missing unit/BLoC/widget test coverage. Covers running the coverage analyzer, filling UseCase/BLoC/widget test gaps, and the final format/lint pass.
+---
+
+# Standard Procedure: Add Test Coverage
 
 This guide describes how to identify coverage gaps and write automated tests for existing features.
 

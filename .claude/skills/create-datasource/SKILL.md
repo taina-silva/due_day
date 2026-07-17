@@ -1,4 +1,9 @@
-# Standard Procedure: Create DataSource (create_datasource.md)
+---
+name: create-datasource
+description: Use when implementing a Remote or Local DataSource in DueDay's Data layer. Covers the abstract-contract-plus-concrete-implementation pattern and raw exception handling (ServerException/CacheException).
+---
+
+# Standard Procedure: Create DataSource
 
 This guide describes how to implement a Remote or Local DataSource in the **Data Layer** of the **DueDay** application.
 
@@ -32,7 +37,7 @@ abstract class AccountRemoteDataSource {
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/features/accounts/data/models/account_model.dart';
-import '../../skills/account_remote_data_source.dart';
+import 'account_remote_data_source.dart';
 
 class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
   final FirebaseFirestore firestore;

@@ -1,4 +1,9 @@
-# Standard Procedure: Create Firestore Query (create_firestore_query.md)
+---
+name: create-firestore-query
+description: Use when writing or optimizing Firestore queries and data streams in DueDay. Covers user-scoped security paths, real-time snapshot streams, composite indexing, and batch/transactional writes.
+---
+
+# Standard Procedure: Create Firestore Query
 
 This guide describes how to construct optimized Firestore queries and handle data streams in **DueDay**.
 

@@ -1,4 +1,9 @@
-# Standard Procedure: Debug Feature (debug_feature.md)
+---
+name: debug-feature
+description: Use when investigating a bug in DueDay — BLoC state transitions not firing, Firestore reads/writes failing, or biometric/secure-storage issues. Covers BLoC observer logs, security-rule/index checks, and native permission checks.
+---
+
+# Standard Procedure: Debug Feature
 
 This guide describes how to investigate issues, debug state transitions, and analyze database changes in **DueDay**.
 
