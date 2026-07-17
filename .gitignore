@@ -22,7 +22,7 @@ key.properties
 coverage/*
 
 # Agent Plans
-.gemini/plans/*
+.claude/plans/*
 
 # Docs
 docs/
