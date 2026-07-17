@@ -30,14 +30,14 @@ class BiometricLockOverlay extends StatelessWidget {
         backgroundColor: Colors.black.withValues(alpha: 0.7),
         body: Stack(
           children: [
-            // Efeito blur no fundo da UI existente
+            // Blur effect over the existing UI background
             Positioned.fill(
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 12.0, sigmaY: 12.0),
                 child: Container(color: Colors.transparent),
               ),
             ),
-            // Conteúdo principal
+            // Main content
             Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(
@@ -46,7 +46,7 @@ class BiometricLockOverlay extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Logo com pulso animado ou visual seguro
+                    // Logo with an animated pulse or secure visual
                     Container(
                       padding: EdgeInsets.all(spacing.largeExtraLarge.width),
                       decoration: BoxDecoration(
@@ -93,7 +93,7 @@ class BiometricLockOverlay extends StatelessWidget {
                       ),
                     ],
                     SizedBox(height: spacing.threeExtraLarge.height),
-                    // Botão de Autenticação com o design system do app
+                    // Authentication button using the app's design system
                     InkWell(
                       key: const Key('biometric_unlock_button'),
                       onTap: isAuthenticating ? null : onAuthenticate,

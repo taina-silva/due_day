@@ -83,8 +83,8 @@ class _MainWrapperPageState extends State<MainWrapperPage>
       final securityService = sl<SecurityService>();
       final bool canAuth = await securityService.canAuthenticate();
       if (!canAuth) {
-        // Sem biometria disponível no dispositivo: permanece bloqueado em vez
-        // de liberar o acesso sem autenticação.
+        // No biometrics available on the device: stay locked instead of
+        // granting access without authentication.
         return;
       }
 

@@ -51,6 +51,7 @@ Dependency flow points strictly inwards:
 - **Design Tokens:** Always utilize `DueDayTheme` for typography, colors, and sizes. No hardcoded colors (`Colors.white`) or absolute sizes.
 - **Responsive Layout:** Apply `.w`, `.h`, `.sp`, or `.fs` from `NumExtension` to all numerical dimension values.
 - **Localization:** No user-facing hardcoded text. Always use translation keys from `AppLocalizations.of(context)` defined in `app_en.arb` and `app_pt.arb`.
+- **Language for Code & Docs:** English is mandatory everywhere in the codebase — code comments, identifiers, exception/log messages, commit messages, and all `.claude/` documentation (`docs/`, `references/`, `skills/`, `agents/`, `plans/`). The **only** place pt-BR text is justified is inside `app_pt.arb` and other localization catalogs, since that content is meant to be read by end users in Portuguese.
 
 ---
 

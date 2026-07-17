@@ -44,7 +44,7 @@ class SecurityServiceImpl implements SecurityService {
   Future<BiometricAuthResult> authenticate() async {
     try {
       final bool didAuthenticate = await localAuth.authenticate(
-        localizedReason: 'Por favor, autentique-se para acessar suas finanças.',
+        localizedReason: 'Please authenticate to access your finances.',
         biometricOnly: true,
         persistAcrossBackgrounding: true,
       );
@@ -95,7 +95,7 @@ class SecurityServiceImpl implements SecurityService {
         value: enabled ? 'true' : 'false',
       );
     } catch (_) {
-      // Falha silenciosa ou log de segurança
+      // Silent failure or security log
     }
   }
 }

@@ -24,7 +24,7 @@ class NotificationsLocalDataSourceImpl implements NotificationsLocalDataSource {
       await box.put(notification.id, notification.toJson());
       await _enforceMaxSize();
     } catch (e) {
-      throw CacheException('Erro ao salvar notificação: $e');
+      throw CacheException('Error saving notification: $e');
     }
   }
 
@@ -35,7 +35,7 @@ class NotificationsLocalDataSourceImpl implements NotificationsLocalDataSource {
       if (json == null) return;
       await box.put(notificationId, {...json, 'read': true});
     } catch (e) {
-      throw CacheException('Erro ao atualizar notificação: $e');
+      throw CacheException('Error updating notification: $e');
     }
   }
 
@@ -44,7 +44,7 @@ class NotificationsLocalDataSourceImpl implements NotificationsLocalDataSource {
     try {
       await box.delete(notificationId);
     } catch (e) {
-      throw CacheException('Erro ao excluir notificação: $e');
+      throw CacheException('Error deleting notification: $e');
     }
   }
 

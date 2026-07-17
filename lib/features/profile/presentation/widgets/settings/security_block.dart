@@ -91,7 +91,7 @@ class SecurityBlock extends StatelessWidget {
                     return;
                   }
 
-                  // Solicita biometria para autorizar a mudança de preferência
+                  // Request biometrics to authorize the preference change
                   final result = await securityService.authenticate();
                   if (result == BiometricAuthResult.success) {
                     if (context.mounted) {
