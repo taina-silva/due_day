@@ -35,7 +35,7 @@ The `lib/core/` directory contains system-wide services, utilities, and styling 
 
 - **`design_system/`**: Custom widgets, layout themes, icons, and animations.
   - `components/`: Custom inputs (`AppTextField`), buttons (`AppTextButtonPrimary`), dialog banners.
-  - `icons/` & `images/`: SVG/PNG assets wrappers.
+  - `images/`: `AppImages` enum + `AppImageWidget` wrapper for bundled PNG/JPG assets. `icons/` (SVG wrapper) is reserved for when the first custom icon asset is added.
   - `theme/`: Global style settings (`DueDayTheme`, `AppColorsSys`, typography, spacings).
 - **`errors/`**: Defines controlled exceptions (`ServerException`, `CacheException`) and failure containers (`ServerFailure`, `CacheFailure`).
 - **`injection/`**: Central Service Locator initialization. Modular setup configuration for each business feature is called from `injection_container.dart`.

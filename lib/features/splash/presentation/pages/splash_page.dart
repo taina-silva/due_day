@@ -1,3 +1,5 @@
+import 'package:due_day/core/design_system/images/app_image_widget.dart';
+import 'package:due_day/core/design_system/images/app_images.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
@@ -54,8 +56,9 @@ class _SplashPageState extends State<SplashPage>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Image.asset(
-                  'assets/images/logo/logo.png',
+                AppImageWidget(
+                  image: AppImages.logoForeground,
+                  semanticLabel: l10n.splashLogoSemanticLabel,
                   width: 104.scale,
                   height: 104.scale,
                 ),
