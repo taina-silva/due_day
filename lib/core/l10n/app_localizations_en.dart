@@ -677,6 +677,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get splashTagline => 'Your finances, on the right day.';
 
   @override
+  String get splashLogoSemanticLabel => 'DueDay logo';
+
+  @override
   String get dateToday => 'Today';
 
   @override

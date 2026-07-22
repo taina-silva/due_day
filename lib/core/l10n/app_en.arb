@@ -310,6 +310,7 @@
 
     "splashAppName": "DueDay",
     "splashTagline": "Your finances, on the right day.",
+    "splashLogoSemanticLabel": "DueDay logo",
 
     "dateToday": "Today",
     "dateYesterday": "Yesterday",

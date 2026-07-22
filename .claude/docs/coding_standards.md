@@ -62,6 +62,18 @@ Container(width: 104.scale, height: 104.scale)
 style: TextStyle(fontSize: size.twoExtraLarge.fontSize)
 ```
 
+### 2.4. Image & Icon Assets
+Never reference raw `'assets/...'` path strings directly in widgets. Bundled images are centralized in the `AppImages` enum (`lib/core/design_system/images/app_images.dart`) and rendered through `AppImageWidget`, which enforces a `semanticLabel` for accessibility. Custom SVG icons follow the equivalent `AppIcons` enum + icon widget once the first one is added under `lib/core/design_system/icons/` (Material's built-in `Icons.*` remain fine for non-custom icons).
+- **Example:**
+  ```dart
+  AppImageWidget(
+    image: AppImages.logoForeground,
+    semanticLabel: l10n.splashLogoSemanticLabel,
+    width: 104.scale,
+    height: 104.scale,
+  )
+  ```
+
 ---
 
 ## 🌍 3. Localization Standards (i18n)
@@ -165,6 +177,7 @@ Before completing or committing changes:
 - [ ] No hardcoded dimensions — only `DueDayTheme.dimensions.*` (or `context.dimensions.*`)
 - [ ] All numeric layouts scale with `.width`, `.height`, `.scale`, or `.fontSize`.
 - [ ] All texts retrieved via `AppLocalizations`.
+- [ ] No raw `'assets/...'` path strings — only `AppImages` via `AppImageWidget` (or `AppIcons` for custom SVG icons).
 - [ ] No raw exceptions bubble up to pages.
 - [ ] Run `fvm dart format .` to format all changed files and remove unused imports.
 - [ ] Run `fvm flutter analyze` to verify and resolve all warnings and errors in changed files (ensuring zero issues).
@@ -187,10 +200,14 @@ Use the following prompt to configure code generation rules:
 > **Responsive Extensions** — Apply `.width` (or `.w`), `.height` (or `.h`), `.scale` (or `.sp`), or `.fontSize` (or `.fs`) to **every** numeric dimensional layout value, using the `NumExtension` utilities.
 >
 > **Texts & i18n** — Never use hardcoded literal strings in user-facing widgets. All user-visible strings must come from `AppLocalizations.of(context)`.
+>
+> **Image Assets** — Never reference raw `'assets/...'` path strings. Use the `AppImages` enum and `AppImageWidget` from `lib/core/design_system/images/`, passing a localized `semanticLabel`.
 
 ### 8.2. Base Widget Structure Template
 ```dart
 import 'package:flutter/material.dart';
+import 'package:due_day/core/design_system/images/app_image_widget.dart';
+import 'package:due_day/core/design_system/images/app_images.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
@@ -219,8 +236,9 @@ class ExamplePage extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Image.asset(
-              'assets/images/logo/logo.png',
+            AppImageWidget(
+              image: AppImages.logo,
+              semanticLabel: l10n.exampleLogoSemanticLabel,
               width: 104.scale,
               height: 104.scale,
             ),

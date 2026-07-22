@@ -78,14 +78,12 @@ lib/core/design_system/
 │   ├── due_day_theme.dart             # Global static access
 │   ├── due_day_theme_extension.dart   # BuildContext extension shortcuts
 │   └── theme.dart                     # Flat exports manifest
-├── icons/
+├── icons/                              # Reserved: added once a custom SVG icon exists
 │   ├── app_icon.dart                  # SVG icon container
-│   ├── app_icons.dart                 # Enum listing available SVGs
-│   └── index.dart
+│   └── app_icons.dart                 # Enum listing available SVGs
 └── images/
-    ├── app_image_widget.dart
-    ├── app_images.dart
-    └── index.dart
+    ├── app_image_widget.dart          # Image.asset wrapper requiring a semanticLabel
+    └── app_images.dart                # Enum listing available bundled images
 ```
 
 ---
@@ -254,6 +252,22 @@ CustomScaffold(
   body: MainSettingsWidget(),
 )
 ```
+
+### 6.4. Images (`images/`)
+
+#### **AppImages & AppImageWidget**
+Bundled image assets are never referenced as raw `'assets/...'` strings. Each image is a member of the `AppImages` enum (carrying its bundle path) and is rendered through `AppImageWidget`, which requires a localized `semanticLabel` for screen readers:
+```dart
+AppImageWidget(
+  image: AppImages.logoForeground,
+  semanticLabel: l10n.splashLogoSemanticLabel,
+  width: 104.scale,
+  height: 104.scale,
+)
+```
+Only assets actually consumed by the app belong in `AppImages` — store-listing artifacts (e.g. `appstore.png`, `playstore.png`) are not enum members.
+
+Custom SVG icons will follow the identical pattern under `icons/` (`AppIcons` enum + `AppIcon` widget) once the first custom icon is introduced; Material's built-in `Icons.*` remain the default for anything that isn't a custom asset.
 
 ---
 

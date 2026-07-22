@@ -1335,6 +1335,12 @@ abstract class AppLocalizations {
   /// **'Suas finanças, no dia certo.'**
   String get splashTagline;
 
+  /// No description provided for @splashLogoSemanticLabel.
+  ///
+  /// In pt, this message translates to:
+  /// **'Logo do DueDay'**
+  String get splashLogoSemanticLabel;
+
   /// No description provided for @dateToday.
   ///
   /// In pt, this message translates to:
