@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/core/errors/failures.dart';
+import 'package:due_day/core/observability/observability_service.dart';
 import 'package:due_day/features/notifications/data/datasources/notifications_local_data_source.dart';
 import 'package:due_day/features/notifications/data/models/notification_model.dart';
 import 'package:due_day/features/notifications/domain/entities/notification_entity.dart';
@@ -8,8 +9,14 @@ import 'package:due_day/features/notifications/domain/repositories/notifications
 
 class NotificationsRepositoryImpl implements NotificationsRepository {
   final NotificationsLocalDataSource localDataSource;
+  final ObservabilityService observability;
 
-  NotificationsRepositoryImpl({required this.localDataSource});
+  static const String _tag = 'notifications';
+
+  NotificationsRepositoryImpl({
+    required this.localDataSource,
+    required this.observability,
+  });
 
   @override
   Future<Either<Failure, void>> addNotification(
@@ -20,8 +27,20 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
       await localDataSource.addNotification(model);
       return const Right(null);
     } on CacheException catch (e) {
+      observability.error(
+        'addNotification failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(CacheFailure(e.message));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'addNotification unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -32,8 +51,20 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
       await localDataSource.markAsRead(notificationId);
       return const Right(null);
     } on CacheException catch (e) {
+      observability.error(
+        'markAsRead failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(CacheFailure(e.message));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'markAsRead unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -46,8 +77,20 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
       await localDataSource.deleteNotification(notificationId);
       return const Right(null);
     } on CacheException catch (e) {
+      observability.error(
+        'deleteNotification failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(CacheFailure(e.message));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'deleteNotification unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -58,7 +101,13 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
       await for (final models in localDataSource.getNotifications()) {
         yield Right(models.map((m) => m.toEntity()).toList());
       }
-    } catch (error) {
+    } catch (error, stackTrace) {
+      observability.error(
+        'getNotifications stream unexpected failure',
+        tag: _tag,
+        error: error,
+        stackTrace: stackTrace,
+      );
       yield Left(CacheFailure(error.toString()));
     }
   }

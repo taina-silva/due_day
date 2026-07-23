@@ -19,10 +19,10 @@ key.properties
 .ruby-lsp/
 
 # Coverage
-coverage/*
+coverage
 
 # Agent Plans
-.claude/plans/*
+.claude/plans/
 
 # Docs
-docs/
+/docs/

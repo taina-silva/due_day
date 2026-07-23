@@ -26,7 +26,7 @@ void initAccounts() {
 
   // Repository
   sl.registerLazySingleton<AccountRepository>(
-    () => AccountRepositoryImpl(remoteDataSource: sl()),
+    () => AccountRepositoryImpl(remoteDataSource: sl(), observability: sl()),
   );
 
   // Data sources

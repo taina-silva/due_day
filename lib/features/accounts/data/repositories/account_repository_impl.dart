@@ -1,5 +1,6 @@
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/core/errors/failures.dart';
+import 'package:due_day/core/observability/observability_service.dart';
 import 'package:due_day/features/accounts/data/datasources/account_remote_data_source.dart';
 import 'package:due_day/features/accounts/data/models/account_model.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
@@ -9,8 +10,14 @@ import 'package:fpdart/fpdart.dart';
 
 class AccountRepositoryImpl implements AccountRepository {
   final AccountRemoteDataSource remoteDataSource;
+  final ObservabilityService observability;
 
-  AccountRepositoryImpl({required this.remoteDataSource});
+  static const String _tag = 'accounts';
+
+  AccountRepositoryImpl({
+    required this.remoteDataSource,
+    required this.observability,
+  });
 
   Failure _mapServerExceptionToFailure(ServerException e) {
     if (e.code == 'unauthenticated' || e.message.contains('authenticated')) {
@@ -31,8 +38,20 @@ class AccountRepositoryImpl implements AccountRepository {
       final result = await remoteDataSource.addAccount(model);
       return Right(result.toEntity());
     } on ServerException catch (e) {
+      observability.error(
+        'addAccount failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapServerExceptionToFailure(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'addAccount unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -46,8 +65,20 @@ class AccountRepositoryImpl implements AccountRepository {
       final result = await remoteDataSource.updateAccount(model);
       return Right(result.toEntity());
     } on ServerException catch (e) {
+      observability.error(
+        'updateAccount failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapServerExceptionToFailure(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'updateAccount unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -58,8 +89,20 @@ class AccountRepositoryImpl implements AccountRepository {
       await remoteDataSource.deleteAccount(accountId);
       return const Right(null);
     } on ServerException catch (e) {
+      observability.error(
+        'deleteAccount failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapServerExceptionToFailure(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'deleteAccount unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -72,8 +115,20 @@ class AccountRepositoryImpl implements AccountRepository {
       final result = await remoteDataSource.getAccountById(accountId);
       return Right(result.toEntity());
     } on ServerException catch (e) {
+      observability.error(
+        'getAccountById failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapServerExceptionToFailure(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'getAccountById unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -87,8 +142,20 @@ class AccountRepositoryImpl implements AccountRepository {
         );
       }
     } on ServerException catch (e) {
+      observability.error(
+        'getAccounts stream failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       yield Left<Failure, List<AccountEntity>>(_mapServerExceptionToFailure(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'getAccounts stream unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       yield Left<Failure, List<AccountEntity>>(GenericFailure(e.toString()));
     }
   }

@@ -70,6 +70,7 @@ _How does this project work?_ Refer to these for architectural patterns, standar
 - [navigation.md](.claude/docs/navigation.md) — GoRouter setup, bottom nav state, and guards.
 - [design_system.md](.claude/docs/design_system.md) — Full Design System specs, tokens, typography, colors, spacing, components, and code template.
 - [notifications.md](.claude/docs/notifications.md) — FCM and local notifications handling.
+- [observability.md](.claude/docs/observability.md) — Logging, error capture, and event tracking (`core/observability`).
 - [testing.md](.claude/docs/testing.md) — Unit, widget, and integration testing strategies.
 
 ### 2. `references/` — Project Truth Maps

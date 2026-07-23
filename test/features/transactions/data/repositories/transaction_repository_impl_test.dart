@@ -1,5 +1,6 @@
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/core/errors/failures.dart';
+import 'package:due_day/core/observability/observability_service.dart';
 import 'package:due_day/features/transactions/data/repositories/transaction_repository_impl.dart';
 import 'package:due_day/features/transactions/domain/errors/transaction_failures.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,6 +21,7 @@ void main() {
     mockRemoteDataSource = MockTransactionRemoteDataSource();
     repository = TransactionRepositoryImpl(
       remoteDataSource: mockRemoteDataSource,
+      observability: ObservabilityServiceImpl(sinks: const []),
     );
   });
 

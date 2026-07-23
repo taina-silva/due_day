@@ -32,7 +32,7 @@ void initAuth() {
 
   // Repository
   sl.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(remoteDataSource: sl()),
+    () => AuthRepositoryImpl(remoteDataSource: sl(), observability: sl()),
   );
 
   // Data sources

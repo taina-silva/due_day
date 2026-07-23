@@ -6,7 +6,9 @@ This reference maps the Service Locator setup (`GetIt` injection container) and 
 
 ## ⚙️ 1. Initialization Order (`injection_container.dart`)
 
-Dependency injection (DI) is initialized synchronously during app startup in `lib/main.dart` via `await di.init()`. The registration steps are ordered as follows:
+Dependency injection (DI) is initialized synchronously during app startup in `lib/main.dart` via `await di.init()`. One exception precedes it: `ObservabilityService` is registered manually in `main.dart` (`sl.registerSingleton<ObservabilityService>(...)`), before `Firebase.initializeApp`/`di.init()` run, so bootstrap failures are captured too. `injection_container.dart` never registers it — every other service/repository just resolves `sl<ObservabilityService>()`. See [observability.md](../docs/observability.md).
+
+The remaining registration steps run inside `di.init()`, ordered as follows:
 
 1.  **Core Services Registration:** Setup of system-level platform managers (e.g. notifications and security services).
 2.  **Auth Injection Module (`initAuth`):** Sets up core user models and authentication layers.
@@ -27,10 +29,11 @@ These services run throughout the app's lifetime. They are registered under `/li
 
 | Service Type | GetIt Lifetime | Registration Signature |
 | :--- | :--- | :--- |
+| `ObservabilityService` | `registerSingleton` (in `main.dart`, before `di.init()`) | Logging, error capture, and event tracking. Fans out to `ObservabilitySink`s (console today). |
 | `NotificationService` | `registerLazySingleton` | Handles time zones, channel declarations, and local payment alerts. |
 | `FlutterSecureStorage`| `registerLazySingleton` | Platform keychain for storing credentials securely. |
 | `LocalAuthentication` | `registerLazySingleton` | Platform biometric scanner (TouchID/FaceID/Fingerprint). |
-| `SecurityService` | `registerLazySingleton` | Wraps biometric checking and secure credentials storage. |
+| `SecurityService` | `registerLazySingleton` | Wraps biometric checking and secure credentials storage. Depends on `ObservabilityService`. |
 | `SettingsBloc` | `registerSingleton` | App-wide theme and localization configurations. |
 
 ---
@@ -59,7 +62,7 @@ void initAccounts() {
 
   // 3. Data Layer (Lazy Singletons)
   sl.registerLazySingleton<AccountRepository>(
-    () => AccountRepositoryImpl(remoteDataSource: sl()),
+    () => AccountRepositoryImpl(remoteDataSource: sl(), observability: sl()),
   );
   sl.registerLazySingleton<AccountRemoteDataSource>(
     () => AccountRemoteDataSourceImpl(firestore: sl()),
@@ -70,3 +73,4 @@ void initAccounts() {
 ### Lifetime Rules
 - **BLoCs (`registerFactory`):** Blocs must be registered as factories so that when a page enters or exits, a fresh state-management instance is initialized (unless the BLoC is globally scoped like `AuthBloc` or `SettingsBloc`).
 - **Use Cases & Repositories (`registerLazySingleton`):** These classes contain stateless logic, so they are shared as single instances across features to optimize memory usage.
+- **Repositories & `ObservabilityService`:** Every repository implementation takes an `ObservabilityService observability` constructor param (resolved via `sl()`) and logs in its catch blocks. See [observability.md](../docs/observability.md).

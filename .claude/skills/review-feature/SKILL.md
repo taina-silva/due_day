@@ -16,6 +16,8 @@ This checklist outlines the criteria for reviewing feature implementations and c
 - [ ] UseCases reside in the Domain layer and contain no Flutter, Firebase, or external library imports.
 - [ ] DataSources handle raw database interactions and propagate exceptions instead of returning Either.
 - [ ] Repositories catch exceptions and return `Either<Failure, T>`, mapping raw exceptions to typed domain `Failure`s (ensuring no raw exceptions or strings reach BLoC/UI).
+- [ ] Every repository catch block logs via `ObservabilityService.error(...)` before mapping to `Left(Failure)`, tagged with the feature name (see [observability.md](../../docs/observability.md)).
+- [ ] No `ObservabilityService` call logs a full entity/state object (`.toString()` dump) — only short messages and explicit `error`/`context` values, since DueDay handles financial data.
 
 ### 2. Design System & Layout Tokens
 - [ ] No hardcoded colors (`Colors.white` or hex literals) are used in UI code. All colors reference `DueDayTheme.colors`.

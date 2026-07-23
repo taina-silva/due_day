@@ -1,5 +1,6 @@
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/core/errors/failures.dart';
+import 'package:due_day/core/observability/observability_service.dart';
 import 'package:due_day/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:due_day/features/auth/data/models/user_model.dart';
 import 'package:due_day/features/auth/domain/entities/user_entity.dart';
@@ -9,8 +10,14 @@ import 'package:fpdart/fpdart.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
+  final ObservabilityService observability;
 
-  AuthRepositoryImpl({required this.remoteDataSource});
+  static const String _tag = 'auth';
+
+  AuthRepositoryImpl({
+    required this.remoteDataSource,
+    required this.observability,
+  });
 
   @override
   Future<Either<Failure, UserEntity>> signInWithEmail(
@@ -21,8 +28,20 @@ class AuthRepositoryImpl implements AuthRepository {
       final userModel = await remoteDataSource.signInWithEmail(email, password);
       return Right(userModel.toEntity());
     } on ServerException catch (e) {
+      observability.error(
+        'signInWithEmail failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapException(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'signInWithEmail unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -41,8 +60,20 @@ class AuthRepositoryImpl implements AuthRepository {
       );
       return Right(userModel.toEntity());
     } on ServerException catch (e) {
+      observability.error(
+        'signUpWithEmail failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapException(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'signUpWithEmail unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -53,8 +84,20 @@ class AuthRepositoryImpl implements AuthRepository {
       final userModel = await remoteDataSource.signInWithGoogle();
       return Right(userModel.toEntity());
     } on ServerException catch (e) {
+      observability.error(
+        'signInWithGoogle failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapException(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'signInWithGoogle unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -65,8 +108,20 @@ class AuthRepositoryImpl implements AuthRepository {
       await remoteDataSource.signOut();
       return const Right(null);
     } on ServerException catch (e) {
+      observability.error(
+        'signOut failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapException(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'signOut unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -80,8 +135,20 @@ class AuthRepositoryImpl implements AuthRepository {
       }
       return const Right(null);
     } on ServerException catch (e) {
+      observability.error(
+        'getCurrentUser failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapException(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'getCurrentUser unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -92,8 +159,20 @@ class AuthRepositoryImpl implements AuthRepository {
       await remoteDataSource.updateUser(UserModel.fromEntity(user));
       return const Right(null);
     } on ServerException catch (e) {
+      observability.error(
+        'updateUser failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapException(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'updateUser unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }

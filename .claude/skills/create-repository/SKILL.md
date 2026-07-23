@@ -18,6 +18,9 @@ This guide describes how to implement a repository in the **DueDay** application
 ### Rule 2: Exception Conversion
 Repositories must never let raw infrastructure exceptions bubble up to UseCases or the UI. They are responsible for catching exceptions (like `ServerException`) and returning them as a `Left(Failure)`.
 
+### Rule 3: Observability Logging
+Every repository takes an `ObservabilityService observability` constructor param and calls `observability.error(...)` in every catch block before mapping to `Left(Failure)` — this is the single point where exception messages (already required to be technical English strings) get recorded. See [observability.md](../../docs/observability.md).
+
 ---
 
 ## 📝 Repository Implementation Template
@@ -38,14 +41,19 @@ abstract class AccountRepository {
 import 'package:fpdart/fpdart.dart';
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/core/errors/failures.dart';
+import 'package:due_day/core/observability/observability_service.dart';
 import 'package:due_day/features/accounts/data/datasources/account_remote_data_source.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:due_day/features/accounts/domain/repositories/account_repository.dart';
 
 class AccountRepositoryImpl implements AccountRepository {
   final AccountRemoteDataSource remoteDataSource;
+  final ObservabilityService observability;
 
-  const AccountRepositoryImpl({required this.remoteDataSource});
+  const AccountRepositoryImpl({
+    required this.remoteDataSource,
+    required this.observability,
+  });
 
   @override
   Future<Either<Failure, List<AccountEntity>>> getAccounts(String userId) async {
@@ -57,11 +65,23 @@ class AccountRepositoryImpl implements AccountRepository {
       
       return Right(entities);
     } on ServerException catch (e) {
+      observability.error(
+        'getAccounts failed',
+        tag: 'accounts',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       if (e.code == 'account-limit-exceeded') {
         return const Left(AccountLimitExceededFailure());
       }
       return Left(ServerFailure(e.message));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'getAccounts unexpected failure',
+        tag: 'accounts',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }

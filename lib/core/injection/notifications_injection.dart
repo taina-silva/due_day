@@ -13,7 +13,7 @@ void initNotifications() {
 
   // Repository
   sl.registerLazySingleton<NotificationsRepository>(
-    () => NotificationsRepositoryImpl(localDataSource: sl()),
+    () => NotificationsRepositoryImpl(localDataSource: sl(), observability: sl()),
   );
 
   // Use cases

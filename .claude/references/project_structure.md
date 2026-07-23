@@ -41,6 +41,7 @@ The `lib/core/` directory contains system-wide services, utilities, and styling 
 - **`injection/`**: Central Service Locator initialization. Modular setup configuration for each business feature is called from `injection_container.dart`.
 - **`l10n/`**: Localization delegation hooks (`AppLocalizations`). Contains template `.arb` translation catalog files.
 - **`navigation/`**: Central GoRouter routes setup (`app_router.dart`), biometric security overlay, and redirection stream list.
+- **`observability/`**: `ObservabilityService` (+ `ObservabilitySink` contract, `ConsoleObservabilitySink`, `AppBlocObserver`) — logging, error capture, and event tracking. See [observability.md](../docs/observability.md).
 - **`services/`**: Low-level platform adapters like `NotificationService` (local alerts) and `SecurityService` (local biometrics + credentials store).
 - **`settings/`**: System settings bloc to control theme modes (Light/Dark) and active localization locale parameters.
 - **`utils/`**: Shared helper extensions such as `NumExtension` for UI layout scaling.
