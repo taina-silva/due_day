@@ -128,3 +128,26 @@ test/
   ```bash
   fvm flutter test --coverage
   ```
+
+---
+
+## 📈 7. Code Coverage Standards
+
+Every new or modified file must reach a minimum of **80% code coverage** (excluding generated files like `.freezed.dart` or `.g.dart`).
+
+```bash
+# Generate visual HTML report
+genhtml coverage/lcov.info -o coverage/html
+```
+Open `coverage/html/index.html` in a browser to review coverage details.
+
+---
+
+## 🔁 8. Testing Order for a New Feature
+
+When implementing a feature, write tests in this order — each phase's mocks feed the next:
+
+```
+[Phase 1: Domain UseCases] ➔ [Phase 2: Data/Repository w/ Mocks] ➔ [Phase 3: BLoC (bloc_test)] ➔ [Phase 4: Widget]
+```
+Resource cleanup: always close stream controllers or manual subscriptions created in `setUp` during `tearDown` to avoid memory leaks.
