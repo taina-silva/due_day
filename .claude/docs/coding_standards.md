@@ -30,76 +30,17 @@ All source files, variables, classes, and directories must follow these conventi
 
 ## 🎨 2. Design System Tokens & Responsiveness
 
-Never hardcode styling assets (colors, fonts, paddings, margin size, radius) within layouts. Always utilize `DueDayTheme` through the `BuildContext` extension inside build methods.
+Never hardcode styling assets (colors, fonts, paddings, margins, radius, `'assets/...'` paths) or call `ScaffoldMessenger`/`SnackBar` directly. Always go through `DueDayTheme` via the `BuildContext` extension, and apply `.w`/`.h`/`.sp`/`.fs` (`NumExtension`) to every numeric layout value.
 
-### 2.1. Colors
-Access colors via `context.colors` (or `DueDayTheme.colors` if `BuildContext` is not available). Do not use `Colors.white`, `Colors.black`, or raw hex values.
-- **Example:**
-  ```dart
-  color: context.colors.resource.primary
-  color: context.colors.lightBackground
-  ```
-
-### 2.2. Dimensions
-Access dimensions via `context.dimensions` or the specific shortcuts (`context.spacing`, `context.radius`, `context.sizes`, `context.stroke`):
-- `sizes` (e.g., `context.sizes.iconMedium`)
-- `spacing` (e.g., `context.spacing.mediumLarge`)
-- `radius` (e.g., `context.radius.large`)
-- `stroke` (e.g., `context.stroke.small`)
-
-### 2.3. Responsive Layout Extensions (`NumExtension`)
-Always apply responsive scaling to physical layout values using the extension located in `lib/core/utils/extensions/num_extension.dart`:
-- `.width` (or `.w`) — Scale relative to device width.
-- `.height` (or `.h`) — Scale relative to device height.
-- `.scale` (or `.sp`) — Uniform scaling for graphic elements/containers.
-- `.fontSize` (or `.fs`) — Responsive font size scaling.
-
-**Example:**
-```dart
-SizedBox(height: spacing.mediumLarge.height)
-SizedBox(width: size.large.width)
-Container(width: 104.scale, height: 104.scale)
-style: TextStyle(fontSize: size.twoExtraLarge.fontSize)
-```
-
-### 2.4. Image & Icon Assets
-Never reference raw `'assets/...'` path strings directly in widgets. Bundled images are centralized in the `AppImages` enum (`lib/core/design_system/images/app_images.dart`) and rendered through `AppImageWidget`, which enforces a `semanticLabel` for accessibility. Custom SVG icons follow the equivalent `AppIcons` enum + icon widget once the first one is added under `lib/core/design_system/icons/` (Material's built-in `Icons.*` remain fine for non-custom icons).
-- **Example:**
-  ```dart
-  AppImageWidget(
-    image: AppImages.logoForeground,
-    semanticLabel: l10n.splashLogoSemanticLabel,
-    width: 104.scale,
-    height: 104.scale,
-  )
-  ```
-
-### 2.5. User Feedback (Snackbars)
-Never call `ScaffoldMessenger.of(context).showSnackBar(SnackBar(...))` directly. Success, error, and info feedback must go through `AppMessenger` (`lib/core/design_system/components/messenger/app_messenger.dart`), which guarantees the correct semantic color (`context.colors.system.success/error/info`) and always includes a dismiss (X) action.
-- **Example:**
-  ```dart
-  AppMessenger.showSuccess(context, l10n.transactionsSavedSuccess);
-  AppMessenger.showError(context, failure.toLocalizedString(context));
-  ```
-See [design_system.md §6.5](design_system.md#65-messenger--snackbars-componentsmessenger) for full details.
+Full token catalog (colors, typography, dimensions, images, messenger) lives in [design_system.md](design_system.md).
 
 ---
 
 ## 🌍 3. Localization Standards (i18n)
 
-User-facing texts must be localized. Never use literal strings inside widget layouts.
-- **Import:** `import 'package:due_day/core/l10n/app_localizations.dart';`
-- **Usage:**
-  ```dart
-  final l10n = AppLocalizations.of(context);
-  Text(l10n.loginSubmitButton)
-  ```
-- **Naming Translation Keys:** Use `featureNomeChave` in camelCase:
-  - E.g., `loginEmailLabel`, `signupTitle`, `dashboardGreeting`.
-- Add new translations in both `lib/core/l10n/app_en.arb` and `lib/core/l10n/app_pt.arb` files, then trigger code generation:
-  ```bash
-  fvm flutter gen-l10n
-  ```
+User-facing texts must be localized — never literal strings inside widget layouts. Retrieve via `AppLocalizations.of(context)`; add new keys to both `app_en.arb` and `app_pt.arb`.
+
+Key naming rules, ARB catalog structure, and the full addition workflow live in [localization.md](../references/localization.md).
 
 ---
 
@@ -194,86 +135,7 @@ Before completing or committing changes:
 
 ---
 
-## 🤖 8. AI Guidelines & Screen Template
+## 🤖 8. Generating Pages & Widgets
 
-When generating layout files, pages, or custom widgets, AI assistants must strictly conform to the styling conventions, localization standards, and architecture layers. 
-
-### 8.1. AI Context Base Prompt
-Use the following prompt to configure code generation rules:
-> **Colors** — Use exclusively the theme colors via `context.colors` (`AppColorsSys`). Access them via `colors.resource.primary`, `colors.onDarkBackground`, etc. Never use `Colors.white`, `Colors.black`, or raw hex literals.
->
-> **Dimensions** — Use `context.dimensions` (or its direct shortcuts) for all sizes, spacing, margins, border radius, and stroke values:
-> - `context.sizes.*` for fixed component widths/heights.
-> - `context.spacing.*` for margins and paddings.
-> - `context.radius.*` for rounded corners.
->
-> **Responsive Extensions** — Apply `.width` (or `.w`), `.height` (or `.h`), `.scale` (or `.sp`), or `.fontSize` (or `.fs`) to **every** numeric dimensional layout value, using the `NumExtension` utilities.
->
-> **Texts & i18n** — Never use hardcoded literal strings in user-facing widgets. All user-visible strings must come from `AppLocalizations.of(context)`.
->
-> **Image Assets** — Never reference raw `'assets/...'` path strings. Use the `AppImages` enum and `AppImageWidget` from `lib/core/design_system/images/`, passing a localized `semanticLabel`.
->
-> **Feedback / Snackbars** — Never call `ScaffoldMessenger.of(context).showSnackBar(SnackBar(...))` directly. Use `AppMessenger.showSuccess(context, message)`, `AppMessenger.showError(context, message)`, or `AppMessenger.showInfo(context, message)` from `lib/core/design_system/components/messenger/app_messenger.dart`.
-
-### 8.2. Base Widget Structure Template
-```dart
-import 'package:flutter/material.dart';
-import 'package:due_day/core/design_system/images/app_image_widget.dart';
-import 'package:due_day/core/design_system/images/app_images.dart';
-import 'package:due_day/core/l10n/app_localizations.dart';
-import 'package:due_day/core/design_system/theme/theme.dart';
-import 'package:due_day/core/utils/extensions/num_extension.dart';
-
-class ExamplePage extends StatelessWidget {
-  const ExamplePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // 1. Retrieve all theme design tokens using BuildContext extension
-    final colors = context.colors;
-    final typography = context.typography;
-    final size = context.sizes;
-    final spacing = context.spacing;
-    final radius = context.radius;
-
-    // 2. Retrieve localization dictionary
-    final l10n = AppLocalizations.of(context);
-
-    return Scaffold(
-      backgroundColor: colors.lightBackground,
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: spacing.largeExtraLarge.width,
-          vertical: spacing.twoExtraLarge.height,
-        ),
-        child: Column(
-          children: [
-            AppImageWidget(
-              image: AppImages.logo,
-              semanticLabel: l10n.exampleLogoSemanticLabel,
-              width: 104.scale,
-              height: 104.scale,
-            ),
-            SizedBox(height: spacing.mediumLarge.height),
-            Text(
-              l10n.exampleTitle,
-              style: typography.headline.large.copyWith(
-                color: colors.onLightBackground,
-                fontSize: size.twoExtraLarge.fontSize,
-              ),
-            ),
-            SizedBox(height: spacing.small.height),
-            Text(
-              l10n.exampleSubtitle,
-              style: typography.body.medium.copyWith(
-                color: colors.onLightBackground.withValues(alpha: 0.75),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-```
+Building a new screen or widget is covered end-to-end by the [create-screen](../skills/create-screen/SKILL.md) skill (BLoC-integrated template) and the [design_system.md §8](design_system.md#-8-complete-layout-integration-template) full-page example. Both already encode the rules from §2–§3 above — no separate AI prompt needed.
 

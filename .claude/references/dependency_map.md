@@ -52,22 +52,4 @@ To maintain loose coupling, features should remain as self-contained as possible
 
 ## 💉 3. Dependency Injection Mapping
 
-Injections are configured modularly inside `lib/core/injection/` and loaded during setup in `lib/main.dart`:
-
-```mermaid
-graph TD
-    A[main.dart] --> B[di.init]
-    B --> C[injection_container.dart]
-    C --> D[auth_injection.dart]
-    C --> E[account_injection.dart]
-    C --> F[transaction_injection.dart]
-    C --> G[category_injection.dart]
-    C --> H[dashboard_injection.dart]
-    C --> I[schedule_injection.dart]
-    C --> J[notifications_injection.dart]
-```
-
-### Injection Lifecycle Standards
-- **`registerFactory`**: Instantiated on every call (mostly used for UI BLoCs).
-- **`registerLazySingleton`**: Instantiated once when requested (mostly used for DataSources, Repositories, and UseCases).
-- **`registerSingleton`**: Instantiated immediately during startup (e.g. Firebase instance).
+Registration order, per-service lifetimes (`registerFactory` / `registerLazySingleton` / `registerSingleton`), and the feature-module pattern live in [dependency_injection.md](dependency_injection.md).
