@@ -1,5 +1,6 @@
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/core/errors/failures.dart';
+import 'package:due_day/core/observability/observability_service.dart';
 import 'package:due_day/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:due_day/features/auth/domain/errors/auth_failures.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,7 +15,10 @@ void main() {
 
   setUp(() {
     mockRemoteDataSource = MockAuthRemoteDataSource();
-    repository = AuthRepositoryImpl(remoteDataSource: mockRemoteDataSource);
+    repository = AuthRepositoryImpl(
+      remoteDataSource: mockRemoteDataSource,
+      observability: ObservabilityServiceImpl(sinks: const []),
+    );
   });
 
   group('signInWithEmail', () {

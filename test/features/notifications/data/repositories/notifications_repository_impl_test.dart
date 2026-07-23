@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/core/errors/failures.dart';
+import 'package:due_day/core/observability/observability_service.dart';
 import 'package:due_day/features/notifications/data/models/notification_model.dart';
 import 'package:due_day/features/notifications/data/repositories/notifications_repository_impl.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -20,6 +21,7 @@ void main() {
     mockLocalDataSource = MockNotificationsLocalDataSource();
     repository = NotificationsRepositoryImpl(
       localDataSource: mockLocalDataSource,
+      observability: ObservabilityServiceImpl(sinks: const []),
     );
   });
 

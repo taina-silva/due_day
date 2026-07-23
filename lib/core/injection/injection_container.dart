@@ -32,7 +32,11 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<LocalAuthentication>(() => LocalAuthentication());
   sl.registerLazySingleton<SecurityService>(
-    () => SecurityServiceImpl(secureStorage: sl(), localAuth: sl()),
+    () => SecurityServiceImpl(
+      secureStorage: sl(),
+      localAuth: sl(),
+      observability: sl(),
+    ),
   );
 
   // Features

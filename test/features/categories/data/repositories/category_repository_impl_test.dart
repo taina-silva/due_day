@@ -1,5 +1,6 @@
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/core/errors/failures.dart';
+import 'package:due_day/core/observability/observability_service.dart';
 import 'package:due_day/features/categories/data/repositories/category_repository_impl.dart';
 import 'package:due_day/features/categories/domain/errors/category_failures.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,7 +19,10 @@ void main() {
 
   setUp(() {
     mockRemoteDataSource = MockCategoryRemoteDataSource();
-    repository = CategoryRepositoryImpl(remoteDataSource: mockRemoteDataSource);
+    repository = CategoryRepositoryImpl(
+      remoteDataSource: mockRemoteDataSource,
+      observability: ObservabilityServiceImpl(sinks: const []),
+    );
   });
 
   group('CategoryRepositoryImpl Tests', () {

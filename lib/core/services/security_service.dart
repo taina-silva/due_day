@@ -1,3 +1,4 @@
+import 'package:due_day/core/observability/observability_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
@@ -21,10 +22,15 @@ abstract class SecurityService {
 class SecurityServiceImpl implements SecurityService {
   final FlutterSecureStorage secureStorage;
   final LocalAuthentication localAuth;
+  final ObservabilityService observability;
 
   static const String _biometricKey = 'is_biometrics_enabled';
 
-  SecurityServiceImpl({required this.secureStorage, required this.localAuth});
+  SecurityServiceImpl({
+    required this.secureStorage,
+    required this.localAuth,
+    required this.observability,
+  });
 
   @override
   Future<bool> canAuthenticate() async {
@@ -94,8 +100,13 @@ class SecurityServiceImpl implements SecurityService {
         key: _biometricKey,
         value: enabled ? 'true' : 'false',
       );
-    } catch (_) {
-      // Silent failure or security log
+    } catch (e, stackTrace) {
+      observability.warning(
+        'Failed to persist biometrics preference',
+        tag: 'security',
+        error: e,
+        stackTrace: stackTrace,
+      );
     }
   }
 }

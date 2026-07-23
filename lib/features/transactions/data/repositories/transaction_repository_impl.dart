@@ -1,5 +1,6 @@
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/core/errors/failures.dart';
+import 'package:due_day/core/observability/observability_service.dart';
 import 'package:due_day/features/transactions/data/datasources/transaction_remote_data_source.dart';
 import 'package:due_day/features/transactions/data/models/transaction_model.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
@@ -9,8 +10,14 @@ import 'package:fpdart/fpdart.dart';
 
 class TransactionRepositoryImpl implements TransactionRepository {
   final TransactionRemoteDataSource remoteDataSource;
+  final ObservabilityService observability;
 
-  TransactionRepositoryImpl({required this.remoteDataSource});
+  static const String _tag = 'transactions';
+
+  TransactionRepositoryImpl({
+    required this.remoteDataSource,
+    required this.observability,
+  });
 
   Failure _mapServerExceptionToFailure(ServerException e) {
     if (e.code == 'unauthenticated' || e.message.contains('authenticated')) {
@@ -31,8 +38,20 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final result = await remoteDataSource.addTransaction(model);
       return Right(result.toEntity());
     } on ServerException catch (e) {
+      observability.error(
+        'addTransaction failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapServerExceptionToFailure(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'addTransaction unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -46,8 +65,20 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final result = await remoteDataSource.updateTransaction(model);
       return Right(result.toEntity());
     } on ServerException catch (e) {
+      observability.error(
+        'updateTransaction failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapServerExceptionToFailure(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'updateTransaction unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -58,8 +89,20 @@ class TransactionRepositoryImpl implements TransactionRepository {
       await remoteDataSource.deleteTransaction(transactionId);
       return const Right(null);
     } on ServerException catch (e) {
+      observability.error(
+        'deleteTransaction failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapServerExceptionToFailure(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'deleteTransaction unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -72,8 +115,20 @@ class TransactionRepositoryImpl implements TransactionRepository {
       final result = await remoteDataSource.getTransaction(transactionId);
       return Right(result.toEntity());
     } on ServerException catch (e) {
+      observability.error(
+        'getTransaction failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapServerExceptionToFailure(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'getTransaction unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -99,10 +154,22 @@ class TransactionRepositoryImpl implements TransactionRepository {
         );
       }
     } on ServerException catch (e) {
+      observability.error(
+        'getTransactions stream failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       yield Left<Failure, List<TransactionEntity>>(
         _mapServerExceptionToFailure(e),
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'getTransactions stream unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       yield Left<Failure, List<TransactionEntity>>(ServerFailure(e.toString()));
     }
   }

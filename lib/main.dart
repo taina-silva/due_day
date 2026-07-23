@@ -1,7 +1,12 @@
+import 'dart:async';
+
 import 'package:due_day/core/design_system/theme/app_theme.dart';
 import 'package:due_day/core/injection/injection_container.dart' as di;
 import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/navigation/app_router.dart';
+import 'package:due_day/core/observability/app_bloc_observer.dart';
+import 'package:due_day/core/observability/observability_service.dart';
+import 'package:due_day/core/observability/sinks/console_observability_sink.dart';
 import 'package:due_day/core/settings/settings_bloc.dart';
 import 'package:due_day/core/settings/settings_state.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_bloc.dart';
@@ -14,24 +19,66 @@ import 'package:due_day/features/notifications/presentation/bloc/notifications_e
 import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
 import 'package:due_day/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+void main() {
+  runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+      // Registered manually (not via injection_container.dart) so it exists
+      // before Firebase/DI bootstrap and can capture failures from t=0.
+      final observability = ObservabilityServiceImpl(
+        sinks: [ConsoleObservabilitySink()],
+      );
+      di.sl.registerSingleton<ObservabilityService>(observability);
 
-  // Initialize Google Sign In
-  await GoogleSignIn.instance.initialize();
+      FlutterError.onError = (details) {
+        observability.fatal(
+          'Uncaught Flutter framework error',
+          tag: 'flutter',
+          error: details.exception,
+          stackTrace: details.stack,
+        );
+        FlutterError.presentError(details);
+      };
+      PlatformDispatcher.instance.onError = (error, stack) {
+        observability.fatal(
+          'Uncaught platform error',
+          tag: 'platform',
+          error: error,
+          stackTrace: stack,
+        );
+        return true;
+      };
+      Bloc.observer = AppBlocObserver(observability: observability);
 
-  // Initializes Dependency Injection
-  await di.init();
+      // Initialize Firebase
+      await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform,
+      );
 
-  runApp(const DueDayApp());
+      // Initialize Google Sign In
+      await GoogleSignIn.instance.initialize();
+
+      // Initializes Dependency Injection
+      await di.init();
+
+      runApp(const DueDayApp());
+    },
+    (error, stack) {
+      di.sl<ObservabilityService>().fatal(
+        'Uncaught async error',
+        tag: 'zone',
+        error: error,
+        stackTrace: stack,
+      );
+    },
+  );
 }
 
 class DueDayApp extends StatefulWidget {

@@ -1,5 +1,6 @@
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/core/errors/failures.dart';
+import 'package:due_day/core/observability/observability_service.dart';
 import 'package:due_day/features/accounts/data/repositories/account_repository_impl.dart';
 import 'package:due_day/features/accounts/domain/errors/account_failures.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -18,7 +19,10 @@ void main() {
 
   setUp(() {
     mockRemoteDataSource = MockAccountRemoteDataSource();
-    repository = AccountRepositoryImpl(remoteDataSource: mockRemoteDataSource);
+    repository = AccountRepositoryImpl(
+      remoteDataSource: mockRemoteDataSource,
+      observability: ObservabilityServiceImpl(sinks: const []),
+    );
   });
 
   group('AccountRepositoryImpl Tests', () {

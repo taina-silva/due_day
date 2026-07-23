@@ -1,3 +1,4 @@
+import 'package:due_day/core/observability/observability_service.dart';
 import 'package:due_day/core/services/security_service.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -20,6 +21,7 @@ void main() {
     securityService = SecurityServiceImpl(
       secureStorage: mockSecureStorage,
       localAuth: mockLocalAuth,
+      observability: ObservabilityServiceImpl(sinks: const []),
     );
   });
 

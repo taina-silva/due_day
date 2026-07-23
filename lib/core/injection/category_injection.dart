@@ -26,7 +26,7 @@ void initCategories() {
 
   // Repository
   sl.registerLazySingleton<CategoryRepository>(
-    () => CategoryRepositoryImpl(remoteDataSource: sl()),
+    () => CategoryRepositoryImpl(remoteDataSource: sl(), observability: sl()),
   );
 
   // Data sources

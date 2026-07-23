@@ -1,5 +1,6 @@
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/core/errors/failures.dart';
+import 'package:due_day/core/observability/observability_service.dart';
 import 'package:due_day/features/categories/data/datasources/category_remote_data_source.dart';
 import 'package:due_day/features/categories/data/models/category_model.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
@@ -9,8 +10,14 @@ import 'package:fpdart/fpdart.dart';
 
 class CategoryRepositoryImpl implements CategoryRepository {
   final CategoryRemoteDataSource remoteDataSource;
+  final ObservabilityService observability;
 
-  CategoryRepositoryImpl({required this.remoteDataSource});
+  static const String _tag = 'categories';
+
+  CategoryRepositoryImpl({
+    required this.remoteDataSource,
+    required this.observability,
+  });
 
   Failure _mapServerExceptionToFailure(ServerException e) {
     if (e.code == 'unauthenticated' || e.message.contains('authenticated')) {
@@ -31,8 +38,20 @@ class CategoryRepositoryImpl implements CategoryRepository {
       final result = await remoteDataSource.addCategory(model);
       return Right(result.toEntity());
     } on ServerException catch (e) {
+      observability.error(
+        'addCategory failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapServerExceptionToFailure(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'addCategory unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -46,8 +65,20 @@ class CategoryRepositoryImpl implements CategoryRepository {
       final result = await remoteDataSource.updateCategory(model);
       return Right(result.toEntity());
     } on ServerException catch (e) {
+      observability.error(
+        'updateCategory failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapServerExceptionToFailure(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'updateCategory unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -58,8 +89,20 @@ class CategoryRepositoryImpl implements CategoryRepository {
       await remoteDataSource.deleteCategory(categoryId);
       return const Right(null);
     } on ServerException catch (e) {
+      observability.error(
+        'deleteCategory failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       return Left(_mapServerExceptionToFailure(e));
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'deleteCategory unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       return Left(GenericFailure(e.toString()));
     }
   }
@@ -73,10 +116,22 @@ class CategoryRepositoryImpl implements CategoryRepository {
         );
       }
     } on ServerException catch (e) {
+      observability.error(
+        'getCategories stream failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
       yield Left<Failure, List<CategoryEntity>>(
         _mapServerExceptionToFailure(e),
       );
-    } catch (e) {
+    } catch (e, stackTrace) {
+      observability.error(
+        'getCategories stream unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
       yield Left<Failure, List<CategoryEntity>>(GenericFailure(e.toString()));
     }
   }
