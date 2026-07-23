@@ -76,47 +76,55 @@ class _AddEditCategoryBottomSheetState
       ),
       child: Form(
         key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            CategoryFormHeader(
-              title: isEditing
-                  ? l10n.categoriesEditCategory
-                  : l10n.categoriesNewCategory,
-              onClose: () => Navigator.of(context).pop(),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.85,
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                CategoryFormHeader(
+                  title: isEditing
+                      ? l10n.categoriesEditCategory
+                      : l10n.categoriesNewCategory,
+                  onClose: () => Navigator.of(context).pop(),
+                ),
+                SizedBox(height: dimensions.spacing.extraLarge.height),
+                AppTextField(
+                  controller: _nameController,
+                  label: l10n.categoriesNameLabel,
+                  hintText: l10n.categoriesNameHint,
+                  prefixIcon: Icons.label_outline_rounded,
+                  validator: Validators.requiredField(l10n),
+                ),
+                SizedBox(height: dimensions.spacing.extraLarge.height),
+                CategorySectionTitle(title: l10n.categoriesSelectIcon),
+                SizedBox(height: dimensions.spacing.medium.height),
+                CategoryIconSelector(
+                  selectedIcon: _selectedIcon,
+                  selectedColor: _selectedColor,
+                  onIconSelected: (icon) =>
+                      setState(() => _selectedIcon = icon),
+                ),
+                SizedBox(height: dimensions.spacing.extraLarge.height),
+                CategorySectionTitle(title: l10n.categoriesSelectColor),
+                SizedBox(height: dimensions.spacing.medium.height),
+                CategoryColorSelector(
+                  selectedColor: _selectedColor,
+                  onColorSelected: (color) =>
+                      setState(() => _selectedColor = color),
+                ),
+                SizedBox(height: dimensions.spacing.extraLarge.height),
+                CategoryFormActions(
+                  onCancel: () => Navigator.of(context).pop(),
+                  onSave: _submit,
+                ),
+                SizedBox(height: dimensions.spacing.large.height),
+              ],
             ),
-            SizedBox(height: dimensions.spacing.extraLarge.height),
-            AppTextField(
-              controller: _nameController,
-              label: l10n.categoriesNameLabel,
-              hintText: l10n.categoriesNameHint,
-              prefixIcon: Icons.label_outline_rounded,
-              validator: Validators.requiredField(l10n),
-            ),
-            SizedBox(height: dimensions.spacing.extraLarge.height),
-            CategorySectionTitle(title: l10n.categoriesSelectIcon),
-            SizedBox(height: dimensions.spacing.medium.height),
-            CategoryIconSelector(
-              selectedIcon: _selectedIcon,
-              selectedColor: _selectedColor,
-              onIconSelected: (icon) => setState(() => _selectedIcon = icon),
-            ),
-            SizedBox(height: dimensions.spacing.extraLarge.height),
-            CategorySectionTitle(title: l10n.categoriesSelectColor),
-            SizedBox(height: dimensions.spacing.medium.height),
-            CategoryColorSelector(
-              selectedColor: _selectedColor,
-              onColorSelected: (color) =>
-                  setState(() => _selectedColor = color),
-            ),
-            SizedBox(height: dimensions.spacing.extraLarge.height),
-            CategoryFormActions(
-              onCancel: () => Navigator.of(context).pop(),
-              onSave: _submit,
-            ),
-            SizedBox(height: dimensions.spacing.large.height),
-          ],
+          ),
         ),
       ),
     );

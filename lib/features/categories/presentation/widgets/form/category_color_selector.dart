@@ -18,41 +18,40 @@ class CategoryColorSelector extends StatelessWidget {
     final colors = context.colors;
     final dimensions = context.dimensions;
 
-    return Row(
+    return Wrap(
+      spacing: dimensions.spacing.medium.width,
+      runSpacing: dimensions.spacing.medium.height,
       children: CategoryColorUtils.availableColors.map((color) {
         final isSelected = color.toARGB32() == selectedColor.toARGB32();
 
-        return Padding(
-          padding: EdgeInsets.only(right: dimensions.spacing.medium.width),
-          child: GestureDetector(
-            onTap: () => onColorSelected(color),
-            child: Container(
-              width: 44.scale,
-              height: 44.scale,
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
-                border: isSelected
-                    ? Border.all(color: colors.onLightBackground, width: 3)
-                    : null,
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: color.withValues(alpha: 0.4),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ]
-                    : null,
-              ),
-              child: isSelected
-                  ? Icon(
-                      Icons.check_rounded,
-                      color: colors.lightSurface,
-                      size: 20.scale,
-                    )
+        return GestureDetector(
+          onTap: () => onColorSelected(color),
+          child: Container(
+            width: 44.scale,
+            height: 44.scale,
+            decoration: BoxDecoration(
+              color: color,
+              shape: BoxShape.circle,
+              border: isSelected
+                  ? Border.all(color: colors.onLightBackground, width: 3)
+                  : null,
+              boxShadow: isSelected
+                  ? [
+                      BoxShadow(
+                        color: color.withValues(alpha: 0.4),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ]
                   : null,
             ),
+            child: isSelected
+                ? Icon(
+                    Icons.check_rounded,
+                    color: colors.lightSurface,
+                    size: 20.scale,
+                  )
+                : null,
           ),
         );
       }).toList(),
