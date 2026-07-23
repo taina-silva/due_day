@@ -74,6 +74,15 @@ Never reference raw `'assets/...'` path strings directly in widgets. Bundled ima
   )
   ```
 
+### 2.5. User Feedback (Snackbars)
+Never call `ScaffoldMessenger.of(context).showSnackBar(SnackBar(...))` directly. Success, error, and info feedback must go through `AppMessenger` (`lib/core/design_system/components/messenger/app_messenger.dart`), which guarantees the correct semantic color (`context.colors.system.success/error/info`) and always includes a dismiss (X) action.
+- **Example:**
+  ```dart
+  AppMessenger.showSuccess(context, l10n.transactionsSavedSuccess);
+  AppMessenger.showError(context, failure.toLocalizedString(context));
+  ```
+See [design_system.md §6.5](design_system.md#65-messenger--snackbars-componentsmessenger) for full details.
+
 ---
 
 ## 🌍 3. Localization Standards (i18n)
@@ -178,6 +187,7 @@ Before completing or committing changes:
 - [ ] All numeric layouts scale with `.width`, `.height`, `.scale`, or `.fontSize`.
 - [ ] All texts retrieved via `AppLocalizations`.
 - [ ] No raw `'assets/...'` path strings — only `AppImages` via `AppImageWidget` (or `AppIcons` for custom SVG icons).
+- [ ] No raw `ScaffoldMessenger`/`SnackBar` calls — only `AppMessenger.showSuccess/showError/showInfo`.
 - [ ] No raw exceptions bubble up to pages.
 - [ ] Run `fvm dart format .` to format all changed files and remove unused imports.
 - [ ] Run `fvm flutter analyze` to verify and resolve all warnings and errors in changed files (ensuring zero issues).
@@ -202,6 +212,8 @@ Use the following prompt to configure code generation rules:
 > **Texts & i18n** — Never use hardcoded literal strings in user-facing widgets. All user-visible strings must come from `AppLocalizations.of(context)`.
 >
 > **Image Assets** — Never reference raw `'assets/...'` path strings. Use the `AppImages` enum and `AppImageWidget` from `lib/core/design_system/images/`, passing a localized `semanticLabel`.
+>
+> **Feedback / Snackbars** — Never call `ScaffoldMessenger.of(context).showSnackBar(SnackBar(...))` directly. Use `AppMessenger.showSuccess(context, message)`, `AppMessenger.showError(context, message)`, or `AppMessenger.showInfo(context, message)` from `lib/core/design_system/components/messenger/app_messenger.dart`.
 
 ### 8.2. Base Widget Structure Template
 ```dart

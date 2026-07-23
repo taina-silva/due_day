@@ -1,3 +1,4 @@
+import 'package:due_day/core/design_system/components/messenger/app_messenger.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/injection/injection_container.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
@@ -72,20 +73,13 @@ class SecurityBlock extends StatelessWidget {
                 onChanged: (bool value) async {
                   final securityService = sl<SecurityService>();
 
-                  // Verifica se o dispositivo possui suporte ativo
+                  // Checks whether the device currently supports biometrics
                   final isSupported = await securityService.canAuthenticate();
                   if (!isSupported) {
                     if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            l10n.profileBiometricsNotSupported,
-                            style: typography.body.medium.copyWith(
-                              color: colors.onDarkBackground,
-                            ),
-                          ),
-                          backgroundColor: colors.system.error,
-                        ),
+                      AppMessenger.showError(
+                        context,
+                        l10n.profileBiometricsNotSupported,
                       );
                     }
                     return;
@@ -110,17 +104,7 @@ class SecurityBlock extends StatelessWidget {
                           l10n.profileBiometricsNotSupported,
                         _ => l10n.profileBiometricsAuthFailed,
                       };
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            message,
-                            style: typography.body.medium.copyWith(
-                              color: colors.onDarkBackground,
-                            ),
-                          ),
-                          backgroundColor: colors.system.error,
-                        ),
-                      );
+                      AppMessenger.showError(context, message);
                     }
                   }
                 },

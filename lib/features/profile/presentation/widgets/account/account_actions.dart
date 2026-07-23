@@ -1,3 +1,4 @@
+import 'package:due_day/core/design_system/components/messenger/app_messenger.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_bloc.dart';
@@ -85,17 +86,7 @@ class AccountActions extends StatelessWidget {
           TextButton(
             onPressed: () {
               cntx.pop();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    l10n.profileExcludeDevAlert,
-                    style: context.typography.body.medium.copyWith(
-                      color: context.colors.onDarkBackground,
-                    ),
-                  ),
-                  backgroundColor: context.colors.system.error,
-                ),
-              );
+              AppMessenger.showError(context, l10n.profileExcludeDevAlert);
             },
             child: Text(
               l10n.profileExclude,

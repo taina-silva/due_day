@@ -1,5 +1,6 @@
 import 'package:due_day/core/design_system/components/buttons/app_text_button.dart';
 import 'package:due_day/core/design_system/components/form_fields/app_text_field.dart';
+import 'package:due_day/core/design_system/components/messenger/app_messenger.dart';
 import 'package:due_day/core/design_system/components/structure/custom_app_bar.dart';
 import 'package:due_day/core/design_system/components/structure/custom_scaffold.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
@@ -48,16 +49,9 @@ class _SignUpPageState extends State<SignUpPage> {
           if (state is AuthAuthenticated) {
             context.go('/dashboard');
           } else if (state is AuthError) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  state.failure.toLocalizedString(context),
-                  style: typography.body.medium.copyWith(
-                    color: colors.onDarkBackground,
-                  ),
-                ),
-                backgroundColor: colors.system.error,
-              ),
+            AppMessenger.showError(
+              context,
+              state.failure.toLocalizedString(context),
             );
           }
         },

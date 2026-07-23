@@ -1,4 +1,5 @@
 import 'package:due_day/core/design_system/components/buttons/app_text_button.dart';
+import 'package:due_day/core/design_system/components/messenger/app_messenger.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
@@ -158,10 +159,9 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
         BlocListener<TransactionBloc, TransactionState>(
           listener: (context, state) {
             if (state is TransactionError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.failure.toLocalizedString(context)),
-                ),
+              AppMessenger.showError(
+                context,
+                state.failure.toLocalizedString(context),
               );
             }
           },
@@ -334,9 +334,7 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
       });
     }
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(l10n.transactionsSavedSuccess)));
+    AppMessenger.showSuccess(context, l10n.transactionsSavedSuccess);
 
     if (widget.onSave != null) {
       widget.onSave!();
