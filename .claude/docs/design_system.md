@@ -52,8 +52,7 @@ lib/core/design_system/
 │   │   ├── circular_loading_primary.dart
 │   │   └── index.dart
 │   ├── messenger/
-│   │   ├── messenger.dart             # Unified SnackBars and dialog alerts
-│   │   └── index.dart
+│   │   └── app_messenger.dart         # AppMessenger + AppMessengerContent — unified success/error/info SnackBars
 │   ├── structure/
 │   │   ├── custom_scaffold.dart       # Theme-adaptive scaffolds
 │   │   ├── custom_app_bar.dart        # Reusable Top AppBars
@@ -269,6 +268,17 @@ Only assets actually consumed by the app belong in `AppImages` — store-listing
 
 Custom SVG icons will follow the identical pattern under `icons/` (`AppIcons` enum + `AppIcon` widget) once the first custom icon is introduced; Material's built-in `Icons.*` remain the default for anything that isn't a custom asset.
 
+### 6.5. Messenger / SnackBars (`components/messenger/`)
+
+#### **AppMessenger**
+Single entry point for all success, error, and info feedback. It replaces ad-hoc `ScaffoldMessenger.of(context).showSnackBar(SnackBar(...))` calls with a consistently styled, color-coded `SnackBar` (green/red/blue via `context.colors.system.*`) that always ships with a dismiss (X) action on the trailing edge (via Flutter's native `SnackBar.showCloseIcon`). **Any feature that needs to show a transient success/error/info message must use `AppMessenger` — never build a raw `SnackBar` inline.**
+```dart
+AppMessenger.showSuccess(context, l10n.transactionsSavedSuccess);
+AppMessenger.showError(context, failure.toLocalizedString(context));
+AppMessenger.showInfo(context, l10n.someInfoMessage);
+```
+For custom durations or direct access to the `AppMessengerType` enum, call `AppMessenger.show(context, message: ..., type: AppMessengerType.success, duration: ...)`. The row content (`AppMessengerContent`) is exposed as its own `StatelessWidget` for isolated testing/previewing.
+
 ---
 
 ## 🔀 7. Navigation & Localization Integration
@@ -284,9 +294,9 @@ context.pop();              // Pop route stack
 ### 7.2. Translation Integration (Localizations)
 User strings are loaded dynamically from `AppLocalizations` delegates.
 ```dart
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:due_day/core/l10n/app_localizations.dart';
 
-final l10n = AppLocalizations.of(context)!;
+final l10n = AppLocalizations.of(context);
 print(l10n.authLoginTitle);
 ```
 
@@ -296,13 +306,14 @@ print(l10n.authLoginTitle);
 
 ```dart
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:due_day/core/design_system/components/buttons/app_text_button.dart';
 import 'package:due_day/core/design_system/components/form_fields/app_text_field.dart';
+import 'package:due_day/core/design_system/components/messenger/app_messenger.dart';
 import 'package:due_day/core/design_system/components/structure/custom_scaffold.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
+import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/core/utils/validators/validators.dart';
 
@@ -328,12 +339,14 @@ class _LoginPageExampleState extends State<LoginPageExample> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       context.go('/dashboard');
+    } else {
+      AppMessenger.showError(context, AppLocalizations.of(context).validatorRequired);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context);
     final colors = context.colors;
     final spacing = context.spacing;
     final typography = context.typography;
@@ -411,6 +424,7 @@ class _LoginPageExampleState extends State<LoginPageExample> {
 - Use `BuildContext` theme extension properties exclusively for sizes, spaces, fonts, and colors inside build methods.
 - Use `context.go()` for bottom nav index tabs, and `context.push()` / `context.pop()` for overlays.
 - Utilize `AppTextField` and `AppTextButton*` implementations to guarantee brand compliance.
+- Use `AppMessenger.showSuccess/showError/showInfo` for any transient feedback message instead of a raw `SnackBar`.
 - Keep all texts inside the localized arb dictionaries.
 - Append `.width` (or `.w`) and `.height` (or `.h`) to spacing metrics inside dynamic layouts.
 - Ensure interactive elements have a minimum touch surface of **44x44px** and comply with **WCAG AA** color contrast rules.
@@ -421,3 +435,4 @@ class _LoginPageExampleState extends State<LoginPageExample> {
 - Call legacy `Navigator.push(...)` routines.
 - Construct duplicate custom form elements without consulting theme registries.
 - Inject raw validation alerts or bypass localized translations.
+- Call `ScaffoldMessenger.of(context).showSnackBar(SnackBar(...))` directly — always go through `AppMessenger`.
