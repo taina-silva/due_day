@@ -1509,6 +1509,18 @@ abstract class AppLocalizations {
   /// **'Ocorreu um erro ao gerenciar suas categorias.'**
   String get categoriesErrorFallback;
 
+  /// No description provided for @categoriesErrorSaveFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao salvar a categoria. Tente novamente.'**
+  String get categoriesErrorSaveFailed;
+
+  /// No description provided for @categoriesErrorDeleteFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao deletar a categoria. Tente novamente.'**
+  String get categoriesErrorDeleteFailed;
+
   /// No description provided for @dashboardErrorFallback.
   ///
   /// In pt, this message translates to:

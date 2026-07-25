@@ -348,6 +348,8 @@
     "categoriesErrorNotFound": "Categoria não encontrada.",
     "categoriesErrorNotAuthenticated": "Usuário não autenticado. Por favor, faça login novamente.",
     "categoriesErrorFallback": "Ocorreu um erro ao gerenciar suas categorias.",
+    "categoriesErrorSaveFailed": "Falha ao salvar a categoria. Tente novamente.",
+    "categoriesErrorDeleteFailed": "Falha ao deletar a categoria. Tente novamente.",
     "dashboardErrorFallback": "Ocorreu um erro ao carregar o painel.",
     "scheduleErrorFallback": "Ocorreu um erro ao carregar sua agenda."
 }

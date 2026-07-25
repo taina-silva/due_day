@@ -340,6 +340,8 @@
     "categoriesErrorNotFound": "Category not found.",
     "categoriesErrorNotAuthenticated": "User not authenticated. Please log in again.",
     "categoriesErrorFallback": "An error occurred while managing your categories.",
+    "categoriesErrorSaveFailed": "Failed to save category. Please try again.",
+    "categoriesErrorDeleteFailed": "Failed to delete category. Please try again.",
     "dashboardErrorFallback": "An error occurred while loading the dashboard.",
     "scheduleErrorFallback": "An error occurred while loading your schedule."
 }

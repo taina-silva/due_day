@@ -60,7 +60,7 @@ void main() {
       );
 
       test(
-        'should return ServerFailure for general server exceptions',
+        'should return CategorySaveFailure for general server exceptions',
         () async {
           // Arrange
           when(
@@ -71,7 +71,10 @@ void main() {
           final result = await repository.addCategory(tCategoryEntity);
 
           // Assert
-          expect(result, equals(const Left(ServerFailure('Server error'))));
+          expect(
+            result,
+            equals(const Left(CategorySaveFailure('Server error'))),
+          );
         },
       );
     });
@@ -92,6 +95,25 @@ void main() {
           () => mockRemoteDataSource.updateCategory(tCategoryModel),
         ).called(1);
       });
+
+      test(
+        'should return CategorySaveFailure for general server exceptions',
+        () async {
+          // Arrange
+          when(
+            () => mockRemoteDataSource.updateCategory(any()),
+          ).thenThrow(const ServerException('Server error'));
+
+          // Act
+          final result = await repository.updateCategory(tCategoryEntity);
+
+          // Assert
+          expect(
+            result,
+            equals(const Left(CategorySaveFailure('Server error'))),
+          );
+        },
+      );
     });
 
     group('deleteCategory', () {
@@ -109,6 +131,38 @@ void main() {
         verify(
           () => mockRemoteDataSource.deleteCategory('category-1'),
         ).called(1);
+      });
+
+      test(
+        'should return CategoryDeleteFailure for general server exceptions',
+        () async {
+          // Arrange
+          when(
+            () => mockRemoteDataSource.deleteCategory(any()),
+          ).thenThrow(const ServerException('Server error'));
+
+          // Act
+          final result = await repository.deleteCategory('category-1');
+
+          // Assert
+          expect(
+            result,
+            equals(const Left(CategoryDeleteFailure('Server error'))),
+          );
+        },
+      );
+
+      test('should return CategoryNotFoundFailure when not found', () async {
+        // Arrange
+        when(() => mockRemoteDataSource.deleteCategory(any())).thenThrow(
+          const ServerException('Category not found.', 'not-found'),
+        );
+
+        // Act
+        final result = await repository.deleteCategory('category-1');
+
+        // Assert
+        expect(result, equals(const Left(CategoryNotFoundFailure())));
       });
     });
 
