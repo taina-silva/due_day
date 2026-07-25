@@ -35,8 +35,8 @@ class CategoryListContent extends StatelessWidget {
         spacing.safeBottomNav.height,
       ),
       children: [
-        // Hero card (first category)
-        if (categories.isNotEmpty) ...[
+        // Hero card (first category, only if it has registered transactions)
+        if (categories.isNotEmpty && categories.first.transactionCount > 0) ...[
           CategoryHeroCard(
             category: categories.first,
             transactionCount: categories.first.transactionCount,
