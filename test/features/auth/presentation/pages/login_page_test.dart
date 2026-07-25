@@ -209,10 +209,10 @@ void main() {
           buildTestableWidget(child: const LoginPage(), router: router),
         );
         await tester.pump(); // Trigger listener
-        await tester.pumpAndSettle(); // Wait for snackbar animation
+        await tester.pumpAndSettle(); // Wait for the toast's enter animation
 
-        // Assert Snackbar is visible
-        expect(find.byType(SnackBar), findsOneWidget);
+        // Assert the AppMessenger toast is visible
+        expect(find.byKey(const Key('app_messenger_toast')), findsOneWidget);
       },
     );
 

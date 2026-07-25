@@ -30,9 +30,11 @@ void main() {
     );
   }
 
+  Finder findToast() => find.byKey(const Key('app_messenger_toast'));
+
   group('AppMessenger', () {
     testWidgets(
-      'given showSuccess when called then displays a green SnackBar with the message',
+      'given showSuccess when called then displays a green toast with the message',
       (tester) async {
         setupTestWindow(tester);
 
@@ -44,16 +46,16 @@ void main() {
         await tester.tap(find.byType(ElevatedButton));
         await tester.pump();
 
-        expect(find.byType(SnackBar), findsOneWidget);
+        expect(findToast(), findsOneWidget);
         expect(find.text('All good'), findsOneWidget);
 
-        final snackBar = tester.widget<SnackBar>(find.byType(SnackBar));
-        expect(snackBar.backgroundColor, DueDayTheme.colors.system.success);
+        final toast = tester.widget<Material>(findToast());
+        expect(toast.color, DueDayTheme.colors.system.success);
       },
     );
 
     testWidgets(
-      'given showError when called then displays a red SnackBar with the message',
+      'given showError when called then displays a red toast with the message',
       (tester) async {
         setupTestWindow(tester);
 
@@ -65,16 +67,16 @@ void main() {
         await tester.tap(find.byType(ElevatedButton));
         await tester.pump();
 
-        expect(find.byType(SnackBar), findsOneWidget);
+        expect(findToast(), findsOneWidget);
         expect(find.text('Something failed'), findsOneWidget);
 
-        final snackBar = tester.widget<SnackBar>(find.byType(SnackBar));
-        expect(snackBar.backgroundColor, DueDayTheme.colors.system.error);
+        final toast = tester.widget<Material>(findToast());
+        expect(toast.color, DueDayTheme.colors.system.error);
       },
     );
 
     testWidgets(
-      'given showInfo when called then displays a blue SnackBar with the message',
+      'given showInfo when called then displays a blue toast with the message',
       (tester) async {
         setupTestWindow(tester);
 
@@ -86,16 +88,16 @@ void main() {
         await tester.tap(find.byType(ElevatedButton));
         await tester.pump();
 
-        expect(find.byType(SnackBar), findsOneWidget);
+        expect(findToast(), findsOneWidget);
         expect(find.text('Heads up'), findsOneWidget);
 
-        final snackBar = tester.widget<SnackBar>(find.byType(SnackBar));
-        expect(snackBar.backgroundColor, DueDayTheme.colors.system.info);
+        final toast = tester.widget<Material>(findToast());
+        expect(toast.color, DueDayTheme.colors.system.info);
       },
     );
 
     testWidgets(
-      'given a visible SnackBar when the close icon is tapped then it is dismissed',
+      'given a visible toast when the close icon is tapped then it is dismissed',
       (tester) async {
         setupTestWindow(tester);
 
@@ -106,19 +108,45 @@ void main() {
         );
         await tester.tap(find.byType(ElevatedButton));
         await tester.pump();
-        await tester.pump(const Duration(milliseconds: 750));
-        expect(find.byType(SnackBar), findsOneWidget);
+        await tester.pump(const Duration(milliseconds: 250));
+        expect(findToast(), findsOneWidget);
 
         await tester.tap(find.byIcon(Icons.close));
         await tester.pump();
-        await tester.pump(const Duration(milliseconds: 750));
+        await tester.pump(const Duration(milliseconds: 250));
 
-        expect(find.byType(SnackBar), findsNothing);
+        expect(findToast(), findsNothing);
       },
     );
 
     testWidgets(
-      'given a new message when triggered while one is visible then replaces the current SnackBar',
+      'given a toast auto-dismiss duration when it elapses then the toast is removed',
+      (tester) async {
+        setupTestWindow(tester);
+
+        await tester.pumpWidget(
+          buildTestableWidget(
+            (context) => AppMessenger.show(
+              context,
+              message: 'Times out',
+              type: AppMessengerType.info,
+              duration: const Duration(seconds: 1),
+            ),
+          ),
+        );
+        await tester.tap(find.byType(ElevatedButton));
+        await tester.pump();
+        expect(findToast(), findsOneWidget);
+
+        await tester.pump(const Duration(seconds: 1));
+        await tester.pump(const Duration(milliseconds: 250));
+
+        expect(findToast(), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'given a new message when triggered while one is visible then replaces the current toast',
       (tester) async {
         setupTestWindow(tester);
 

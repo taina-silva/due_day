@@ -12,7 +12,8 @@ import 'package:due_day/core/settings/settings_state.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_bloc.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_event.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_action_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:due_day/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_event.dart';
@@ -112,7 +113,8 @@ class _DueDayAppState extends State<DueDayApp> {
         BlocProvider.value(value: _authBloc),
         BlocProvider(create: (_) => di.sl<SettingsBloc>()),
         BlocProvider(create: (_) => di.sl<AccountBloc>()),
-        BlocProvider(create: (_) => di.sl<CategoryBloc>()),
+        BlocProvider(create: (_) => di.sl<CategoryLoadBloc>()),
+        BlocProvider(create: (_) => di.sl<CategoryActionBloc>()),
         BlocProvider(create: (_) => di.sl<TransactionBloc>()),
         BlocProvider(create: (_) => di.sl<DashboardBloc>()),
         BlocProvider(
@@ -131,6 +133,13 @@ class _DueDayAppState extends State<DueDayApp> {
             locale: Locale(state.languageCode),
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
+            builder: (context, child) {
+              return GestureDetector(
+                onTap: () => FocusScope.of(context).unfocus(),
+                behavior: HitTestBehavior.opaque,
+                child: child,
+              );
+            },
           );
         },
       ),

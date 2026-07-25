@@ -3,8 +3,8 @@ import 'package:due_day/core/design_system/components/structure/custom_scaffold.
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_bloc.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_state.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
@@ -68,7 +68,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
         ],
       ),
       body: SafeArea(
-        child: BlocBuilder<CategoryBloc, CategoryState>(
+        child: BlocBuilder<CategoryLoadBloc, CategoryLoadState>(
           builder: (context, categoryState) {
             final categories = categoryState is CategoryLoaded
                 ? categoryState.categories

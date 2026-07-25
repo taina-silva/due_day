@@ -9,8 +9,8 @@ import 'package:due_day/features/accounts/presentation/bloc/account_state.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_state.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_bloc.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_state.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:due_day/features/dashboard/presentation/bloc/dashboard_event.dart';
 import 'package:due_day/features/dashboard/presentation/bloc/dashboard_state.dart';
@@ -88,7 +88,7 @@ class _DashboardPageState extends State<DashboardPage> {
             if (state is DashboardLoaded) {
               final summary = state.summary;
 
-              return BlocBuilder<CategoryBloc, CategoryState>(
+              return BlocBuilder<CategoryLoadBloc, CategoryLoadState>(
                 builder: (context, categoryState) {
                   final categories = categoryState is CategoryLoaded
                       ? categoryState.categories

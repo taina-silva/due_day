@@ -49,6 +49,16 @@ Contains user interfaces and handles state transitions.
 - **Pages (`presentation/pages`)**: Primary screens bound to routes. They listen to the BLoC's state transitions and rebuild the UI.
 - **Widgets (`presentation/widgets`)**: Small, modular, reusable visual blocks.
 
+#### Load Bloc / Action Bloc separation (standard for streamed features)
+When a feature exposes a **real-time list stream** (`getX().listen(...)`, e.g. a Firestore snapshot listener) *and* **mutating actions** (add/update/delete), split it into two BLoCs instead of one — this is the default pattern, not an exception:
+
+- **`XLoadBloc`** (`x_load_bloc.dart`, `x_load_event.dart`, `x_load_state.dart`): owns `LoadX` → `XInitial` / `XLoading` / `XLoaded` / `XError`. Nothing here ever changes because of an add/update/delete — only the underlying stream drives it.
+- **`XActionBloc`** (`x_action_bloc.dart`, `x_action_event.dart`, `x_action_state.dart`): owns `AddXEvent` / `UpdateXEvent` / `DeleteXEvent` → `XActionInitial` / `XActionInProgress` / `XActionSuccess` / `XActionError`. It does not carry the list at all — the list only ever lives in `XLoadBloc`, and a successful mutation reaches the UI through the Firestore stream re-emitting into `XLoadBloc`, not through `XActionBloc`.
+
+**Why this is the standard, not a single combined bloc:** a single bloc that emits both `XLoaded` and an action-result state on the *same* stream leaks transient action state to every other screen that reads that bloc just for the list (dashboards, filters, selection sheets) — those screens only pattern-match `XLoaded` and silently blank out whenever an unrelated mutation happens elsewhere in the app. Splitting removes the leak structurally instead of relying on every read-only consumer to special-case the action states. See `categories` (`CategoryLoadBloc` + `CategoryActionBloc`) for the reference implementation. Full templates: [create-bloc](../skills/create-bloc/SKILL.md).
+
+A single combined bloc remains acceptable only for features with no persistent stream to leak into — e.g. a one-shot settings toggle with no list underneath it.
+
 ---
 
 ## 🛠️ 2. SOLID Principles in DueDay
@@ -71,3 +81,5 @@ Contains user interfaces and handles state transitions.
 - **No UseCase-to-UseCase Dependencies:** UseCases must remain isolated. If a business workflow requires multiple UseCases, orchestrate them inside the BLoC or create an orchestrating UseCase.
 - **No Raw Exceptions in UI:** Never allow `try-catch` blocks on a page to capture Firebase errors. All exceptions must be resolved inside the Data Repositories and wrapped in `Either`.
 - **No Custom State Engines:** Stick to `flutter_bloc` to preserve state flow structure.
+- **No Premature Bottom Sheet Dismissal:** A bottom sheet that submits a mutating action (add/update/delete) must never call `Navigator.pop()` right after dispatching the event. It must wait for the action BLoC's result via a `BlocListener`: pop only on the success state, and on the error state call `AppMessenger.showError` while keeping the sheet open so the user can retry without re-entering the form. See [create-screen §Bottom Sheets with mutating actions](../skills/create-screen/SKILL.md).
+- **No Mixing Load and Action State:** Do not emit an add/update/delete result onto the same BLoC/state hierarchy that also carries the loaded list (see Load Bloc / Action Bloc separation above). A read-only screen consuming the list must never see a state shape it doesn't recognize.

@@ -7,9 +7,12 @@ import 'package:due_day/features/categories/data/models/category_model.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
 import 'package:due_day/features/categories/domain/repositories/category_repository.dart';
 import 'package:due_day/features/categories/domain/usecases/category_usecases.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_bloc.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_event.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_state.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_action_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_action_event.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_action_state.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_event.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -50,9 +53,13 @@ class MockDeleteCategory extends Mock implements DeleteCategory {}
 
 class MockGetCategories extends Mock implements GetCategories {}
 
-// BLoC Mock
-class MockCategoryBloc extends MockBloc<CategoryEvent, CategoryState>
-    implements CategoryBloc {}
+// BLoC Mocks
+class MockCategoryLoadBloc extends MockBloc<CategoryLoadEvent, CategoryLoadState>
+    implements CategoryLoadBloc {}
+
+class MockCategoryActionBloc
+    extends MockBloc<CategoryActionEvent, CategoryActionState>
+    implements CategoryActionBloc {}
 
 // Test Data
 final tDateTime = DateTime(2026, 7, 7);

@@ -15,6 +15,7 @@ This guide describes how to build page layouts and widgets in the **Presentation
 2.  **Ensure Fluid Responsiveness:** Every numeric layout dimension (padding, margin, width, height, font size) must use the responsive layout extensions (`.w`, `.h`, `.sp`, `.fs`).
 3.  **Localize User-Facing Content:** Load all texts from `AppLocalizations` translation keys. E.g., do not write `Text('Settings')` directly.
 4.  **Touch Target Accessibility:** Ensure interactive buttons have a touch surface of at least **44x44px** to align with accessibility standards.
+5.  **Never Dismiss a Mutating Bottom Sheet Eagerly:** if a bottom sheet dispatches an add/update/delete event, it must not `Navigator.pop()` right after dispatching it — see "Bottom Sheets with mutating actions" below.
 
 ---
 
@@ -102,3 +103,52 @@ class AccountPage extends StatelessWidget {
   }
 }
 ```
+
+---
+
+## 📝 Bottom Sheets with mutating actions
+
+A bottom sheet that submits an add/update/delete must not close as soon as it dispatches the event — it has no way yet to know whether the write succeeded. Instead, dispatch the event, keep the sheet open, and let a `BlocListener` on the feature's Action Bloc (see [create-bloc](../create-bloc/SKILL.md)) decide the outcome:
+- **On the error state:** call `AppMessenger.showError` with the localized failure and keep the sheet open so the user can retry without re-entering the form.
+- **On the success state:** `Navigator.pop()`.
+- **Guard with a local `_isSubmitting` flag**, both to ignore state changes that aren't a response to *this* submission (the Action Bloc is a shared, app-wide instance — see [dependency_injection.md](../../references/dependency_injection.md)) and to stop the user from double-submitting while a request is in flight.
+
+```dart
+class _AddEditCategoryBottomSheetState extends State<AddEditCategoryBottomSheet> {
+  final _formKey = GlobalKey<FormState>();
+  bool _isSubmitting = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocListener<CategoryActionBloc, CategoryActionState>(
+      listener: (context, state) {
+        if (!_isSubmitting) return;
+
+        if (state is CategoryActionError) {
+          setState(() => _isSubmitting = false);
+          AppMessenger.showError(context, state.failure.toLocalizedString(context));
+        } else if (state is CategoryActionSuccess) {
+          _isSubmitting = false;
+          Navigator.of(context).pop();
+        }
+      },
+      child: Form(
+        key: _formKey,
+        child: /* ...form fields..., CategoryFormActions(onSave: _submit) */,
+      ),
+    );
+  }
+
+  void _submit() {
+    if (_isSubmitting) return;
+
+    if (_formKey.currentState!.validate()) {
+      setState(() => _isSubmitting = true);
+      context.read<CategoryActionBloc>().add(AddCategoryEvent(/* ... */));
+      // No Navigator.pop() here — the BlocListener above closes the sheet.
+    }
+  }
+}
+```
+
+Test both branches explicitly by driving the mocked Action Bloc's state stream after the tap (`whenListen` + a `StreamController`) — see [testing.md §4.1](../../docs/testing.md#41-testing-a-mutating-bottom-sheet-submit--stays-open-on-error--closes-on-success).

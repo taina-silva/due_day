@@ -52,7 +52,7 @@ lib/core/design_system/
 │   │   ├── circular_loading_primary.dart
 │   │   └── index.dart
 │   ├── messenger/
-│   │   └── app_messenger.dart         # AppMessenger + AppMessengerContent — unified success/error/info SnackBars
+│   │   └── app_messenger.dart         # AppMessenger + AppMessengerContent — unified success/error/info toasts (root-Overlay based)
 │   ├── structure/
 │   │   ├── custom_scaffold.dart       # Theme-adaptive scaffolds
 │   │   ├── custom_app_bar.dart        # Reusable Top AppBars
@@ -268,16 +268,23 @@ Only assets actually consumed by the app belong in `AppImages` — store-listing
 
 Custom SVG icons will follow the identical pattern under `icons/` (`AppIcons` enum + `AppIcon` widget) once the first custom icon is introduced; Material's built-in `Icons.*` remain the default for anything that isn't a custom asset.
 
-### 6.5. Messenger / SnackBars (`components/messenger/`)
+### 6.5. Messenger / Toasts (`components/messenger/`)
 
 #### **AppMessenger**
-Single entry point for all success, error, and info feedback. It replaces ad-hoc `ScaffoldMessenger.of(context).showSnackBar(SnackBar(...))` calls with a consistently styled, color-coded `SnackBar` (green/red/blue via `context.colors.system.*`) that always ships with a dismiss (X) action on the trailing edge (via Flutter's native `SnackBar.showCloseIcon`). **Any feature that needs to show a transient success/error/info message must use `AppMessenger` — never build a raw `SnackBar` inline.**
+Single entry point for all success, error, and info feedback. It replaces ad-hoc `ScaffoldMessenger.of(context).showSnackBar(SnackBar(...))` calls with a consistently styled, color-coded toast (green/red/blue via `context.colors.system.*`) that always ships with a dismiss (X) action on the trailing edge. **Any feature that needs to show a transient success/error/info message must use `AppMessenger` — never build a raw `SnackBar` inline.**
 ```dart
 AppMessenger.showSuccess(context, l10n.transactionsSavedSuccess);
 AppMessenger.showError(context, failure.toLocalizedString(context));
 AppMessenger.showInfo(context, l10n.someInfoMessage);
 ```
 For custom durations or direct access to the `AppMessengerType` enum, call `AppMessenger.show(context, message: ..., type: AppMessengerType.success, duration: ...)`. The row content (`AppMessengerContent`) is exposed as its own `StatelessWidget` for isolated testing/previewing.
+
+**Implementation note — not `ScaffoldMessenger`:** `AppMessenger` does *not* use `ScaffoldMessenger`/`SnackBar` internally. It inserts an `OverlayEntry` into the app's **root** `Overlay` (`Overlay.of(context, rootOverlay: true)`), so the toast always renders above every route — including modal bottom sheets and dialogs — regardless of which `Scaffold` the calling `context` happens to be under. This is deliberate: `ScaffoldMessenger` shows a `SnackBar` on whichever `Scaffold` is registered nearest the call site, which meant a `SnackBar` triggered from inside a modal bottom sheet rendered *behind* that sheet (invisible) unless the sheet itself hosted a local `Scaffold` — a workaround that also fights the sheet's natural "hug its content" sizing. The root-`Overlay` approach avoids that class of bug entirely: **no call site ever needs a local `Scaffold` just to host the message.**
+
+Because it doesn't depend on `ScaffoldMessenger`, testing it means finding the toast by key, not by `SnackBar` type:
+```dart
+expect(find.byKey(const Key('app_messenger_toast')), findsOneWidget);
+```
 
 ---
 

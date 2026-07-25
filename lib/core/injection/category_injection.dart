@@ -2,19 +2,20 @@ import 'package:due_day/features/categories/data/datasources/category_remote_dat
 import 'package:due_day/features/categories/data/repositories/category_repository_impl.dart';
 import 'package:due_day/features/categories/domain/repositories/category_repository.dart';
 import 'package:due_day/features/categories/domain/usecases/category_usecases.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_action_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 void initCategories() {
   final sl = GetIt.instance;
 
-  // Bloc
+  // Blocs
+  sl.registerFactory(() => CategoryLoadBloc(getCategories: sl()));
   sl.registerFactory(
-    () => CategoryBloc(
+    () => CategoryActionBloc(
       addCategory: sl(),
       updateCategory: sl(),
       deleteCategory: sl(),
-      getCategories: sl(),
     ),
   );
 

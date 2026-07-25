@@ -83,6 +83,27 @@ blocTest<AuthBloc, AuthState>(
 );
 ```
 
+### 3.1. Testing a split Load Bloc / Action Bloc
+When a feature follows the Load Bloc/Action Bloc standard (see [architecture.md](../docs/architecture.md#load-bloc--action-bloc-separation-standard-for-streamed-features)), give each bloc its **own** test file — do not test them together:
+- `x_load_bloc_test.dart` — asserts `LoadX` → `[XLoading, XLoaded]`/`[XLoading, XError]`.
+- `x_action_bloc_test.dart` — asserts every `Add/Update/DeleteXEvent` → `[XActionInProgress, XActionSuccess]`/`[XActionInProgress, XActionError]`. Always assert the `XActionInProgress` step is present — it's what stops `Equatable` from swallowing two consecutive identical failures as a no-op emission (see [create-bloc](../skills/create-bloc/SKILL.md)).
+
+```dart
+blocTest<CategoryActionBloc, CategoryActionState>(
+  'should emit [CategoryActionInProgress, CategoryActionError] when AddCategory fails',
+  build: () {
+    when(() => mockAddCategory(any()))
+        .thenAnswer((_) async => const Left(ServerFailure('Add failed')));
+    return categoryActionBloc;
+  },
+  act: (bloc) => bloc.add(AddCategoryEvent(tCategoryEntity)),
+  expect: () => [
+    CategoryActionInProgress(),
+    const CategoryActionError(failure: ServerFailure('Add failed')),
+  ],
+);
+```
+
 ---
 
 ## 🎨 4. Widget Testing
@@ -90,6 +111,50 @@ blocTest<AuthBloc, AuthState>(
 Widget tests assert that design system layouts and page trees render correct parameters and capture user gestures.
 - **Theme Injection:** When testing a widget, wrap it in a `MaterialApp` with the `DueDayTheme` and `MultiBlocProvider` to avoid context-resolution crashes.
 - **Interaction Testing:** Use `tester.tap()`, followed by `tester.pumpAndSettle()` to let animations finish before checking expectations.
+- **Custom fonts (Sofia Sans):** widget tests fall back to a test font unless the real one is loaded, which can make text wider than in production and trip false `RenderFlex` overflow errors on tightly-sized buttons. If a test renders a widget whose layout depends on real glyph widths, load the font in `setUpAll`:
+  ```dart
+  setUpAll(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    final fontLoader = FontLoader('Sofia Sans')
+      ..addFont(rootBundle.load('assets/fonts/SofiaSans-Bold.ttf'));
+    await fontLoader.load();
+  });
+  ```
+
+### 4.1. Testing a mutating bottom sheet (submit → stays open on error / closes on success)
+Per the standard in [architecture.md](../docs/architecture.md#-3-clean-design-rules--anti-patterns) ("No Premature Bottom Sheet Dismissal"), a bottom sheet that submits a mutating action pops only after its Action Bloc confirms success. Test this by controlling the mock Action Bloc's state stream directly with `whenListen`, so the test can emit `XActionError`/`XActionSuccess` *after* the user taps save:
+
+```dart
+late StreamController<CategoryActionState> stateController;
+
+setUp(() {
+  stateController = StreamController<CategoryActionState>.broadcast();
+  whenListen(
+    mockCategoryActionBloc,
+    stateController.stream,
+    initialState: CategoryActionInitial(),
+  );
+});
+
+testWidgets(
+  'given AddCategory fails when the user submits then the bottom sheet '
+  'stays open and an AppMessenger error is shown',
+  (tester) async {
+    await pumpBottomSheet(tester, onSave: (name, icon, color) {});
+    await fillNameAndTapSave(tester);
+
+    // Simulate the Action Bloc reacting to the failed add operation.
+    stateController.add(
+      const CategoryActionError(failure: ServerFailure('Failed to add category.')),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(AddEditCategoryBottomSheet), findsOneWidget); // still open
+    expect(find.byKey(const Key('app_messenger_toast')), findsOneWidget);
+  },
+);
+```
+On the success path (`stateController.add(CategoryActionSuccess())`), assert `find.byType(AddEditCategoryBottomSheet)` returns `findsNothing` instead.
 
 ---
 

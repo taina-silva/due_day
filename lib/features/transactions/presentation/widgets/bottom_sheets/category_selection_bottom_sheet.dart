@@ -1,8 +1,8 @@
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_bloc.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_state.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/categories/presentation/utils/category_failure_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -63,7 +63,7 @@ class CategorySelectionBottomSheet extends StatelessWidget {
             constraints: BoxConstraints(
               maxHeight: MediaQuery.of(context).size.height * 0.6,
             ),
-            child: BlocBuilder<CategoryBloc, CategoryState>(
+            child: BlocBuilder<CategoryLoadBloc, CategoryLoadState>(
               builder: (context, state) {
                 if (state is CategoryLoading || state is CategoryInitial) {
                   return const Center(child: CircularProgressIndicator());
