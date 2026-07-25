@@ -44,7 +44,7 @@ Ensure you have the following installed and configured on your development machi
 3. Set database location to `us-central1` (or your preferred region) and click **Enable**.
 
 #### C. Cloud Messaging (FCM)
-- Navigate to **Engage** > **Messaging** to configure push notification credentials if working with native APNs (iOS) or FCM channels.
+Not currently used — DueDay's notifications are 100% on-device local reminders (see [notifications.md](../docs/notifications.md)). Skip this service unless push notifications are added to the roadmap.
 
 ---
 
@@ -72,32 +72,9 @@ This utility automatically generates:
 ---
 
 ### 4. Apply Firestore Security Rules
-To restrict cross-user database access, synchronize your remote rules with the local configuration.
-Copy the contents below into the **Firestore Rules** panel in the Firebase console, or deploy them using `firebase deploy --only firestore:rules`:
-
-```firestore
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Match the users collection by UID
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-
-      // Allow access to subcollections only if owned by the authenticated user
-      match /accounts/{accountId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
-      }
-
-      match /transactions/{transactionId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
-      }
-
-      match /categories/{categoryId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
-      }
-    }
-  }
-}
+To restrict cross-user database access, synchronize your remote rules with the local configuration. The canonical rules live in the repo's `firestore.rules` file (see [firestore.md §2](../docs/firestore.md#-2-security-rules-firestorerules) for what they enforce) — deploy them with:
+```bash
+firebase deploy --only firestore:rules
 ```
 
 ---

@@ -10,86 +10,20 @@ To ensure strict data isolation and security, DueDay isolates all user data unde
 
 ```
 /users/{userId}
-  ├── accounts/{accountId}
-  ├── transactions/{transactionId}
-  └── categories/{categoryId}
+  ├── accounts/{accountId}       — bank accounts, credit cards, cash wallets
+  ├── transactions/{transactionId} — income, expense, and transfer records
+  └── categories/{categoryId}    — user-defined transaction labels
 ```
 
-### Collections & Documents Map
-
-#### 1. Users Collection (`/users/{userId}`)
-Stores general user profiles and settings:
-- **Field Details:**
-  - `email` (String)
-  - `displayName` (String)
-  - `photoUrl` (String)
-  - `createdAt` (Timestamp)
-
-#### 2. Accounts Collection (`/users/{userId}/accounts/{accountId}`)
-Stores financial bank accounts, credit cards, or cash wallets:
-- **Field Details:**
-  - `name` (String) — e.g., "Nubank"
-  - `type` (String) — e.g., "savings", "investments", "daily_use", "credit_card"
-  - `balance` (Double) — e.g., `3450.00`
-  - `dueDate` (Timestamp) — Optional, used for card statements
-  - `createdAt` (Timestamp)
-
-#### 3. Transactions Collection (`/users/{userId}/transactions/{transactionId}`)
-Stores revenues, expenses, and inter-account transfers:
-- **Field Details:**
-  - `type` (String) — "income", "expense", "transfer"
-  - `amount` (Double)
-  - `category` (String) — Reference ID to category document
-  - `accountFrom` (String) — Source account ID (for expense/transfer)
-  - `accountTo` (String) — Destination account ID (for income/transfer)
-  - `dueDate` (Timestamp) — Optional, due date for schedules
-  - `paidDate` (Timestamp) — Optional, date transaction was executed
-  - `paid` (Boolean) — Execution status
-  - `isRecurring` (Boolean)
-  - `description` (String)
-  - `createdAt` (Timestamp)
-
-#### 4. Categories Collection (`/users/{userId}/categories/{categoryId}`)
-Stores custom financial categories defined by the user:
-- **Field Details:**
-  - `name` (String) — e.g., "Dining Out"
-  - `color` (String) — Hex color code (e.g., "#FF5722")
-  - `icon` (String) — Glyphs or icon names
-  - `createdAt` (Timestamp)
+Full field-by-field schema (types, descriptions, entity relationships) lives in [firestore_schema.md](../references/firestore_schema.md).
 
 ---
 
 ## 🛡️ 2. Security Rules (`firestore.rules`)
 
-The security settings are written in `/Users/tainass/Personal/Projetos Pessoais/due_day/firestore.rules`.
-Access is restricted strictly using `request.auth.uid == userId`. No document reads or writes can bypass this rule.
+The canonical rules live in `firestore.rules` at the repo root — that file is the single source of truth; do not copy its contents into documentation. Access is restricted strictly using `request.auth.uid == userId` at the root `/users/{userId}` match and every nested subcollection (`accounts`, `transactions`, `categories`) inherits the same check. No document reads or writes can bypass this rule.
 
-```firestore
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    // Matches the root user document
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-
-      // Restricts access to user's nested accounts
-      match /accounts/{accountId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
-      }
-
-      // Restricts access to user's transactions
-      match /transactions/{transactionId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
-      }
-
-      // Restricts access to user's custom categories
-      match /categories/{categoryId} {
-        allow read, write: if request.auth != null && request.auth.uid == userId;
-      }
-    }
-  }
-}
-```
+To deploy a change: `firebase deploy --only firestore:rules` (setup prerequisites in [firebase_setup.md](../references/firebase_setup.md)).
 
 ---
 
