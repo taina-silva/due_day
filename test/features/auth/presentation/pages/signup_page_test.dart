@@ -153,7 +153,7 @@ void main() {
         await tester.pump(); // Trigger listener
         await tester.pumpAndSettle();
 
-        expect(find.byType(SnackBar), findsOneWidget);
+        expect(find.byKey(const Key('app_messenger_toast')), findsOneWidget);
       },
     );
 

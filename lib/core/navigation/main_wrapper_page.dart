@@ -7,8 +7,8 @@ import 'package:due_day/core/settings/settings_bloc.dart';
 import 'package:due_day/core/settings/settings_state.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_bloc.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_event.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_bloc.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_event.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_event.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +37,7 @@ class _MainWrapperPageState extends State<MainWrapperPage>
 
     // Dispatch initial load events to listen to Firestore streams
     context.read<AccountBloc>().add(LoadAccounts());
-    context.read<CategoryBloc>().add(LoadCategories());
+    context.read<CategoryLoadBloc>().add(LoadCategories());
     context.read<TransactionBloc>().add(const LoadTransactions());
 
     _checkInitialLock();

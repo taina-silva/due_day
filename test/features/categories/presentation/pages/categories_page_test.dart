@@ -1,8 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_bloc.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_state.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/categories/presentation/pages/categories_page.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_event.dart';
@@ -20,13 +20,15 @@ class MockNotificationsBloc
     implements NotificationsBloc {}
 
 void main() {
-  late MockCategoryBloc mockCategoryBloc;
+  late MockCategoryLoadBloc mockCategoryLoadBloc;
   late MockNotificationsBloc mockNotificationsBloc;
 
   setUp(() {
-    mockCategoryBloc = MockCategoryBloc();
-    when(() => mockCategoryBloc.state).thenReturn(CategoryInitial());
-    when(() => mockCategoryBloc.stream).thenAnswer((_) => const Stream.empty());
+    mockCategoryLoadBloc = MockCategoryLoadBloc();
+    when(() => mockCategoryLoadBloc.state).thenReturn(CategoryInitial());
+    when(
+      () => mockCategoryLoadBloc.stream,
+    ).thenAnswer((_) => const Stream.empty());
 
     mockNotificationsBloc = MockNotificationsBloc();
     when(() => mockNotificationsBloc.state).thenReturn(NotificationsInitial());
@@ -50,7 +52,7 @@ void main() {
   }) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<CategoryBloc>.value(value: mockCategoryBloc),
+        BlocProvider<CategoryLoadBloc>.value(value: mockCategoryLoadBloc),
         BlocProvider<NotificationsBloc>.value(value: mockNotificationsBloc),
       ],
       child: MaterialApp.router(
@@ -67,7 +69,7 @@ void main() {
       'given CategoryLoading/Initial state when page loads then show CircularProgressIndicator',
       (tester) async {
         setupTestWindow(tester);
-        when(() => mockCategoryBloc.state).thenReturn(CategoryLoading());
+        when(() => mockCategoryLoadBloc.state).thenReturn(CategoryLoading());
 
         final router = GoRouter(
           initialLocation: '/',
@@ -92,7 +94,7 @@ void main() {
       'given CategoryError state when page loads then display failure localized message',
       (tester) async {
         setupTestWindow(tester);
-        when(() => mockCategoryBloc.state).thenReturn(
+        when(() => mockCategoryLoadBloc.state).thenReturn(
           const CategoryError(failure: ServerFailure('Server failure message')),
         );
 
@@ -123,7 +125,7 @@ void main() {
       'given CategoryLoaded state when page loads then display categories and most active card',
       (tester) async {
         setupTestWindow(tester);
-        when(() => mockCategoryBloc.state).thenReturn(
+        when(() => mockCategoryLoadBloc.state).thenReturn(
           CategoryLoaded(categories: [tCategoryEntity, tCategoryEntity2]),
         );
 

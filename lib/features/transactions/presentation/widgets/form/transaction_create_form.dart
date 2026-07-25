@@ -12,9 +12,9 @@ import 'package:due_day/features/accounts/presentation/bloc/account_state.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_state.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_bloc.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_event.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_state.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_event.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
@@ -61,7 +61,7 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
   void initState() {
     super.initState();
 
-    context.read<CategoryBloc>().add(LoadCategories());
+    context.read<CategoryLoadBloc>().add(LoadCategories());
     context.read<AccountBloc>().add(LoadAccounts());
 
     if (widget.transaction != null) {
@@ -99,7 +99,7 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
     if (widget.transaction == null) return;
     final t = widget.transaction!;
 
-    final categoryState = context.read<CategoryBloc>().state;
+    final categoryState = context.read<CategoryLoadBloc>().state;
     if (categoryState is CategoryLoaded && t.category != null) {
       try {
         _selectedCategory = categoryState.categories.firstWhere(
@@ -142,7 +142,7 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
 
     return MultiBlocListener(
       listeners: [
-        BlocListener<CategoryBloc, CategoryState>(
+        BlocListener<CategoryLoadBloc, CategoryLoadState>(
           listener: (context, state) {
             if (state is CategoryLoaded) {
               setState(() => _updateEntitiesFromState());

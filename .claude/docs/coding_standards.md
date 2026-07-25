@@ -15,7 +15,7 @@ All source files, variables, classes, and directories must follow these conventi
   - Models: `*_model.dart` (e.g., `user_model.dart`)
   - DataSources: `*_remote_data_source.dart` or `*_local_data_source.dart`
   - Repositories: `*_repository.dart` (interface) and `*_repository_impl.dart` (implementation)
-  - Blocs: `*_bloc.dart`, `*_event.dart`, and `*_state.dart`
+  - Blocs: `*_bloc.dart`, `*_event.dart`, and `*_state.dart`. For features with a real-time list stream **and** mutating actions, split into `*_load_bloc.dart`/`*_load_event.dart`/`*_load_state.dart` plus `*_action_bloc.dart`/`*_action_event.dart`/`*_action_state.dart` — this is the default, not a special case. See [architecture.md §1.3](architecture.md#load-bloc--action-bloc-separation-standard-for-streamed-features) and [create-bloc](../skills/create-bloc/SKILL.md).
   - Pages/Widgets: `*_page.dart` (screens) and `*_widget.dart` (sub-components)
   - Injection: `*_injection.dart`
 

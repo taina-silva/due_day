@@ -2,18 +2,18 @@ import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class CategoryState extends Equatable {
-  const CategoryState();
+abstract class CategoryLoadState extends Equatable {
+  const CategoryLoadState();
 
   @override
   List<Object> get props => [];
 }
 
-class CategoryInitial extends CategoryState {}
+class CategoryInitial extends CategoryLoadState {}
 
-class CategoryLoading extends CategoryState {}
+class CategoryLoading extends CategoryLoadState {}
 
-class CategoryLoaded extends CategoryState {
+class CategoryLoaded extends CategoryLoadState {
   final List<CategoryEntity> categories;
 
   const CategoryLoaded({required this.categories});
@@ -22,7 +22,7 @@ class CategoryLoaded extends CategoryState {
   List<Object> get props => [categories];
 }
 
-class CategoryError extends CategoryState {
+class CategoryError extends CategoryLoadState {
   final Failure failure;
 
   const CategoryError({required this.failure});

@@ -12,9 +12,9 @@ import 'package:due_day/core/settings/settings_state.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_bloc.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_event.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_state.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_bloc.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_event.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_state.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_event.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_state.dart';
@@ -27,8 +27,8 @@ import 'package:mocktail/mocktail.dart';
 class MockAccountBloc extends MockBloc<AccountEvent, AccountState>
     implements AccountBloc {}
 
-class MockCategoryBloc extends MockBloc<CategoryEvent, CategoryState>
-    implements CategoryBloc {}
+class MockCategoryLoadBloc extends MockBloc<CategoryLoadEvent, CategoryLoadState>
+    implements CategoryLoadBloc {}
 
 class MockTransactionBloc extends MockBloc<TransactionEvent, TransactionState>
     implements TransactionBloc {}
@@ -40,20 +40,20 @@ class MockSecurityService extends Mock implements SecurityService {}
 
 void main() {
   late MockAccountBloc mockAccountBloc;
-  late MockCategoryBloc mockCategoryBloc;
+  late MockCategoryLoadBloc mockCategoryLoadBloc;
   late MockTransactionBloc mockTransactionBloc;
   late MockSettingsBloc mockSettingsBloc;
   late MockSecurityService mockSecurityService;
 
   setUp(() async {
     mockAccountBloc = MockAccountBloc();
-    mockCategoryBloc = MockCategoryBloc();
+    mockCategoryLoadBloc = MockCategoryLoadBloc();
     mockTransactionBloc = MockTransactionBloc();
     mockSettingsBloc = MockSettingsBloc();
     mockSecurityService = MockSecurityService();
 
     when(() => mockAccountBloc.state).thenReturn(AccountInitial());
-    when(() => mockCategoryBloc.state).thenReturn(CategoryInitial());
+    when(() => mockCategoryLoadBloc.state).thenReturn(CategoryInitial());
     when(() => mockTransactionBloc.state).thenReturn(TransactionInitial());
 
     // GetIt.reset() is asynchronous; awaiting it avoids a race where its
@@ -102,7 +102,7 @@ void main() {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AccountBloc>.value(value: mockAccountBloc),
-        BlocProvider<CategoryBloc>.value(value: mockCategoryBloc),
+        BlocProvider<CategoryLoadBloc>.value(value: mockCategoryLoadBloc),
         BlocProvider<TransactionBloc>.value(value: mockTransactionBloc),
         BlocProvider<SettingsBloc>.value(value: mockSettingsBloc),
       ],

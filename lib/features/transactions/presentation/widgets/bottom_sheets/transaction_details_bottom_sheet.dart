@@ -5,8 +5,8 @@ import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_bloc.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_state.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_bloc.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_state.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/categories/presentation/utils/category_utils.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
@@ -119,7 +119,7 @@ class TransactionDetailsBottomSheet extends StatelessWidget {
             icon: _getTypeIcon(transaction.type),
           ),
           if (transaction.category != null)
-            BlocBuilder<CategoryBloc, CategoryState>(
+            BlocBuilder<CategoryLoadBloc, CategoryLoadState>(
               builder: (context, state) {
                 String categoryName = l10n.notAvailable;
                 IconData categoryIcon = Icons.category_outlined;

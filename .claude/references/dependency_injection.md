@@ -40,7 +40,7 @@ These services run throughout the app's lifetime. They are registered under `/li
 
 ## 📦 3. Feature Registrations Pattern
 
-Each feature directory (e.g., `lib/features/accounts`) implements a modular injection routine:
+Each feature directory (e.g., `lib/features/accounts`) implements a modular injection routine. `accounts` predates the Load Bloc/Action Bloc split (see [architecture.md](../docs/architecture.md#load-bloc--action-bloc-separation-standard-for-streamed-features)) and still registers one combined bloc:
 
 ```dart
 final sl = GetIt.instance;
@@ -70,7 +70,44 @@ void initAccounts() {
 }
 ```
 
+New features that follow the Load Bloc/Action Bloc standard register **two** bloc factories instead of one — `categories` is the reference:
+
+```dart
+void initCategories() {
+  // 1. Presentation Layer (Factory) — two blocs, split by concern
+  sl.registerFactory(() => CategoryLoadBloc(getCategories: sl()));
+  sl.registerFactory(
+    () => CategoryActionBloc(
+      addCategory: sl(),
+      updateCategory: sl(),
+      deleteCategory: sl(),
+    ),
+  );
+
+  // 2. Domain Layer (Lazy Singletons)
+  sl.registerLazySingleton(() => AddCategory(sl()));
+  sl.registerLazySingleton(() => UpdateCategory(sl()));
+  sl.registerLazySingleton(() => DeleteCategory(sl()));
+  sl.registerLazySingleton(() => GetCategories(sl()));
+
+  // 3. Data Layer (Lazy Singletons)
+  sl.registerLazySingleton<CategoryRepository>(
+    () => CategoryRepositoryImpl(remoteDataSource: sl(), observability: sl()),
+  );
+  sl.registerLazySingleton<CategoryRemoteDataSource>(
+    () => CategoryRemoteDataSourceImpl(firestore: sl(), firebaseAuth: sl()),
+  );
+}
+```
+
+Both blocs are then provided in `main.dart`'s root `MultiBlocProvider`, exactly like any other feature bloc:
+```dart
+BlocProvider(create: (_) => di.sl<CategoryLoadBloc>()),
+BlocProvider(create: (_) => di.sl<CategoryActionBloc>()),
+```
+Every feature bloc in DueDay is provided globally at the app root (none are scoped locally to a single route) — the Action Bloc is no exception, even though today only its own feature's bottom sheet reads it.
+
 ### Lifetime Rules
-- **BLoCs (`registerFactory`):** Blocs must be registered as factories so that when a page enters or exits, a fresh state-management instance is initialized (unless the BLoC is globally scoped like `AuthBloc` or `SettingsBloc`).
+- **BLoCs (`registerFactory`):** Blocs must be registered as factories so that when a page enters or exits, a fresh state-management instance is initialized (unless the BLoC is globally scoped like `AuthBloc` or `SettingsBloc`). This applies to both the Load Bloc and the Action Bloc when a feature is split.
 - **Use Cases & Repositories (`registerLazySingleton`):** These classes contain stateless logic, so they are shared as single instances across features to optimize memory usage.
 - **Repositories & `ObservabilityService`:** Every repository implementation takes an `ObservabilityService observability` constructor param (resolved via `sl()`) and logs in its catch blocks. See [observability.md](../docs/observability.md).

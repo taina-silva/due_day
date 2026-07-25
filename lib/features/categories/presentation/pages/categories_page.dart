@@ -2,9 +2,10 @@ import 'package:due_day/core/design_system/components/structure/custom_scaffold.
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_bloc.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_event.dart';
-import 'package:due_day/features/categories/presentation/bloc/category_state.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_action_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_action_event.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/categories/presentation/utils/category_failure_extension.dart';
 import 'package:due_day/features/categories/presentation/widgets/bottom_sheets/add_edit_category_bottom_sheet.dart';
 import 'package:due_day/features/categories/presentation/widgets/list/category_list_content.dart';
@@ -28,7 +29,7 @@ class CategoriesPage extends StatelessWidget {
     return CustomScaffold(
       appBar: DashboardAppBar(titleText: l10n.categoriesTitle),
       body: SafeArea(
-        child: BlocBuilder<CategoryBloc, CategoryState>(
+        child: BlocBuilder<CategoryLoadBloc, CategoryLoadState>(
           builder: (context, state) {
             if (state is CategoryLoading || state is CategoryInitial) {
               return const Center(child: CircularProgressIndicator());
@@ -79,7 +80,7 @@ class CategoriesPage extends StatelessWidget {
           category: category,
           onSave: (name, icon, color) {
             final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-            final categoryBloc = context.read<CategoryBloc>();
+            final categoryBloc = context.read<CategoryActionBloc>();
 
             if (category == null) {
               categoryBloc.add(
