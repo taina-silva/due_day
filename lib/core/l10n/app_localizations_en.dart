@@ -768,6 +768,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'An error occurred while managing your categories.';
 
   @override
+  String get categoriesErrorSaveFailed =>
+      'Failed to save category. Please try again.';
+
+  @override
+  String get categoriesErrorDeleteFailed =>
+      'Failed to delete category. Please try again.';
+
+  @override
   String get dashboardErrorFallback =>
       'An error occurred while loading the dashboard.';
 

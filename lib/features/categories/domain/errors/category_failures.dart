@@ -10,8 +10,10 @@ class UserNotAuthenticatedFailure extends Failure {
   ]);
 }
 
-class CategoryOperationFailure extends Failure {
-  const CategoryOperationFailure([
-    super.message = 'Category operation failed.',
-  ]);
+class CategorySaveFailure extends Failure {
+  const CategorySaveFailure([super.message = 'Failed to save category.']);
+}
+
+class CategoryDeleteFailure extends Failure {
+  const CategoryDeleteFailure([super.message = 'Failed to delete category.']);
 }
