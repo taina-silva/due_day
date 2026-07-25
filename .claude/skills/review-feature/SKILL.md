@@ -22,6 +22,7 @@ This checklist outlines the criteria for reviewing feature implementations and c
 - [ ] Error states are named `XError` (never `XFailure`); action blocs emit `XActionInProgress` before the result so two consecutive identical failures both reach the UI.
 - [ ] Bottom sheets that dispatch add/update/delete never `Navigator.pop()` right after dispatching — they pop only from a `BlocListener` on the Action Bloc's success state, and show `AppMessenger.showError` (keeping the sheet open) on its error state.
 - [ ] No raw `SnackBar`/`ScaffoldMessenger` calls — only `AppMessenger.showSuccess/showError/showInfo`.
+- [ ] For features split into `XLoadBloc` + `XActionBloc`, the repository's fallback `Failure` differs per operation (e.g. `XSaveFailure`/`XDeleteFailure` for mutations vs. generic `ServerFailure` for reads) instead of one shared type/message for both — see [coding_standards.md §4](../../docs/coding_standards.md#-4-error-handling-pattern-functional-style--i18n-localization).
 
 ### 2. Design System & Layout Tokens
 - [ ] No hardcoded colors (`Colors.white` or hex literals) are used in UI code. All colors reference `DueDayTheme.colors`.
@@ -35,6 +36,7 @@ This checklist outlines the criteria for reviewing feature implementations and c
 - [ ] All user-facing strings are localized using `AppLocalizations` (no hardcoded strings).
 - [ ] Translation keys follow the camelCase `featureNomeChave` naming convention.
 - [ ] No dead imports, unused imports, commented-out code blocks, or print statements are left in modified files.
+- [ ] No `if`/`else if` chain of 3+ branches on the same enum or type where a `switch` applies — see [coding_standards.md §9](../../docs/coding_standards.md#-9-control-flow-switch-over-ifelse-if-chains).
 - [ ] All modified files are formatted with `fvm dart format .`.
 
 ### 4. Tests & Analysis

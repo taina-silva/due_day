@@ -19,14 +19,21 @@ class AccountRepositoryImpl implements AccountRepository {
     required this.observability,
   });
 
-  Failure _mapServerExceptionToFailure(ServerException e) {
+  // [fallback] is operation-specific: load reads (getAccountById/getAccounts)
+  // fall back to a generic ServerFailure, while add/update/delete fall back
+  // to AccountSaveFailure/AccountDeleteFailure so the action bottom sheet can
+  // show wording distinct from the load-stream error text.
+  Failure _mapServerExceptionToFailure(
+    ServerException e, {
+    required Failure fallback,
+  }) {
     if (e.code == 'unauthenticated' || e.message.contains('authenticated')) {
       return const UserNotAuthenticatedFailure();
     }
     if (e.code == 'not-found' || e.message.contains('not found')) {
       return const AccountNotFoundFailure();
     }
-    return ServerFailure(e.message);
+    return fallback;
   }
 
   @override
@@ -44,7 +51,12 @@ class AccountRepositoryImpl implements AccountRepository {
         error: e,
         stackTrace: StackTrace.current,
       );
-      return Left(_mapServerExceptionToFailure(e));
+      return Left(
+        _mapServerExceptionToFailure(
+          e,
+          fallback: AccountSaveFailure(e.message),
+        ),
+      );
     } catch (e, stackTrace) {
       observability.error(
         'addAccount unexpected failure',
@@ -52,7 +64,7 @@ class AccountRepositoryImpl implements AccountRepository {
         error: e,
         stackTrace: stackTrace,
       );
-      return Left(GenericFailure(e.toString()));
+      return Left(AccountSaveFailure(e.toString()));
     }
   }
 
@@ -71,7 +83,12 @@ class AccountRepositoryImpl implements AccountRepository {
         error: e,
         stackTrace: StackTrace.current,
       );
-      return Left(_mapServerExceptionToFailure(e));
+      return Left(
+        _mapServerExceptionToFailure(
+          e,
+          fallback: AccountSaveFailure(e.message),
+        ),
+      );
     } catch (e, stackTrace) {
       observability.error(
         'updateAccount unexpected failure',
@@ -79,7 +96,7 @@ class AccountRepositoryImpl implements AccountRepository {
         error: e,
         stackTrace: stackTrace,
       );
-      return Left(GenericFailure(e.toString()));
+      return Left(AccountSaveFailure(e.toString()));
     }
   }
 
@@ -95,7 +112,12 @@ class AccountRepositoryImpl implements AccountRepository {
         error: e,
         stackTrace: StackTrace.current,
       );
-      return Left(_mapServerExceptionToFailure(e));
+      return Left(
+        _mapServerExceptionToFailure(
+          e,
+          fallback: AccountDeleteFailure(e.message),
+        ),
+      );
     } catch (e, stackTrace) {
       observability.error(
         'deleteAccount unexpected failure',
@@ -103,7 +125,7 @@ class AccountRepositoryImpl implements AccountRepository {
         error: e,
         stackTrace: stackTrace,
       );
-      return Left(GenericFailure(e.toString()));
+      return Left(AccountDeleteFailure(e.toString()));
     }
   }
 
@@ -121,7 +143,9 @@ class AccountRepositoryImpl implements AccountRepository {
         error: e,
         stackTrace: StackTrace.current,
       );
-      return Left(_mapServerExceptionToFailure(e));
+      return Left(
+        _mapServerExceptionToFailure(e, fallback: ServerFailure(e.message)),
+      );
     } catch (e, stackTrace) {
       observability.error(
         'getAccountById unexpected failure',
@@ -148,7 +172,9 @@ class AccountRepositoryImpl implements AccountRepository {
         error: e,
         stackTrace: StackTrace.current,
       );
-      yield Left<Failure, List<AccountEntity>>(_mapServerExceptionToFailure(e));
+      yield Left<Failure, List<AccountEntity>>(
+        _mapServerExceptionToFailure(e, fallback: ServerFailure(e.message)),
+      );
     } catch (e, stackTrace) {
       observability.error(
         'getAccounts stream unexpected failure',

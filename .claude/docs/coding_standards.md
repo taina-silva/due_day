@@ -80,6 +80,8 @@ DueDay implements functional error handling using `fpdart` and the `Either<L, R>
   ```
   In the UI, display the error utilizing `failure.toLocalizedString(context)` to resolve the correct localization key.
 
+- **Load vs. Action Failure Mapping:** For features split into `XLoadBloc` + `XActionBloc` ([architecture.md §1.3](architecture.md#load-bloc--action-bloc-separation-standard-for-streamed-features)), the repository's fallback `Failure` for unmapped exceptions must be operation-specific, not one generic type shared by every method. Read operations (`getX`, `getXById`) fall back to a generic `ServerFailure`; mutating operations fall back to dedicated types — e.g. `XSaveFailure` for `addX`/`updateX`, `XDeleteFailure` for `deleteX` — each with its own localization key. `Failure`s that are legitimately identical in both contexts (e.g. `XNotFoundFailure`, `UserNotAuthenticatedFailure`) stay shared. Without this, the action bottom sheet's `AppMessenger.showError` ends up showing the same load-oriented fallback text ("An error occurred while managing your X.") no matter which operation actually failed. Reference implementation: `accounts` (`AccountSaveFailure`/`AccountDeleteFailure` in `account_failures.dart`, mapped inside `AccountRepositoryImpl._mapServerExceptionToFailure` and read back in `account_failure_extension.dart`).
+
 ---
 
 ## 📂 5. Import Standards
@@ -130,6 +132,7 @@ Before completing or committing changes:
 - [ ] No raw `'assets/...'` path strings — only `AppImages` via `AppImageWidget` (or `AppIcons` for custom SVG icons).
 - [ ] No raw `ScaffoldMessenger`/`SnackBar` calls — only `AppMessenger.showSuccess/showError/showInfo`.
 - [ ] No raw exceptions bubble up to pages.
+- [ ] No `if`/`else if` chain of 3+ branches on the same enum or type where a `switch` (§9) would apply.
 - [ ] Run `fvm dart format .` to format all changed files and remove unused imports.
 - [ ] Run `fvm flutter analyze` to verify and resolve all warnings and errors in changed files (ensuring zero issues).
 
@@ -138,4 +141,33 @@ Before completing or committing changes:
 ## 🤖 8. Generating Pages & Widgets
 
 Building a new screen or widget is covered end-to-end by the [create-screen](../skills/create-screen/SKILL.md) skill (BLoC-integrated template) and the [design_system.md §8](design_system.md#-8-complete-layout-integration-template) full-page example. Both already encode the rules from §2–§3 above — no separate AI prompt needed.
+
+---
+
+## 🔀 9. Control Flow: `switch` over `if`/`else if` chains
+
+Prefer a `switch` statement (or switch expression) over an `if`/`else if` chain whenever branching is on the type or value of a single subject across 3+ mutually exclusive cases — enum values, `Failure`/sealed-style type hierarchies, or one variable checked against multiple discrete values. Dart 3 pattern matching (`case SomeType():`) covers type checks the same way `case SomeEnum.value:` covers enums, and the compiler flags non-exhaustive `switch` on enums, which an `if` chain cannot.
+
+```dart
+// Prefer
+switch (this) {
+  case AccountNotFoundFailure():
+    return l10n.accountsErrorNotFound;
+  case UserNotAuthenticatedFailure():
+    return l10n.accountsErrorNotAuthenticated;
+  default:
+    return l10n.accountsErrorFallback;
+}
+
+// Avoid
+if (this is AccountNotFoundFailure) {
+  return l10n.accountsErrorNotFound;
+}
+if (this is UserNotAuthenticatedFailure) {
+  return l10n.accountsErrorNotAuthenticated;
+}
+return l10n.accountsErrorFallback;
+```
+
+A plain `if`/`else` remains the right call for a single boolean condition, or when each branch tests an unrelated condition rather than a different value of the same subject.
 

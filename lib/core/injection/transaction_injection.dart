@@ -32,7 +32,8 @@ void initTransactions() {
 
   // Repository
   sl.registerLazySingleton<TransactionRepository>(
-    () => TransactionRepositoryImpl(remoteDataSource: sl(), observability: sl()),
+    () =>
+        TransactionRepositoryImpl(remoteDataSource: sl(), observability: sl()),
   );
 
   // Data sources

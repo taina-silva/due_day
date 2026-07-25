@@ -59,9 +59,7 @@ void main() {
     when(
       () => mockAddNotification(any()),
     ).thenAnswer((_) async => const dartz.Right(null));
-    when(
-      () => mockClassifyTransactionReminders(any()),
-    ).thenReturn(const []);
+    when(() => mockClassifyTransactionReminders(any())).thenReturn(const []);
 
     transactionBloc = TransactionBloc(
       addTransaction: mockAddTransaction,

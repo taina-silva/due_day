@@ -9,9 +9,9 @@ import 'package:due_day/core/services/security_service.dart';
 import 'package:due_day/core/settings/settings_bloc.dart';
 import 'package:due_day/core/settings/settings_event.dart';
 import 'package:due_day/core/settings/settings_state.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_bloc.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_event.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_state.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_bloc.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_event.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_state.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_event.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
@@ -24,10 +24,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockAccountBloc extends MockBloc<AccountEvent, AccountState>
-    implements AccountBloc {}
+class MockAccountLoadBloc extends MockBloc<AccountLoadEvent, AccountLoadState>
+    implements AccountLoadBloc {}
 
-class MockCategoryLoadBloc extends MockBloc<CategoryLoadEvent, CategoryLoadState>
+class MockCategoryLoadBloc
+    extends MockBloc<CategoryLoadEvent, CategoryLoadState>
     implements CategoryLoadBloc {}
 
 class MockTransactionBloc extends MockBloc<TransactionEvent, TransactionState>
@@ -39,14 +40,14 @@ class MockSettingsBloc extends MockBloc<SettingsEvent, SettingsState>
 class MockSecurityService extends Mock implements SecurityService {}
 
 void main() {
-  late MockAccountBloc mockAccountBloc;
+  late MockAccountLoadBloc mockAccountBloc;
   late MockCategoryLoadBloc mockCategoryLoadBloc;
   late MockTransactionBloc mockTransactionBloc;
   late MockSettingsBloc mockSettingsBloc;
   late MockSecurityService mockSecurityService;
 
   setUp(() async {
-    mockAccountBloc = MockAccountBloc();
+    mockAccountBloc = MockAccountLoadBloc();
     mockCategoryLoadBloc = MockCategoryLoadBloc();
     mockTransactionBloc = MockTransactionBloc();
     mockSettingsBloc = MockSettingsBloc();
@@ -72,12 +73,10 @@ void main() {
   }
 
   Widget buildTestableWidget({required bool biometricsEnabled}) {
-    when(() => mockSettingsBloc.state).thenReturn(
-      SettingsState(isBiometricsEnabled: biometricsEnabled),
-    );
     when(
-      () => mockSettingsBloc.stream,
-    ).thenAnswer((_) => const Stream.empty());
+      () => mockSettingsBloc.state,
+    ).thenReturn(SettingsState(isBiometricsEnabled: biometricsEnabled));
+    when(() => mockSettingsBloc.stream).thenAnswer((_) => const Stream.empty());
 
     final router = GoRouter(
       initialLocation: '/home',
@@ -101,7 +100,7 @@ void main() {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<AccountBloc>.value(value: mockAccountBloc),
+        BlocProvider<AccountLoadBloc>.value(value: mockAccountBloc),
         BlocProvider<CategoryLoadBloc>.value(value: mockCategoryLoadBloc),
         BlocProvider<TransactionBloc>.value(value: mockTransactionBloc),
         BlocProvider<SettingsBloc>.value(value: mockSettingsBloc),
@@ -124,13 +123,11 @@ void main() {
         when(
           () => mockSecurityService.canAuthenticate(),
         ).thenAnswer((_) => canAuthCompleter.future);
-        when(() => mockSecurityService.authenticate()).thenAnswer(
-          (_) async => BiometricAuthResult.success,
-        );
+        when(
+          () => mockSecurityService.authenticate(),
+        ).thenAnswer((_) async => BiometricAuthResult.success);
 
-        await tester.pumpWidget(
-          buildTestableWidget(biometricsEnabled: true),
-        );
+        await tester.pumpWidget(buildTestableWidget(biometricsEnabled: true));
         await tester.pump();
 
         expect(find.byType(BiometricLockOverlay), findsOneWidget);
@@ -147,13 +144,11 @@ void main() {
         when(
           () => mockSecurityService.canAuthenticate(),
         ).thenAnswer((_) async => true);
-        when(() => mockSecurityService.authenticate()).thenAnswer(
-          (_) async => BiometricAuthResult.success,
-        );
+        when(
+          () => mockSecurityService.authenticate(),
+        ).thenAnswer((_) async => BiometricAuthResult.success);
 
-        await tester.pumpWidget(
-          buildTestableWidget(biometricsEnabled: true),
-        );
+        await tester.pumpWidget(buildTestableWidget(biometricsEnabled: true));
         await tester.pumpAndSettle();
 
         expect(find.byType(BiometricLockOverlay), findsNothing);
@@ -169,9 +164,7 @@ void main() {
           () => mockSecurityService.canAuthenticate(),
         ).thenAnswer((_) async => false);
 
-        await tester.pumpWidget(
-          buildTestableWidget(biometricsEnabled: true),
-        );
+        await tester.pumpWidget(buildTestableWidget(biometricsEnabled: true));
         await tester.pumpAndSettle();
 
         expect(find.byType(BiometricLockOverlay), findsOneWidget);
@@ -193,9 +186,7 @@ void main() {
           () => mockSecurityService.authenticate(),
         ).thenAnswer((_) => authenticateCompleter.future);
 
-        await tester.pumpWidget(
-          buildTestableWidget(biometricsEnabled: true),
-        );
+        await tester.pumpWidget(buildTestableWidget(biometricsEnabled: true));
         // Lets the initial _checkInitialLock -> _authenticate() call reach
         // and block on the pending authenticate() future, mirroring how the
         // native biometric prompt itself causes extra resumed events before
@@ -233,9 +224,7 @@ void main() {
           () => mockSecurityService.authenticate(),
         ).thenAnswer((_) => authenticateCompleter.future);
 
-        await tester.pumpWidget(
-          buildTestableWidget(biometricsEnabled: true),
-        );
+        await tester.pumpWidget(buildTestableWidget(biometricsEnabled: true));
         await tester.pump();
         await tester.pump();
 
@@ -259,13 +248,11 @@ void main() {
         when(
           () => mockSecurityService.canAuthenticate(),
         ).thenAnswer((_) async => true);
-        when(() => mockSecurityService.authenticate()).thenAnswer(
-          (_) async => BiometricAuthResult.lockedOut,
-        );
+        when(
+          () => mockSecurityService.authenticate(),
+        ).thenAnswer((_) async => BiometricAuthResult.lockedOut);
 
-        await tester.pumpWidget(
-          buildTestableWidget(biometricsEnabled: true),
-        );
+        await tester.pumpWidget(buildTestableWidget(biometricsEnabled: true));
         await tester.pumpAndSettle();
 
         expect(find.byType(BiometricLockOverlay), findsOneWidget);

@@ -1,17 +1,14 @@
-import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class AccountEvent extends Equatable {
-  const AccountEvent();
+abstract class AccountActionEvent extends Equatable {
+  const AccountActionEvent();
 
   @override
   List<Object> get props => [];
 }
 
-class LoadAccounts extends AccountEvent {}
-
-class AddAccountEvent extends AccountEvent {
+class AddAccountEvent extends AccountActionEvent {
   final AccountEntity account;
   const AddAccountEvent(this.account);
 
@@ -19,7 +16,7 @@ class AddAccountEvent extends AccountEvent {
   List<Object> get props => [account];
 }
 
-class UpdateAccountEvent extends AccountEvent {
+class UpdateAccountEvent extends AccountActionEvent {
   final AccountEntity account;
   const UpdateAccountEvent(this.account);
 
@@ -27,18 +24,10 @@ class UpdateAccountEvent extends AccountEvent {
   List<Object> get props => [account];
 }
 
-class DeleteAccountEvent extends AccountEvent {
+class DeleteAccountEvent extends AccountActionEvent {
   final String accountId;
   const DeleteAccountEvent(this.accountId);
 
   @override
   List<Object> get props => [accountId];
-}
-
-class AccountLoadFailed extends AccountEvent {
-  final Failure failure;
-  const AccountLoadFailed(this.failure);
-
-  @override
-  List<Object> get props => [failure];
 }

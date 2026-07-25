@@ -9,7 +9,8 @@ import 'package:due_day/core/observability/observability_service.dart';
 import 'package:due_day/core/observability/sinks/console_observability_sink.dart';
 import 'package:due_day/core/settings/settings_bloc.dart';
 import 'package:due_day/core/settings/settings_state.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_bloc.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_action_bloc.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_bloc.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_event.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_action_bloc.dart';
@@ -112,7 +113,8 @@ class _DueDayAppState extends State<DueDayApp> {
       providers: [
         BlocProvider.value(value: _authBloc),
         BlocProvider(create: (_) => di.sl<SettingsBloc>()),
-        BlocProvider(create: (_) => di.sl<AccountBloc>()),
+        BlocProvider(create: (_) => di.sl<AccountLoadBloc>()),
+        BlocProvider(create: (_) => di.sl<AccountActionBloc>()),
         BlocProvider(create: (_) => di.sl<CategoryLoadBloc>()),
         BlocProvider(create: (_) => di.sl<CategoryActionBloc>()),
         BlocProvider(create: (_) => di.sl<TransactionBloc>()),

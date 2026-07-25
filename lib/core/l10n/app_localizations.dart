@@ -524,6 +524,18 @@ abstract class AppLocalizations {
   /// **'Ocorreu um erro ao gerenciar suas contas.'**
   String get accountsErrorFallback;
 
+  /// No description provided for @accountsErrorSaveFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao salvar a conta. Tente novamente.'**
+  String get accountsErrorSaveFailed;
+
+  /// No description provided for @accountsErrorDeleteFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao deletar a conta. Tente novamente.'**
+  String get accountsErrorDeleteFailed;
+
   /// No description provided for @categoriesTitle.
   ///
   /// In pt, this message translates to:

@@ -3,7 +3,8 @@ import 'package:due_day/features/categories/presentation/bloc/category_action_ev
 import 'package:due_day/features/categories/presentation/bloc/category_action_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CategoryActionBloc extends Bloc<CategoryActionEvent, CategoryActionState> {
+class CategoryActionBloc
+    extends Bloc<CategoryActionEvent, CategoryActionState> {
   final AddCategory addCategory;
   final UpdateCategory updateCategory;
   final DeleteCategory deleteCategory;

@@ -34,9 +34,7 @@ void main() {
   }
 
   setUp(() async {
-    tempDir = await Directory.systemTemp.createTemp(
-      'notifications_hive_test',
-    );
+    tempDir = await Directory.systemTemp.createTemp('notifications_hive_test');
     Hive.init(tempDir.path);
     box = await Hive.openBox<Map>('notifications_test_box');
 
@@ -167,9 +165,7 @@ void main() {
       'given a change in the box when getNotifications stream is listened then it re-emits',
       () async {
         final results = <List<NotificationModel>>[];
-        final subscription = dataSource.getNotifications().listen(
-          results.add,
-        );
+        final subscription = dataSource.getNotifications().listen(results.add);
 
         await Future.delayed(Duration.zero);
         await dataSource.addNotification(buildModel(id: 'n1'));

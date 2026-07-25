@@ -107,6 +107,8 @@
     "accountsErrorNotFound": "Conta não encontrada.",
     "accountsErrorNotAuthenticated": "Usuário não autenticado. Por favor, faça login novamente.",
     "accountsErrorFallback": "Ocorreu um erro ao gerenciar suas contas.",
+    "accountsErrorSaveFailed": "Falha ao salvar a conta. Tente novamente.",
+    "accountsErrorDeleteFailed": "Falha ao deletar a conta. Tente novamente.",
 
     "categoriesTitle": "Categorias",
     "categoriesSubtitle": "Curadoria do seu fluxo de gastos.",

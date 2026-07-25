@@ -5,8 +5,8 @@ import 'package:due_day/core/navigation/biometric_lock_overlay.dart';
 import 'package:due_day/core/services/security_service.dart';
 import 'package:due_day/core/settings/settings_bloc.dart';
 import 'package:due_day/core/settings/settings_state.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_bloc.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_event.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_bloc.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_event.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_event.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
@@ -36,7 +36,7 @@ class _MainWrapperPageState extends State<MainWrapperPage>
     WidgetsBinding.instance.addObserver(this);
 
     // Dispatch initial load events to listen to Firestore streams
-    context.read<AccountBloc>().add(LoadAccounts());
+    context.read<AccountLoadBloc>().add(LoadAccounts());
     context.read<CategoryLoadBloc>().add(LoadCategories());
     context.read<TransactionBloc>().add(const LoadTransactions());
 

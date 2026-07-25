@@ -159,7 +159,10 @@ void main() {
         await tester.pump();
         expect(find.text('First'), findsOneWidget);
 
-        AppMessenger.showSuccess(tester.element(find.byType(Scaffold)), 'Second');
+        AppMessenger.showSuccess(
+          tester.element(find.byType(Scaffold)),
+          'Second',
+        );
         await tester.pump();
 
         expect(find.text('First'), findsNothing);

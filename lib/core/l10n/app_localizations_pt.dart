@@ -234,6 +234,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'Ocorreu um erro ao gerenciar suas contas.';
 
   @override
+  String get accountsErrorSaveFailed =>
+      'Falha ao salvar a conta. Tente novamente.';
+
+  @override
+  String get accountsErrorDeleteFailed =>
+      'Falha ao deletar a conta. Tente novamente.';
+
+  @override
   String get categoriesTitle => 'Categorias';
 
   @override

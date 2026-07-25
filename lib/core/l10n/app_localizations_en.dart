@@ -234,6 +234,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'An error occurred while managing your accounts.';
 
   @override
+  String get accountsErrorSaveFailed =>
+      'Failed to save account. Please try again.';
+
+  @override
+  String get accountsErrorDeleteFailed =>
+      'Failed to delete account. Please try again.';
+
+  @override
   String get categoriesTitle => 'Categories';
 
   @override

@@ -58,7 +58,7 @@ void main() {
       );
 
       test(
-        'should return ServerFailure for general server exceptions',
+        'should return AccountSaveFailure for general server exceptions',
         () async {
           // Arrange
           when(
@@ -69,9 +69,67 @@ void main() {
           final result = await repository.addAccount(tAccountEntity);
 
           // Assert
-          expect(result, equals(const Left(ServerFailure('Server error'))));
+          expect(
+            result,
+            equals(const Left(AccountSaveFailure('Server error'))),
+          );
         },
       );
+    });
+
+    group('updateAccount', () {
+      test(
+        'should return AccountSaveFailure for general server exceptions',
+        () async {
+          // Arrange
+          when(
+            () => mockRemoteDataSource.updateAccount(any()),
+          ).thenThrow(const ServerException('Server error'));
+
+          // Act
+          final result = await repository.updateAccount(tAccountEntity);
+
+          // Assert
+          expect(
+            result,
+            equals(const Left(AccountSaveFailure('Server error'))),
+          );
+        },
+      );
+    });
+
+    group('deleteAccount', () {
+      test(
+        'should return AccountDeleteFailure for general server exceptions',
+        () async {
+          // Arrange
+          when(
+            () => mockRemoteDataSource.deleteAccount(any()),
+          ).thenThrow(const ServerException('Server error'));
+
+          // Act
+          final result = await repository.deleteAccount('account-1');
+
+          // Assert
+          expect(
+            result,
+            equals(const Left(AccountDeleteFailure('Server error'))),
+          );
+        },
+      );
+
+      test('should return AccountNotFoundFailure when not found', () async {
+        // Arrange
+        when(
+          () => mockRemoteDataSource.deleteAccount(any()),
+        ).thenThrow(const ServerException('Account not found.', 'not-found'));
+
+        // Act
+        final result = await repository.deleteAccount('account-1');
+
+        // Assert
+        expect(result, equals(const Left(AccountNotFoundFailure())));
+      });
     });
 
     group('getAccountById', () {
