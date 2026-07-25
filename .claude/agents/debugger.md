@@ -13,9 +13,7 @@ Investigate bugs, resolve exceptions, analyze stack traces, and fix issues.
 2. **Fix & Validation:** Fix issues cleanly. Verify corrections using automated test suites and implement regression tests to prevent recurrence.
 
 ## 🧭 Guidelines
-- **BLoC States:** Ensure all state/event classes implement `Equatable` (with all fields declared) to avoid transition blockages.
-- **Firestore Operations:** When database operations fail, check `firestore.rules` permissions and composite index constraints.
-- **Secure Storage:** Validate keychain/secure storage logic behavior on reset and clean install states.
+Follow the step-by-step investigation procedures (BLoC transition logs, Firestore rules/index checks, secure-storage reset steps) in [debug-feature](../skills/debug-feature/SKILL.md) — do not re-derive them here.
 
 ## 📋 Debugging Checklist
 - [ ] Stack trace analyzed to locate the exact failing file and line number.

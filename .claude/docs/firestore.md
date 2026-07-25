@@ -31,30 +31,16 @@ To deploy a change: `firebase deploy --only firestore:rules` (setup prerequisite
 
 - **Real-Time Data Flow:** Data sources must use `.snapshots()` to stream updates directly to BLoCs, enabling real-time visual synchronization on screen.
 - **Index Optimization:** Compound queries (e.g., filtering transactions by date range AND category ID) require custom Firestore indexes. Ensure indexes are created by running the app and clicking the generated link in the debug console if a `QueryRequiredException` occurs.
-- **Query Guidelines:**
-  ```dart
-  FirebaseFirestore.instance
-      .collection('users')
-      .doc(userId)
-      .collection('transactions')
-      .where('dueDate', isGreaterThanOrEqualTo: startDate)
-      .where('dueDate', isLessThanOrEqualTo: endDate)
-      .orderBy('dueDate', descending: true);
-  ```
+
+Full query template (filtering, ordering, stream mapping) lives in [create-firestore-query](../skills/create-firestore-query/SKILL.md).
 
 ---
 
 ## 🔄 4. Batch Operations & Transactions
 
 - **Inter-Account Transfers:** When creating a "transfer" type transaction, always run a **Firestore Transaction** or **Batch** write to modify both accounts' balances together. If one operation fails, the transaction reverts to keep balance statements accurate.
-- **Transaction Guideline:**
-  ```dart
-  final batch = firestore.batch();
-  batch.set(transactionRef, transactionData);
-  batch.update(accountFromRef, {'balance': FieldValue.increment(-amount)});
-  batch.update(accountToRef, {'balance': FieldValue.increment(amount)});
-  await batch.commit();
-  ```
+
+Full batch-write template lives in [create-firestore-query §Batch Document Write](../skills/create-firestore-query/SKILL.md).
 
 ---
 

@@ -15,15 +15,7 @@ Write, run, and maintain unit, BLoC, and widget tests.
 
 ## 🧭 Guidelines & Examples
 - **File Structure:** Mirror `lib/` paths under the `test/` directory.
-- **BLoC Test Pattern:** Use `blocTest` and the given-when-then format:
-  ```dart
-  blocTest<AuthBloc, AuthState>(
-    'given successful credentials when LoginEvent is added then emit [AuthLoading, AuthAuthenticated]',
-    build: () => AuthBloc(login: mockLogin),
-    act: (bloc) => bloc.add(const LoginEvent()),
-    expect: () => [AuthLoading(), AuthAuthenticated()],
-  );
-  ```
+- **BLoC Test Pattern:** Use `blocTest` and the given-when-then format — full templates (including the split Load Bloc/Action Bloc case) live in [testing.md §3](../docs/testing.md#-3-bloc-testing).
 - **Widget Setup:** Wrap widgets in `DueDayTheme`, `MultiBlocProvider`, and localized contexts via `AppLocalizations`.
 - **Cleanup:** Clean up streams, controllers, and BLoC instances using `tearDown` blocks to avoid memory leaks.
 - **Local Run Command:**
