@@ -15,11 +15,4 @@ Analyze code changes for compliance with project standards, design system, archi
 4. **Layer Boundaries:** Ensure unidirectional dependency flow (Presentation ➔ Domain 🠔 Data) per [architecture.md](../docs/architecture.md).
 
 ## 📋 Review Checklist
-- [ ] Filenames use `snake_case` with correct layer suffixes.
-- [ ] No hardcoded colors/offsets (uses `DueDayTheme` and `.w`/`.h`/`.sp`/`.fs` extensions).
-- [ ] Touch targets are ≥ 44x44px; color contrast meets WCAG AA.
-- [ ] Zero user-facing hardcoded text (uses `AppLocalizations`).
-- [ ] Domain layer is pure Dart (no frameworks/Data layer imports).
-- [ ] UI files contain zero direct DataSource/Repository/Firebase calls.
-- [ ] Code is free of `print` statements, debugger remnants, and commented-out blocks.
-- [ ] Clean build: passes `fvm dart format .` and `fvm flutter analyze`.
+Run the full checklist in [review-feature](../skills/review-feature/SKILL.md) — it is the canonical, up-to-date list (architectural integrity, design-system tokens, clean code, tests/analysis). Do not maintain a second copy here; if a rule is missing from that skill, add it there instead of inlining it in this file.
