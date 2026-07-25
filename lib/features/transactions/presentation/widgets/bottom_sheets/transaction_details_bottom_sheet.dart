@@ -3,8 +3,8 @@ import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_bloc.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_state.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_bloc.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_state.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/categories/presentation/utils/category_utils.dart';
@@ -139,7 +139,7 @@ class TransactionDetailsBottomSheet extends StatelessWidget {
                 );
               },
             ),
-          BlocBuilder<AccountBloc, AccountState>(
+          BlocBuilder<AccountLoadBloc, AccountLoadState>(
             builder: (context, state) {
               String fromAccount = l10n.notAvailable;
               String? toAccount;

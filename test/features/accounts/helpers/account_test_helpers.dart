@@ -8,9 +8,12 @@ import 'package:due_day/features/accounts/domain/entities/account_category.dart'
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:due_day/features/accounts/domain/repositories/account_repository.dart';
 import 'package:due_day/features/accounts/domain/usecases/account_usecases.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_bloc.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_event.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_state.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_action_bloc.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_action_event.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_action_state.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_bloc.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_event.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -51,9 +54,13 @@ class MockDeleteAccount extends Mock implements DeleteAccount {}
 
 class MockGetAccounts extends Mock implements GetAccounts {}
 
-// BLoC Mock
-class MockAccountBloc extends MockBloc<AccountEvent, AccountState>
-    implements AccountBloc {}
+// BLoC Mocks
+class MockAccountLoadBloc extends MockBloc<AccountLoadEvent, AccountLoadState>
+    implements AccountLoadBloc {}
+
+class MockAccountActionBloc
+    extends MockBloc<AccountActionEvent, AccountActionState>
+    implements AccountActionBloc {}
 
 // Test Data
 final tDateTime = DateTime(2026, 7, 7);

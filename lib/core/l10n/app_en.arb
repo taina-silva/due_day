@@ -99,6 +99,8 @@
     "accountsErrorNotFound": "Account not found.",
     "accountsErrorNotAuthenticated": "User not authenticated. Please log in again.",
     "accountsErrorFallback": "An error occurred while managing your accounts.",
+    "accountsErrorSaveFailed": "Failed to save account. Please try again.",
+    "accountsErrorDeleteFailed": "Failed to delete account. Please try again.",
 
     "categoriesTitle": "Categories",
     "categoriesSubtitle": "Curate your spending flow.",

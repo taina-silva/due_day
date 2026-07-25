@@ -6,9 +6,9 @@ import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/app_constants.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_bloc.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_event.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_state.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_bloc.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_event.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_state.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_state.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
@@ -62,7 +62,7 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
     super.initState();
 
     context.read<CategoryLoadBloc>().add(LoadCategories());
-    context.read<AccountBloc>().add(LoadAccounts());
+    context.read<AccountLoadBloc>().add(LoadAccounts());
 
     if (widget.transaction != null) {
       final t = widget.transaction!;
@@ -108,7 +108,7 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
       } catch (_) {}
     }
 
-    final accountState = context.read<AccountBloc>().state;
+    final accountState = context.read<AccountLoadBloc>().state;
     if (accountState is AccountLoaded) {
       if (t.accountFrom != null) {
         try {
@@ -149,7 +149,7 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
             }
           },
         ),
-        BlocListener<AccountBloc, AccountState>(
+        BlocListener<AccountLoadBloc, AccountLoadState>(
           listener: (context, state) {
             if (state is AccountLoaded) {
               setState(() => _updateEntitiesFromState());

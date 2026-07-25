@@ -5,9 +5,10 @@ import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_bloc.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_event.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_state.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_action_bloc.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_action_event.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_bloc.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_state.dart';
 import 'package:due_day/features/accounts/presentation/utils/account_failure_extension.dart';
 import 'package:due_day/features/accounts/presentation/widgets/account_card.dart';
 import 'package:due_day/features/accounts/presentation/widgets/add_edit_account_bottom_sheet.dart';
@@ -33,7 +34,7 @@ class AccountsPage extends StatelessWidget {
     return CustomScaffold(
       appBar: DashboardAppBar(titleText: l10n.accountsTitle),
       body: SafeArea(
-        child: BlocBuilder<AccountBloc, AccountState>(
+        child: BlocBuilder<AccountLoadBloc, AccountLoadState>(
           builder: (context, state) {
             if (state is AccountLoading || state is AccountInitial) {
               return const Center(child: CircularProgressIndicator());
@@ -151,7 +152,7 @@ class AccountsPage extends StatelessWidget {
           account: account,
           onSave: (name, category, balance, dueDay) {
             final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-            final accountBloc = context.read<AccountBloc>();
+            final accountBloc = context.read<AccountActionBloc>();
 
             if (account == null) {
               accountBloc.add(

@@ -71,8 +71,7 @@ void main() {
                   onPressed: () => showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
-                    builder: (_) =>
-                        AddEditCategoryBottomSheet(onSave: onSave),
+                    builder: (_) => AddEditCategoryBottomSheet(onSave: onSave),
                   ),
                   child: const Text('open'),
                 ),

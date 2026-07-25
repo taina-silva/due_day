@@ -16,7 +16,10 @@ class NotificationsLocalDataSourceImpl implements NotificationsLocalDataSource {
   final Box<Map> box;
   final FirebaseAuth firebaseAuth;
 
-  NotificationsLocalDataSourceImpl({required this.box, required this.firebaseAuth});
+  NotificationsLocalDataSourceImpl({
+    required this.box,
+    required this.firebaseAuth,
+  });
 
   @override
   Future<void> addNotification(NotificationModel notification) async {
@@ -64,7 +67,9 @@ class NotificationsLocalDataSourceImpl implements NotificationsLocalDataSource {
     if (userId == null) return const [];
 
     final models = box.values
-        .map((json) => NotificationModel.fromJson(Map<String, dynamic>.from(json)))
+        .map(
+          (json) => NotificationModel.fromJson(Map<String, dynamic>.from(json)),
+        )
         .where((model) => model.userId == userId)
         .toList();
     models.sort((a, b) => b.timestamp.compareTo(a.timestamp));
@@ -74,16 +79,15 @@ class NotificationsLocalDataSourceImpl implements NotificationsLocalDataSource {
   Future<void> _enforceMaxSize() async {
     if (box.length <= kMaxStoredNotifications) return;
 
-    final entries = box.keys
-        .map((key) {
-          final json = box.get(key);
-          final timestamp = json == null
-              ? DateTime.fromMillisecondsSinceEpoch(0)
-              : NotificationModel.fromJson(Map<String, dynamic>.from(json)).timestamp;
-          return MapEntry(key, timestamp);
-        })
-        .toList()
-      ..sort((a, b) => a.value.compareTo(b.value));
+    final entries = box.keys.map((key) {
+      final json = box.get(key);
+      final timestamp = json == null
+          ? DateTime.fromMillisecondsSinceEpoch(0)
+          : NotificationModel.fromJson(
+              Map<String, dynamic>.from(json),
+            ).timestamp;
+      return MapEntry(key, timestamp);
+    }).toList()..sort((a, b) => a.value.compareTo(b.value));
 
     final overflow = box.length - kMaxStoredNotifications;
     final keysToRemove = entries.take(overflow).map((e) => e.key);

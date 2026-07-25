@@ -1,6 +1,7 @@
 import 'package:due_day/core/design_system/components/buttons/app_text_button.dart';
 import 'package:due_day/core/design_system/components/form_fields/app_dropdown_field.dart';
 import 'package:due_day/core/design_system/components/form_fields/app_text_field.dart';
+import 'package:due_day/core/design_system/components/messenger/app_messenger.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
@@ -9,8 +10,10 @@ import 'package:due_day/core/utils/formatters/currency_input_formatter.dart';
 import 'package:due_day/core/utils/validators/validators.dart';
 import 'package:due_day/features/accounts/domain/entities/account_category.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_bloc.dart';
-import 'package:due_day/features/accounts/presentation/bloc/account_event.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_action_bloc.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_action_event.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_action_state.dart';
+import 'package:due_day/features/accounts/presentation/utils/account_failure_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -46,6 +49,7 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
   AccountCategory? _selectedCategory;
 
   bool _isInit = false;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -93,140 +97,161 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
 
     final isEditing = widget.account != null;
 
-    return Padding(
-      padding: EdgeInsets.only(
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: dimensions.spacing.medium.width,
-        right: dimensions.spacing.medium.width,
-        top: dimensions.spacing.large.height,
-      ),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(
-              child: Container(
-                width: 40.w,
-                height: 4.h,
-                decoration: BoxDecoration(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurfaceVariant.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(dimensions.radius.circle),
+    return BlocListener<AccountActionBloc, AccountActionState>(
+      listener: (context, state) {
+        if (!_isSubmitting) return;
+
+        if (state is AccountActionError) {
+          setState(() => _isSubmitting = false);
+          AppMessenger.showError(
+            context,
+            state.failure.toLocalizedString(context),
+          );
+        } else if (state is AccountActionSuccess) {
+          _isSubmitting = false;
+          Navigator.of(context).pop();
+        }
+      },
+      child: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+          left: dimensions.spacing.medium.width,
+          right: dimensions.spacing.medium.width,
+          top: dimensions.spacing.large.height,
+        ),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 40.w,
+                  height: 4.h,
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurfaceVariant.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(
+                      dimensions.radius.circle,
+                    ),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: dimensions.spacing.large.height),
-            Text(
-              isEditing ? l10n.accountsEditAccount : l10n.accountsAddAccount,
-              style: typography.title.large.copyWith(
-                fontWeight: FontWeight.bold,
+              SizedBox(height: dimensions.spacing.large.height),
+              Text(
+                isEditing ? l10n.accountsEditAccount : l10n.accountsAddAccount,
+                style: typography.title.large.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(height: dimensions.spacing.extraLarge.height),
-            AppTextField(
-              controller: _nameController,
-              label: l10n.accountsNameLabel,
-              hintText: l10n.accountsNameHint,
-              prefixIcon: Icons.account_balance_wallet_outlined,
-              validator: Validators.requiredField(l10n),
-            ),
-            SizedBox(height: dimensions.spacing.large.height),
-            AppDropdownField<AccountCategory>(
-              value: _selectedCategory,
-              label: l10n.accountsCategoryLabel,
-              hintText: l10n.hintSelect,
-              prefixIcon: Icons.category_outlined,
-              items: AccountCategory.values
-                  .map(
-                    (category) => DropdownMenuItem(
-                      value: category,
-                      child: Text(category.localizedName(l10n)),
-                    ),
-                  )
-                  .toList(),
-              onChanged: (value) {
-                setState(() {
-                  _selectedCategory = value;
-                });
-              },
-              validator: Validators.requiredSelection<AccountCategory>(l10n),
-            ),
-            SizedBox(height: dimensions.spacing.large.height),
-            AppTextField(
-              controller: _balanceController,
-              label: l10n.accountsBalanceLabel,
-              hintText: '0,00',
-              prefixIcon: Icons.attach_money_rounded,
-              keyboardType: const TextInputType.numberWithOptions(
-                decimal: true,
+              SizedBox(height: dimensions.spacing.extraLarge.height),
+              AppTextField(
+                controller: _nameController,
+                label: l10n.accountsNameLabel,
+                hintText: l10n.accountsNameHint,
+                prefixIcon: Icons.account_balance_wallet_outlined,
+                validator: Validators.requiredField(l10n),
               ),
-              inputFormatters: [
-                CurrencyInputFormatter(locale: context.localeString),
-              ],
-              validator: Validators.requiredField(l10n),
-            ),
-            if (_selectedCategory == AccountCategory.creditCard) ...[
+              SizedBox(height: dimensions.spacing.large.height),
+              AppDropdownField<AccountCategory>(
+                value: _selectedCategory,
+                label: l10n.accountsCategoryLabel,
+                hintText: l10n.hintSelect,
+                prefixIcon: Icons.category_outlined,
+                items: AccountCategory.values
+                    .map(
+                      (category) => DropdownMenuItem(
+                        value: category,
+                        child: Text(category.localizedName(l10n)),
+                      ),
+                    )
+                    .toList(),
+                onChanged: (value) {
+                  setState(() {
+                    _selectedCategory = value;
+                  });
+                },
+                validator: Validators.requiredSelection<AccountCategory>(l10n),
+              ),
               SizedBox(height: dimensions.spacing.large.height),
               AppTextField(
-                controller: _dueDayController,
-                label: l10n.accountsDueDateLabel,
-                hintText: '1-31',
-                prefixIcon: Icons.calendar_today_outlined,
-                keyboardType: TextInputType.number,
-                maxLength: 2,
-                validator: (value) {
-                  if (value == null || value.isEmpty) return null;
-                  final day = int.tryParse(value);
-                  if (day == null || day < 1 || day > 31) {
-                    return l10n.validatorRequired;
-                  }
-                  return null;
-                },
-              ),
-            ],
-            SizedBox(height: dimensions.spacing.extraLarge.height),
-            Row(
-              children: [
-                Expanded(
-                  child: AppTextButtonSecondary(
-                    label: l10n.profileCancel,
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
+                controller: _balanceController,
+                label: l10n.accountsBalanceLabel,
+                hintText: '0,00',
+                prefixIcon: Icons.attach_money_rounded,
+                keyboardType: const TextInputType.numberWithOptions(
+                  decimal: true,
                 ),
-                SizedBox(width: dimensions.spacing.medium.width),
-                Expanded(
-                  child: AppTextButtonPrimary(
-                    label: l10n.accountsSaveAccount,
-                    onPressed: _submit,
-                  ),
+                inputFormatters: [
+                  CurrencyInputFormatter(locale: context.localeString),
+                ],
+                validator: Validators.requiredField(l10n),
+              ),
+              if (_selectedCategory == AccountCategory.creditCard) ...[
+                SizedBox(height: dimensions.spacing.large.height),
+                AppTextField(
+                  controller: _dueDayController,
+                  label: l10n.accountsDueDateLabel,
+                  hintText: '1-31',
+                  prefixIcon: Icons.calendar_today_outlined,
+                  keyboardType: TextInputType.number,
+                  maxLength: 2,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) return null;
+                    final day = int.tryParse(value);
+                    if (day == null || day < 1 || day > 31) {
+                      return l10n.validatorRequired;
+                    }
+                    return null;
+                  },
                 ),
               ],
-            ),
-            if (isEditing) ...[
-              SizedBox(height: dimensions.spacing.medium.height),
-              AppTextButtonSecondary(
-                label: l10n.accountsDeleteAccount,
-                onPressed: () => _onDelete(context),
-                prefixIcon: Icons.delete_outline,
-                foregroundColor: Theme.of(context).colorScheme.error,
-                borderColor: Theme.of(
-                  context,
-                ).colorScheme.error.withValues(alpha: 0.3),
+              SizedBox(height: dimensions.spacing.extraLarge.height),
+              Row(
+                children: [
+                  Expanded(
+                    child: AppTextButtonSecondary(
+                      label: l10n.profileCancel,
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ),
+                  SizedBox(width: dimensions.spacing.medium.width),
+                  Expanded(
+                    child: AppTextButtonPrimary(
+                      label: l10n.accountsSaveAccount,
+                      onPressed: _submit,
+                    ),
+                  ),
+                ],
               ),
+              if (isEditing) ...[
+                SizedBox(height: dimensions.spacing.medium.height),
+                AppTextButtonSecondary(
+                  label: l10n.accountsDeleteAccount,
+                  onPressed: () => _onDelete(context),
+                  prefixIcon: Icons.delete_outline,
+                  foregroundColor: Theme.of(context).colorScheme.error,
+                  borderColor: Theme.of(
+                    context,
+                  ).colorScheme.error.withValues(alpha: 0.3),
+                ),
+              ],
+              SizedBox(height: dimensions.spacing.large.height),
             ],
-            SizedBox(height: dimensions.spacing.large.height),
-          ],
+          ),
         ),
       ),
     );
   }
 
   void _submit() {
+    if (_isSubmitting) return;
+
     if (_formKey.currentState!.validate() && _selectedCategory != null) {
+      setState(() => _isSubmitting = true);
       final balance = CurrencyInputFormatter.parse(_balanceController.text);
       final dueDay = int.tryParse(_dueDayController.text);
 
@@ -236,8 +261,6 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
         balance,
         dueDay,
       );
-
-      Navigator.of(context).pop();
     }
   }
 
@@ -256,12 +279,12 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
           TextButton(
             onPressed: () {
               if (widget.account != null) {
-                context.read<AccountBloc>().add(
+                setState(() => _isSubmitting = true);
+                context.read<AccountActionBloc>().add(
                   DeleteAccountEvent(widget.account!.id),
                 );
               }
-              Navigator.of(context).pop(); // Close dialog
-              Navigator.of(context).pop(); // Close bottom sheet
+              Navigator.of(context).pop(); // Close confirmation dialog only
             },
             child: Text(
               l10n.profileExclude,

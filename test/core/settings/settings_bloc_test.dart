@@ -65,9 +65,7 @@ void main() {
       // states asserted below.
       seed: () => const SettingsState(),
       act: (bloc) => bloc.add(const ToggleBiometricsEvent(true)),
-      expect: () => [
-        const SettingsState(isBiometricsEnabled: true),
-      ],
+      expect: () => [const SettingsState(isBiometricsEnabled: true)],
       verify: (_) {
         verify(() => mockSecurityService.setBiometricsEnabled(true)).called(1);
       },
@@ -83,13 +81,9 @@ void main() {
         return buildBloc();
       },
       act: (bloc) => bloc.add(const ToggleBiometricsEvent(false)),
-      expect: () => [
-        const SettingsState(isBiometricsEnabled: false),
-      ],
+      expect: () => [const SettingsState(isBiometricsEnabled: false)],
       verify: (_) {
-        verify(
-          () => mockSecurityService.setBiometricsEnabled(false),
-        ).called(1);
+        verify(() => mockSecurityService.setBiometricsEnabled(false)).called(1);
       },
     );
   });
@@ -104,9 +98,7 @@ void main() {
         return buildBloc();
       },
       act: (bloc) => bloc.add(LoadBiometricsSettingsEvent()),
-      expect: () => [
-        const SettingsState(isBiometricsEnabled: true),
-      ],
+      expect: () => [const SettingsState(isBiometricsEnabled: true)],
     );
 
     blocTest<SettingsBloc, SettingsState>(

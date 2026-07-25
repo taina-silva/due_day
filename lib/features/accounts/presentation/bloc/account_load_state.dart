@@ -2,18 +2,18 @@ import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class AccountState extends Equatable {
-  const AccountState();
+abstract class AccountLoadState extends Equatable {
+  const AccountLoadState();
 
   @override
   List<Object> get props => [];
 }
 
-class AccountInitial extends AccountState {}
+class AccountInitial extends AccountLoadState {}
 
-class AccountLoading extends AccountState {}
+class AccountLoading extends AccountLoadState {}
 
-class AccountLoaded extends AccountState {
+class AccountLoaded extends AccountLoadState {
   final List<AccountEntity> accounts;
 
   const AccountLoaded({required this.accounts});
@@ -28,7 +28,7 @@ class AccountLoaded extends AccountState {
   List<Object> get props => [accounts];
 }
 
-class AccountError extends AccountState {
+class AccountError extends AccountLoadState {
   final Failure failure;
 
   const AccountError({required this.failure});

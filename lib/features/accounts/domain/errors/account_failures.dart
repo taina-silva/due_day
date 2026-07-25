@@ -9,3 +9,11 @@ class UserNotAuthenticatedFailure extends Failure {
     super.message = 'User not authenticated.',
   ]);
 }
+
+class AccountSaveFailure extends Failure {
+  const AccountSaveFailure([super.message = 'Failed to save account.']);
+}
+
+class AccountDeleteFailure extends Failure {
+  const AccountDeleteFailure([super.message = 'Failed to delete account.']);
+}

@@ -7,13 +7,17 @@ extension AccountFailureExtension on Failure {
   String toLocalizedString(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    if (this is AccountNotFoundFailure) {
-      return l10n.accountsErrorNotFound;
+    switch (this) {
+      case AccountNotFoundFailure():
+        return l10n.accountsErrorNotFound;
+      case UserNotAuthenticatedFailure():
+        return l10n.accountsErrorNotAuthenticated;
+      case AccountSaveFailure():
+        return l10n.accountsErrorSaveFailed;
+      case AccountDeleteFailure():
+        return l10n.accountsErrorDeleteFailed;
+      default:
+        return l10n.accountsErrorFallback;
     }
-    if (this is UserNotAuthenticatedFailure) {
-      return l10n.accountsErrorNotAuthenticated;
-    }
-
-    return l10n.accountsErrorFallback;
   }
 }

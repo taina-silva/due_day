@@ -54,7 +54,8 @@ class MockDeleteCategory extends Mock implements DeleteCategory {}
 class MockGetCategories extends Mock implements GetCategories {}
 
 // BLoC Mocks
-class MockCategoryLoadBloc extends MockBloc<CategoryLoadEvent, CategoryLoadState>
+class MockCategoryLoadBloc
+    extends MockBloc<CategoryLoadEvent, CategoryLoadState>
     implements CategoryLoadBloc {}
 
 class MockCategoryActionBloc

@@ -31,9 +31,7 @@ void main() {
       (tester) async {
         setupTestWindow(tester);
 
-        await tester.pumpWidget(
-          buildTestableWidget(child: const SplashPage()),
-        );
+        await tester.pumpWidget(buildTestableWidget(child: const SplashPage()));
 
         // Verify elements exist initially
         expect(find.byType(Image), findsOneWidget);

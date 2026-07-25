@@ -36,9 +36,7 @@ void main() {
         final result = await repository.addNotification(tNotificationEntity);
 
         expect(result, const Right(null));
-        verify(
-          () => mockLocalDataSource.addNotification(any()),
-        ).called(1);
+        verify(() => mockLocalDataSource.addNotification(any())).called(1);
       },
     );
 

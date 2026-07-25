@@ -32,9 +32,9 @@ void main() {
     mockSecurityService = MockSecurityService();
 
     // Setup default states
-    when(() => mockAuthBloc.state).thenReturn(
-      AuthAuthenticated(user: tUserEntity),
-    );
+    when(
+      () => mockAuthBloc.state,
+    ).thenReturn(AuthAuthenticated(user: tUserEntity));
     when(() => mockAuthBloc.stream).thenAnswer((_) => const Stream.empty());
 
     when(() => mockSettingsBloc.state).thenReturn(
