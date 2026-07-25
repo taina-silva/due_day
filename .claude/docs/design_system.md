@@ -6,7 +6,7 @@ This document describes the **DueDay** Design System, which centralizes UI style
 
 ## 🎯 1. Theme Gateway (`DueDayTheme` & `BuildContext` Extension)
 
-The design system is defined under `DueDayTheme`, but the **recommended** way to access it inside build methods is via the **`BuildContext` extension** (defined in [due_day_theme_extension.dart](file:///Users/tainass/Personal/Projetos%20Pessoais/due_day/lib/core/design_system/theme/due_day_theme_extension.dart)):
+The design system is defined under `DueDayTheme`, but the **recommended** way to access it inside build methods is via the **`BuildContext` extension** (defined in [due_day_theme_extension.dart](../../lib/core/design_system/theme/due_day_theme_extension.dart)):
 
 ### BuildContext Shortcut Getters (Recommended)
 - **Colors:** `context.colors` (returns `AppColorsSys`)
