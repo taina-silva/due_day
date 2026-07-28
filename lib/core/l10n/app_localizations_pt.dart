@@ -761,4 +761,12 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get scheduleErrorFallback => 'Ocorreu um erro ao carregar sua agenda.';
+
+  @override
+  String get scheduleErrorNotAuthenticated =>
+      'Usuário não autenticado. Por favor, faça login novamente.';
+
+  @override
+  String get scheduleActionErrorFallback =>
+      'Falha ao atualizar sua agenda. Tente novamente.';
 }

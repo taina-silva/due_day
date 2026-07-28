@@ -64,7 +64,7 @@ class StatusTag extends StatelessWidget {
         style: typography.label.small.copyWith(
           color: textColor,
           fontWeight: FontWeight.bold,
-          fontSize: 10.width,
+          fontSize: 10.fs,
         ),
       ),
     );

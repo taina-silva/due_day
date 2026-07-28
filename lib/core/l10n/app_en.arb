@@ -336,5 +336,7 @@
     "categoriesErrorSaveFailed": "Failed to save category. Please try again.",
     "categoriesErrorDeleteFailed": "Failed to delete category. Please try again.",
     "dashboardErrorFallback": "An error occurred while loading the dashboard.",
-    "scheduleErrorFallback": "An error occurred while loading your schedule."
+    "scheduleErrorFallback": "An error occurred while loading your schedule.",
+    "scheduleErrorNotAuthenticated": "User not authenticated. Please log in again.",
+    "scheduleActionErrorFallback": "Failed to update your schedule. Please try again."
 }

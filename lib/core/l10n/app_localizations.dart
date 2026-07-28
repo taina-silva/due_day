@@ -1490,6 +1490,18 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Ocorreu um erro ao carregar sua agenda.'**
   String get scheduleErrorFallback;
+
+  /// No description provided for @scheduleErrorNotAuthenticated.
+  ///
+  /// In pt, this message translates to:
+  /// **'Usuário não autenticado. Por favor, faça login novamente.'**
+  String get scheduleErrorNotAuthenticated;
+
+  /// No description provided for @scheduleActionErrorFallback.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao atualizar sua agenda. Tente novamente.'**
+  String get scheduleActionErrorFallback;
 }
 
 class _AppLocalizationsDelegate

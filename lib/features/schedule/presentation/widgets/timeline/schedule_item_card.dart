@@ -76,7 +76,7 @@ class ScheduleItemCard extends StatelessWidget {
                   style: typography.label.small.copyWith(
                     color: colors.resource.secondary.withValues(alpha: 0.5),
                     fontWeight: FontWeight.bold,
-                    fontSize: 10.width,
+                    fontSize: 10.fs,
                   ),
                 ),
                 Text(
@@ -134,7 +134,7 @@ class ScheduleItemCard extends StatelessWidget {
                                   alpha: 0.5,
                                 ),
                                 fontWeight: FontWeight.bold,
-                                fontSize: 10.width,
+                                fontSize: 10.fs,
                               ),
                             ),
                             Text(
