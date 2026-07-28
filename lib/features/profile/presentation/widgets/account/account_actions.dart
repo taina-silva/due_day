@@ -40,10 +40,7 @@ class AccountActions extends StatelessWidget {
               Icons.chevron_right,
               color: context.onSurfaceColor.withValues(alpha: 0.3),
             ),
-            onTap: () {
-              context.read<AuthBloc>().add(AuthSignOutEvent());
-              context.go('/login');
-            },
+            onTap: () => context.read<AuthBloc>().add(AuthSignOutEvent()),
           ),
           Divider(
             height: 1,
@@ -90,7 +87,9 @@ class AccountActions extends StatelessWidget {
             },
             child: Text(
               l10n.profileExclude,
-              style: TextStyle(color: context.colors.system.error),
+              style: cntx.typography.body.medium.copyWith(
+                color: cntx.colors.system.error,
+              ),
             ),
           ),
         ],

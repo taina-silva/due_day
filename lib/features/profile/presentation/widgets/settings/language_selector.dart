@@ -3,6 +3,7 @@ import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/settings/settings_bloc.dart';
 import 'package:due_day/core/settings/settings_event.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
+import 'package:due_day/features/profile/presentation/widgets/settings/settings_radio_option.dart';
 import 'package:due_day/features/profile/presentation/widgets/settings/settings_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,7 +23,7 @@ class LanguageSelector extends StatelessWidget {
       iconColor: colors.system.info,
       title: l10n.profileLanguage,
       children: [
-        _RadioOption(
+        SettingsRadioOption<String>(
           label: l10n.profileLanguageEn,
           value: 'en',
           groupValue: currentLanguage,
@@ -33,7 +34,7 @@ class LanguageSelector extends StatelessWidget {
           },
         ),
         SizedBox(height: spacing.smallMedium.height),
-        _RadioOption(
+        SettingsRadioOption<String>(
           label: l10n.profileLanguagePt,
           value: 'pt',
           groupValue: currentLanguage,
@@ -44,72 +45,6 @@ class LanguageSelector extends StatelessWidget {
           },
         ),
       ],
-    );
-  }
-}
-
-class _RadioOption extends StatelessWidget {
-  final String label;
-  final String value;
-  final String groupValue;
-  final ValueChanged<String?> onChanged;
-
-  const _RadioOption({
-    required this.label,
-    required this.value,
-    required this.groupValue,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.colors;
-    final typography = context.typography;
-    final radius = context.radius;
-    final spacing = context.spacing;
-    final isSelected = value == groupValue;
-
-    return GestureDetector(
-      onTap: () => onChanged(value),
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: spacing.smallMedium.width,
-          vertical: spacing.small.height,
-        ),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? colors.resource.primary.withValues(alpha: 0.1)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(radius.large),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              label,
-              style: typography.body.medium.copyWith(
-                fontWeight: FontWeight.w600,
-                color: context.onSurfaceColor,
-              ),
-            ),
-            if (isSelected)
-              Icon(
-                Icons.check_circle,
-                color: colors.resource.primary,
-                size: 20.scale,
-              )
-            else
-              Container(
-                width: 20.scale,
-                height: 20.scale,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: colors.resource.neutral),
-                ),
-              ),
-          ],
-        ),
-      ),
     );
   }
 }

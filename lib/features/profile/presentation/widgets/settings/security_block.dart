@@ -1,6 +1,5 @@
 import 'package:due_day/core/design_system/components/messenger/app_messenger.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
-import 'package:due_day/core/injection/injection_container.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/services/security_service.dart';
 import 'package:due_day/core/settings/settings_bloc.dart';
@@ -14,6 +13,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class SecurityBlock extends StatelessWidget {
   const SecurityBlock({super.key});
 
+  String _messageForResult(AppLocalizations l10n, BiometricAuthResult result) {
+    return switch (result) {
+      BiometricAuthResult.lockedOut => l10n.profileBiometricsLockedOut,
+      BiometricAuthResult.notEnrolled => l10n.profileBiometricsNotEnrolled,
+      BiometricAuthResult.notAvailable => l10n.profileBiometricsNotSupported,
+      _ => l10n.profileBiometricsAuthFailed,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
@@ -22,7 +30,16 @@ class SecurityBlock extends StatelessWidget {
     final radius = context.radius;
     final spacing = context.spacing;
 
-    return BlocBuilder<SettingsBloc, SettingsState>(
+    return BlocConsumer<SettingsBloc, SettingsState>(
+      listenWhen: (previous, current) =>
+          current.biometricsToggleError != null &&
+          previous.biometricsToggleError != current.biometricsToggleError,
+      listener: (context, state) {
+        AppMessenger.showError(
+          context,
+          _messageForResult(l10n, state.biometricsToggleError!),
+        );
+      },
       builder: (context, state) {
         return Container(
           padding: EdgeInsets.symmetric(
@@ -70,44 +87,13 @@ class SecurityBlock extends StatelessWidget {
               CupertinoSwitch(
                 value: state.isBiometricsEnabled,
                 activeTrackColor: colors.resource.primary,
-                onChanged: (bool value) async {
-                  final securityService = sl<SecurityService>();
-
-                  // Checks whether the device currently supports biometrics
-                  final isSupported = await securityService.canAuthenticate();
-                  if (!isSupported) {
-                    if (context.mounted) {
-                      AppMessenger.showError(
-                        context,
-                        l10n.profileBiometricsNotSupported,
-                      );
-                    }
-                    return;
-                  }
-
-                  // Request biometrics to authorize the preference change
-                  final result = await securityService.authenticate();
-                  if (result == BiometricAuthResult.success) {
-                    if (context.mounted) {
-                      context.read<SettingsBloc>().add(
-                        ToggleBiometricsEvent(value),
-                      );
-                    }
-                  } else {
-                    if (context.mounted) {
-                      final String message = switch (result) {
-                        BiometricAuthResult.lockedOut =>
-                          l10n.profileBiometricsLockedOut,
-                        BiometricAuthResult.notEnrolled =>
-                          l10n.profileBiometricsNotEnrolled,
-                        BiometricAuthResult.notAvailable =>
-                          l10n.profileBiometricsNotSupported,
-                        _ => l10n.profileBiometricsAuthFailed,
-                      };
-                      AppMessenger.showError(context, message);
-                    }
-                  }
-                },
+                onChanged: state.isTogglingBiometrics
+                    ? null
+                    : (bool value) {
+                        context.read<SettingsBloc>().add(
+                          ToggleBiometricsEvent(value),
+                        );
+                      },
               ),
             ],
           ),
