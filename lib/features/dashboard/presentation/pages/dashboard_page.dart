@@ -22,6 +22,8 @@ import 'package:due_day/features/dashboard/presentation/widgets/cards/summary_ca
 import 'package:due_day/features/dashboard/presentation/widgets/dashboard_app_bar.dart';
 import 'package:due_day/features/dashboard/presentation/widgets/insights/insight_card.dart';
 import 'package:due_day/features/dashboard/presentation/widgets/spending/category_spending_list.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -38,9 +40,8 @@ class _DashboardPageState extends State<DashboardPage> {
   void initState() {
     super.initState();
 
-    // Load dashboard and sync recurring transactions
     context.read<DashboardBloc>().add(const DashboardLoadRequested());
-    context.read<DashboardBloc>().add(DashboardSyncRecurringRequested());
+    context.read<TransactionBloc>().add(SyncRecurringTransactionsRequested());
   }
 
   @override
@@ -225,14 +226,14 @@ class _DashboardPageState extends State<DashboardPage> {
                         )
                       else
                         ...summary.upcomingDues.map((t) {
-                          final differenceStr = t.dueDate!
+                          final daysUntilDue = t.dueDate!
                               .difference(DateTime.now())
                               .inDays;
-                          final String dueDateStr = differenceStr == 0
-                              ? l10n.dashboardDueToday
-                              : differenceStr == 1
-                              ? l10n.dashboardDueTomorrow
-                              : l10n.dashboardDueInDays(differenceStr);
+                          final String dueDateStr = switch (daysUntilDue) {
+                            0 => l10n.dashboardDueToday,
+                            1 => l10n.dashboardDueTomorrow,
+                            _ => l10n.dashboardDueInDays(daysUntilDue),
+                          };
 
                           return Padding(
                             padding: EdgeInsets.only(
@@ -247,7 +248,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 locale: localeStr,
                               ).format(t.amount.abs()),
                               icon: Icons.receipt_long,
-                              isWarning: differenceStr <= 3,
+                              isWarning: daysUntilDue <= 3,
                             ),
                           );
                         }),

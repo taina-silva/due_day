@@ -1,6 +1,23 @@
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:equatable/equatable.dart';
 
+enum DashboardInsightType { healthy, budgetWarning, categoryWarning }
+
+class DashboardInsight extends Equatable {
+  final DashboardInsightType type;
+  final int budgetPercentage;
+  final String? categoryId;
+
+  const DashboardInsight({
+    required this.type,
+    this.budgetPercentage = 0,
+    this.categoryId,
+  });
+
+  @override
+  List<Object?> get props => [type, budgetPercentage, categoryId];
+}
+
 class DashboardSummary extends Equatable {
   final double currentBalance;
   final double projectedBalance;
@@ -8,6 +25,7 @@ class DashboardSummary extends Equatable {
   final double monthlyExpenses;
   final List<TransactionEntity> upcomingDues;
   final Map<String, double> spendingByCategory;
+  final DashboardInsight insight;
 
   const DashboardSummary({
     required this.currentBalance,
@@ -16,6 +34,7 @@ class DashboardSummary extends Equatable {
     required this.monthlyExpenses,
     required this.upcomingDues,
     required this.spendingByCategory,
+    required this.insight,
   });
 
   @override
@@ -26,5 +45,6 @@ class DashboardSummary extends Equatable {
     monthlyExpenses,
     upcomingDues,
     spendingByCategory,
+    insight,
   ];
 }

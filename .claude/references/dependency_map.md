@@ -41,7 +41,7 @@ To maintain loose coupling, features should remain as self-contained as possible
 | **`auth`** | None | Handles its own user model. |
 | **`accounts`** | None | Independent account management. |
 | **`categories`** | None | Independent category tags. |
-| **`transactions`** | `accounts` (domain), `categories` (domain) | Read accounts (for updating balances) and categories (to tag transactions). |
+| **`transactions`** | `accounts` (domain), `categories` (domain), `auth` (domain), `notifications` (domain) | Read accounts (for updating balances) and categories (to tag transactions); resolve the current user and record/schedule reminder and recurring-debit notifications. |
 | **`dashboard`** | `accounts` (domain), `transactions` (domain) | Aggregate account balances and filter upcoming transaction due dates. |
 | **`schedule`** | `transactions` (domain) | Retrieve transactions list to group by due dates. |
 | **`notifications`**| None | Push notifications parameters. |

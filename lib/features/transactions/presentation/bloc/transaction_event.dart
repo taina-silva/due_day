@@ -67,3 +67,5 @@ class TransactionLoadFailed extends TransactionEvent {
   @override
   List<Object> get props => [failure];
 }
+
+class SyncRecurringTransactionsRequested extends TransactionEvent {}

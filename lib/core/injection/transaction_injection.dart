@@ -2,6 +2,7 @@ import 'package:due_day/features/transactions/data/datasources/transaction_remot
 import 'package:due_day/features/transactions/data/repositories/transaction_repository_impl.dart';
 import 'package:due_day/features/transactions/domain/repositories/transaction_repository.dart';
 import 'package:due_day/features/transactions/domain/usecases/classify_transaction_reminders.dart';
+import 'package:due_day/features/transactions/domain/usecases/sync_recurring_transactions.dart';
 import 'package:due_day/features/transactions/domain/usecases/transaction_usecases.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
 import 'package:get_it/get_it.dart';
@@ -20,6 +21,8 @@ void initTransactions() {
       notificationService: sl(),
       addNotification: sl(),
       classifyTransactionReminders: sl(),
+      syncRecurringTransactions: sl(),
+      getCurrentUser: sl(),
     ),
   );
 
@@ -29,6 +32,12 @@ void initTransactions() {
   sl.registerLazySingleton(() => DeleteTransaction(sl(), sl()));
   sl.registerLazySingleton(() => GetTransactions(sl()));
   sl.registerLazySingleton(() => ClassifyTransactionReminders());
+  sl.registerLazySingleton(
+    () => SyncRecurringTransactions(
+      transactionRepository: sl(),
+      accountRepository: sl(),
+    ),
+  );
 
   // Repository
   sl.registerLazySingleton<TransactionRepository>(

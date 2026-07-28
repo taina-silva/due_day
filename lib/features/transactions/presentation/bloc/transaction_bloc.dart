@@ -4,9 +4,12 @@ import 'package:collection/collection.dart';
 import 'package:due_day/core/l10n/l10n_resolver.dart';
 import 'package:due_day/core/services/notification_service.dart';
 import 'package:due_day/core/settings/settings_bloc.dart';
+import 'package:due_day/features/auth/domain/usecases/auth_usecases.dart';
 import 'package:due_day/features/notifications/domain/entities/notification_entity.dart';
 import 'package:due_day/features/notifications/domain/usecases/notification_usecases.dart';
+import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:due_day/features/transactions/domain/usecases/classify_transaction_reminders.dart';
+import 'package:due_day/features/transactions/domain/usecases/sync_recurring_transactions.dart';
 import 'package:due_day/features/transactions/domain/usecases/transaction_usecases.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_state.dart';
@@ -24,6 +27,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   final NotificationService notificationService;
   final AddNotification addNotification;
   final ClassifyTransactionReminders classifyTransactionReminders;
+  final SyncRecurringTransactions syncRecurringTransactions;
+  final GetCurrentUser getCurrentUser;
 
   StreamSubscription? _transactionsSubscription;
   List<TransactionReminder>? _lastReminders;
@@ -37,6 +42,8 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     required this.notificationService,
     required this.addNotification,
     required this.classifyTransactionReminders,
+    required this.syncRecurringTransactions,
+    required this.getCurrentUser,
   }) : super(TransactionInitial()) {
     on<LoadTransactions>(_onLoadTransactions);
     on<AddTransactionEvent>(_onAddTransaction);
@@ -45,6 +52,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     // ignore: library_private_types_in_public_api
     on<TransactionsUpdated>(_onTransactionsUpdated);
     on<TransactionLoadFailed>(_onTransactionLoadFailed);
+    on<SyncRecurringTransactionsRequested>(
+      _onSyncRecurringTransactionsRequested,
+    );
   }
 
   void _onLoadTransactions(
@@ -221,6 +231,54 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   ) async {
     final result = await deleteTransaction(event.transactionId);
     result.fold((failure) => emit(TransactionError(failure: failure)), (_) {});
+  }
+
+  Future<void> _onSyncRecurringTransactionsRequested(
+    SyncRecurringTransactionsRequested event,
+    Emitter<TransactionState> emit,
+  ) async {
+    final userResult = await getCurrentUser();
+    await userResult.fold((failure) async => null, (user) async {
+      if (user != null) {
+        final createdInstances = await syncRecurringTransactions(user.uid);
+        await _notifyRecurringDebited(createdInstances);
+      }
+    });
+  }
+
+  Future<void> _notifyRecurringDebited(
+    List<TransactionEntity> createdInstances,
+  ) async {
+    if (createdInstances.isEmpty) return;
+
+    final l10n = resolveLocalizations(settingsBloc.state.languageCode);
+    final currencyFormat = NumberFormat.currency(
+      locale: settingsBloc.state.languageCode,
+      symbol: '\$',
+      decimalDigits: 2,
+    );
+
+    for (final instance in createdInstances) {
+      if (!instance.paid) continue;
+
+      await addNotification(
+        NotificationEntity(
+          id: '${instance.id}_recurring_debited',
+          userId: instance.userId,
+          title: l10n.transactionsNotificationRecurringDebitedTitle,
+          description: l10n.transactionsNotificationRecurringDebitedBody(
+            instance.notes?.isNotEmpty == true
+                ? instance.notes!
+                : l10n.defaultTransaction,
+            currencyFormat.format(instance.amount),
+          ),
+          timestamp: DateTime.now(),
+          read: false,
+          isUrgent: false,
+          type: NotificationType.recurringDebited,
+        ),
+      );
+    }
   }
 
   @override

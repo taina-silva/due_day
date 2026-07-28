@@ -1,3 +1,4 @@
+import 'package:due_day/features/dashboard/domain/entities/dashboard_summary.dart';
 import 'package:due_day/features/dashboard/domain/usecases/get_dashboard_summary.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -57,7 +58,10 @@ void main() {
       paid: false,
       isRecurring: false,
       createdAt: firstDayOfMonth.add(const Duration(hours: 12)),
-      dueDate: now.add(const Duration(days: 5)),
+      // Must stay after `now` and before `lastDayOfMonth` regardless of
+      // which day of the month the test runs on, so a short, fixed offset
+      // is safer than a multi-day one near the end of the month.
+      dueDate: now.add(const Duration(hours: 1)),
       accountFrom: 'acc-1',
       category: 'cat-2',
       notes: 'Electricity bill',
@@ -82,5 +86,157 @@ void main() {
 
     // Projected Balance: Current (6000) - Unpaid Expenses (100) = 5900
     expect(result.projectedBalance, 5900.0);
+
+    // cat-2 (100) is >30% of the 200 monthly income, so it takes priority
+    // over the (not even triggered, since expenses < income) budget warning.
+    expect(result.insight.type, DashboardInsightType.categoryWarning);
+    expect(result.insight.categoryId, 'cat-2');
+  });
+
+  group('insight classification', () {
+    test('should classify as healthy when expenses are below income and no '
+        'category dominates spending', () {
+      final result = getDashboardSummary(
+        accounts: const [],
+        transactions: [
+          TransactionEntity(
+            id: 'income-1',
+            userId: 'user-1',
+            type: TransactionType.income,
+            amount: 1000.0,
+            paid: true,
+            isRecurring: false,
+            createdAt: DateTime.now(),
+          ),
+          TransactionEntity(
+            id: 'expense-1',
+            userId: 'user-1',
+            type: TransactionType.expense,
+            amount: 100.0,
+            paid: true,
+            isRecurring: false,
+            createdAt: DateTime.now(),
+            category: 'cat-1',
+          ),
+        ],
+      );
+
+      expect(result.insight.type, DashboardInsightType.healthy);
+    });
+
+    test('should classify as budgetWarning when monthly expenses exceed '
+        'monthly income and no single category dominates spending', () {
+      final result = getDashboardSummary(
+        accounts: const [],
+        transactions: [
+          TransactionEntity(
+            id: 'income-1',
+            userId: 'user-1',
+            type: TransactionType.income,
+            amount: 100.0,
+            paid: true,
+            isRecurring: false,
+            createdAt: DateTime.now(),
+          ),
+          TransactionEntity(
+            id: 'expense-1',
+            userId: 'user-1',
+            type: TransactionType.expense,
+            amount: 30.0,
+            paid: true,
+            isRecurring: false,
+            createdAt: DateTime.now(),
+            category: 'cat-1',
+          ),
+          TransactionEntity(
+            id: 'expense-2',
+            userId: 'user-1',
+            type: TransactionType.expense,
+            amount: 30.0,
+            paid: true,
+            isRecurring: false,
+            createdAt: DateTime.now(),
+            category: 'cat-2',
+          ),
+          TransactionEntity(
+            id: 'expense-3',
+            userId: 'user-1',
+            type: TransactionType.expense,
+            amount: 30.0,
+            paid: true,
+            isRecurring: false,
+            createdAt: DateTime.now(),
+            category: 'cat-3',
+          ),
+          TransactionEntity(
+            id: 'expense-4',
+            userId: 'user-1',
+            type: TransactionType.expense,
+            amount: 30.0,
+            paid: true,
+            isRecurring: false,
+            createdAt: DateTime.now(),
+            category: 'cat-4',
+          ),
+        ],
+      );
+
+      // Each category (30) sits exactly at 30% of the 100 income, so none
+      // individually triggers categoryWarning; only the combined 120 total
+      // (>100 income) triggers budgetWarning.
+      expect(result.insight.type, DashboardInsightType.budgetWarning);
+      expect(result.insight.budgetPercentage, 120);
+    });
+
+    test('should classify as categoryWarning when a single category exceeds '
+        '30% of monthly income, taking priority over budgetWarning', () {
+      final result = getDashboardSummary(
+        accounts: const [],
+        transactions: [
+          TransactionEntity(
+            id: 'income-1',
+            userId: 'user-1',
+            type: TransactionType.income,
+            amount: 100.0,
+            paid: true,
+            isRecurring: false,
+            createdAt: DateTime.now(),
+          ),
+          TransactionEntity(
+            id: 'expense-1',
+            userId: 'user-1',
+            type: TransactionType.expense,
+            amount: 40.0,
+            paid: true,
+            isRecurring: false,
+            createdAt: DateTime.now(),
+            category: 'cat-1',
+          ),
+        ],
+      );
+
+      expect(result.insight.type, DashboardInsightType.categoryWarning);
+      expect(result.insight.categoryId, 'cat-1');
+    });
+
+    test('should classify as healthy when there is no monthly income', () {
+      final result = getDashboardSummary(
+        accounts: const [],
+        transactions: [
+          TransactionEntity(
+            id: 'expense-1',
+            userId: 'user-1',
+            type: TransactionType.expense,
+            amount: 100.0,
+            paid: true,
+            isRecurring: false,
+            createdAt: DateTime.now(),
+            category: 'cat-1',
+          ),
+        ],
+      );
+
+      expect(result.insight.type, DashboardInsightType.healthy);
+    });
   });
 }
