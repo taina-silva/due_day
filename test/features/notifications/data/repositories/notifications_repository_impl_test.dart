@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:due_day/core/errors/exceptions.dart';
-import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/core/observability/observability_service.dart';
 import 'package:due_day/features/notifications/data/models/notification_model.dart';
 import 'package:due_day/features/notifications/data/repositories/notifications_repository_impl.dart';
+import 'package:due_day/features/notifications/domain/errors/notification_failures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -41,7 +41,7 @@ void main() {
     );
 
     test(
-      'given a CacheException when addNotification is called then return Left(CacheFailure)',
+      'given a CacheException when addNotification is called then return Left(NotificationSaveFailure)',
       () async {
         when(
           () => mockLocalDataSource.addNotification(any()),
@@ -49,7 +49,7 @@ void main() {
 
         final result = await repository.addNotification(tNotificationEntity);
 
-        expect(result, const Left(CacheFailure('Cache error')));
+        expect(result, const Left(NotificationSaveFailure('Cache error')));
       },
     );
   });
@@ -72,7 +72,7 @@ void main() {
     );
 
     test(
-      'given a CacheException when markAsRead is called then return Left(CacheFailure)',
+      'given a CacheException when markAsRead is called then return Left(NotificationSaveFailure)',
       () async {
         when(
           () => mockLocalDataSource.markAsRead(any()),
@@ -80,7 +80,7 @@ void main() {
 
         final result = await repository.markAsRead('notification-1');
 
-        expect(result, const Left(CacheFailure('Cache error')));
+        expect(result, const Left(NotificationSaveFailure('Cache error')));
       },
     );
   });
@@ -103,7 +103,7 @@ void main() {
     );
 
     test(
-      'given a CacheException when deleteNotification is called then return Left(CacheFailure)',
+      'given a CacheException when deleteNotification is called then return Left(NotificationDeleteFailure)',
       () async {
         when(
           () => mockLocalDataSource.deleteNotification(any()),
@@ -111,7 +111,7 @@ void main() {
 
         final result = await repository.deleteNotification('notification-1');
 
-        expect(result, const Left(CacheFailure('Cache error')));
+        expect(result, const Left(NotificationDeleteFailure('Cache error')));
       },
     );
   });

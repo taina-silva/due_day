@@ -434,6 +434,14 @@ class AppLocalizationsPt extends AppLocalizations {
   String get notificationsErrorLoading => 'Erro ao carregar notificações.';
 
   @override
+  String get notificationsErrorSaveFailed =>
+      'Falha ao atualizar a notificação.';
+
+  @override
+  String get notificationsErrorDeleteFailed =>
+      'Falha ao excluir a notificação.';
+
+  @override
   String notifMinutesAgo(int count) {
     return 'Há $count minuto(s)';
   }

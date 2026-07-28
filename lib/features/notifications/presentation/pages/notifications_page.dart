@@ -1,3 +1,4 @@
+import 'package:due_day/core/design_system/components/messenger/app_messenger.dart';
 import 'package:due_day/core/design_system/components/structure/custom_app_bar.dart';
 import 'package:due_day/core/design_system/components/structure/custom_scaffold.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
@@ -5,9 +6,13 @@ import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/notifications/domain/entities/notification_entity.dart';
-import 'package:due_day/features/notifications/presentation/bloc/notifications_bloc.dart';
-import 'package:due_day/features/notifications/presentation/bloc/notifications_event.dart';
-import 'package:due_day/features/notifications/presentation/bloc/notifications_state.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_action_bloc.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_action_event.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_action_state.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_load_bloc.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_load_event.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_load_state.dart';
+import 'package:due_day/features/notifications/presentation/utils/notification_failure_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,7 +27,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   @override
   void initState() {
     super.initState();
-    context.read<NotificationsBloc>().add(LoadNotifications());
+    context.read<NotificationsLoadBloc>().add(LoadNotifications());
   }
 
   @override
@@ -41,126 +46,141 @@ class _NotificationsView extends StatelessWidget {
     final spacing = context.spacing;
     final l10n = AppLocalizations.of(context);
 
-    return CustomScaffold(
-      appBar: CustomAppBar(titleText: l10n.notificationsTitle),
-      body: SafeArea(
-        child: BlocBuilder<NotificationsBloc, NotificationsState>(
-          builder: (context, state) {
-            if (state is NotificationsLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            if (state is NotificationsLoaded) {
-              final newNotifications = state.newNotifications;
-              final earlierNotifications = state.earlierNotifications;
-
-              if (newNotifications.isEmpty && earlierNotifications.isEmpty) {
-                return _buildEmptyState(context, spacing, l10n);
+    return BlocListener<NotificationsActionBloc, NotificationsActionState>(
+      listener: (context, state) {
+        if (state is NotificationsActionError) {
+          AppMessenger.showError(
+            context,
+            state.failure.toLocalizedString(context),
+          );
+        }
+      },
+      child: CustomScaffold(
+        appBar: CustomAppBar(titleText: l10n.notificationsTitle),
+        body: SafeArea(
+          child: BlocBuilder<NotificationsLoadBloc, NotificationsLoadState>(
+            builder: (context, state) {
+              if (state is NotificationsLoading ||
+                  state is NotificationsInitial) {
+                return const Center(child: CircularProgressIndicator());
               }
 
-              return SingleChildScrollView(
-                padding: EdgeInsets.symmetric(
-                  horizontal: spacing.largeExtraLarge.width,
-                  vertical: spacing.mediumLarge.height,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    // New Section
-                    if (newNotifications.isNotEmpty) ...[
-                      _SectionTitle(title: l10n.notificationsGroupNew),
-                      SizedBox(height: spacing.mediumLarge.height),
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: newNotifications.length,
-                        separatorBuilder: (context, index) =>
-                            SizedBox(height: spacing.medium.height),
-                        itemBuilder: (context, index) {
-                          final notif = newNotifications[index];
-                          return _NotificationCard(
-                            notification: notif,
-                            time: _formatTime(notif.timestamp, l10n),
-                            onMarkAsRead: () {
-                              context.read<NotificationsBloc>().add(
-                                MarkAsReadEvent(notif.id),
-                              );
-                            },
-                            onDismissed: () {
-                              context.read<NotificationsBloc>().add(
-                                DeleteNotificationEvent(notif.id),
-                              );
-                            },
-                          );
-                        },
+              if (state is NotificationsError) {
+                return Center(
+                  child: Text(
+                    state.failure.toLocalizedString(context),
+                    style: typography.body.medium,
+                  ),
+                );
+              }
+
+              if (state is NotificationsLoaded) {
+                final newNotifications = state.newNotifications;
+                final earlierNotifications = state.earlierNotifications;
+
+                if (newNotifications.isEmpty && earlierNotifications.isEmpty) {
+                  return _buildEmptyState(context, spacing, l10n);
+                }
+
+                return SingleChildScrollView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: spacing.largeExtraLarge.width,
+                    vertical: spacing.mediumLarge.height,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // New Section
+                      if (newNotifications.isNotEmpty) ...[
+                        _SectionTitle(title: l10n.notificationsGroupNew),
+                        SizedBox(height: spacing.mediumLarge.height),
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: newNotifications.length,
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: spacing.medium.height),
+                          itemBuilder: (context, index) {
+                            final notif = newNotifications[index];
+                            return _NotificationCard(
+                              notification: notif,
+                              time: _formatTime(notif.timestamp, l10n),
+                              onMarkAsRead: () {
+                                context.read<NotificationsActionBloc>().add(
+                                  MarkAsReadEvent(notif.id),
+                                );
+                              },
+                              onDismissed: () {
+                                context.read<NotificationsActionBloc>().add(
+                                  DeleteNotificationEvent(notif.id),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                        SizedBox(height: spacing.largeExtraLarge.height),
+                      ],
+
+                      // Earlier Section
+                      if (earlierNotifications.isNotEmpty) ...[
+                        _SectionTitle(title: l10n.notificationsGroupEarlier),
+                        SizedBox(height: spacing.mediumLarge.height),
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: earlierNotifications.length,
+                          separatorBuilder: (context, index) =>
+                              SizedBox(height: spacing.medium.height),
+                          itemBuilder: (context, index) {
+                            final notif = earlierNotifications[index];
+                            return _NotificationCard(
+                              notification: notif,
+                              time: _formatTime(notif.timestamp, l10n),
+                              onDismissed: () {
+                                context.read<NotificationsActionBloc>().add(
+                                  DeleteNotificationEvent(notif.id),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                        SizedBox(height: spacing.threeExtraLarge.height),
+                      ],
+
+                      // Footer illustration
+                      Center(
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 60.width,
+                              height: 4.height,
+                              decoration: BoxDecoration(
+                                color: colors.resource.neutral.withValues(
+                                  alpha: 0.5,
+                                ),
+                                borderRadius: BorderRadius.circular(999),
+                              ),
+                            ),
+                            SizedBox(height: spacing.mediumLarge.height),
+                            Text(
+                              l10n.notificationsEnd.toUpperCase(),
+                              style: typography.label.small.copyWith(
+                                color: colors.resource.secondary,
+                                letterSpacing: 2,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       SizedBox(height: spacing.largeExtraLarge.height),
                     ],
+                  ),
+                );
+              }
 
-                    // Earlier Section
-                    if (earlierNotifications.isNotEmpty) ...[
-                      _SectionTitle(title: l10n.notificationsGroupEarlier),
-                      SizedBox(height: spacing.mediumLarge.height),
-                      ListView.separated(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: earlierNotifications.length,
-                        separatorBuilder: (context, index) =>
-                            SizedBox(height: spacing.medium.height),
-                        itemBuilder: (context, index) {
-                          final notif = earlierNotifications[index];
-                          return _NotificationCard(
-                            notification: notif,
-                            time: _formatTime(notif.timestamp, l10n),
-                            onDismissed: () {
-                              context.read<NotificationsBloc>().add(
-                                DeleteNotificationEvent(notif.id),
-                              );
-                            },
-                          );
-                        },
-                      ),
-                      SizedBox(height: spacing.threeExtraLarge.height),
-                    ],
-
-                    // Footer illustration
-                    Center(
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 60.width,
-                            height: 4.height,
-                            decoration: BoxDecoration(
-                              color: colors.resource.neutral.withValues(
-                                alpha: 0.5,
-                              ),
-                              borderRadius: BorderRadius.circular(999),
-                            ),
-                          ),
-                          SizedBox(height: spacing.mediumLarge.height),
-                          Text(
-                            l10n.notificationsEnd.toUpperCase(),
-                            style: typography.label.small.copyWith(
-                              color: colors.resource.secondary,
-                              letterSpacing: 2,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: spacing.largeExtraLarge.height),
-                  ],
-                ),
-              );
-            }
-
-            return Center(
-              child: Text(
-                l10n.notificationsErrorLoading,
-                style: typography.body.medium,
-              ),
-            );
-          },
+              return const SizedBox.shrink();
+            },
+          ),
         ),
       ),
     );
@@ -168,7 +188,7 @@ class _NotificationsView extends StatelessWidget {
 
   Widget _buildEmptyState(
     BuildContext context,
-    dynamic spacing,
+    SpacingStyles spacing,
     AppLocalizations l10n,
   ) {
     final colors = context.colors;

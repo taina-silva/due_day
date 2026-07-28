@@ -1,8 +1,8 @@
 import 'package:due_day/core/design_system/components/structure/custom_app_bar.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
-import 'package:due_day/features/notifications/presentation/bloc/notifications_bloc.dart';
-import 'package:due_day/features/notifications/presentation/bloc/notifications_state.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_load_bloc.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_load_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -26,7 +26,7 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
     return CustomAppBar(
       title: title ?? Text(titleText!, style: typography.title.medium),
       actions: [
-        BlocBuilder<NotificationsBloc, NotificationsState>(
+        BlocBuilder<NotificationsLoadBloc, NotificationsLoadState>(
           builder: (context, state) {
             int unreadCount = 0;
             if (state is NotificationsLoaded) {

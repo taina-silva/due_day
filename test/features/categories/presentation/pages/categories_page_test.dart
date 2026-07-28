@@ -4,9 +4,9 @@ import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/categories/presentation/pages/categories_page.dart';
-import 'package:due_day/features/notifications/presentation/bloc/notifications_bloc.dart';
-import 'package:due_day/features/notifications/presentation/bloc/notifications_event.dart';
-import 'package:due_day/features/notifications/presentation/bloc/notifications_state.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_load_bloc.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_load_event.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_load_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,8 +16,8 @@ import 'package:mocktail/mocktail.dart';
 import '../../helpers/category_test_helpers.dart';
 
 class MockNotificationsBloc
-    extends MockBloc<NotificationsEvent, NotificationsState>
-    implements NotificationsBloc {}
+    extends MockBloc<NotificationsLoadEvent, NotificationsLoadState>
+    implements NotificationsLoadBloc {}
 
 void main() {
   late MockCategoryLoadBloc mockCategoryLoadBloc;
@@ -53,7 +53,7 @@ void main() {
     return MultiBlocProvider(
       providers: [
         BlocProvider<CategoryLoadBloc>.value(value: mockCategoryLoadBloc),
-        BlocProvider<NotificationsBloc>.value(value: mockNotificationsBloc),
+        BlocProvider<NotificationsLoadBloc>.value(value: mockNotificationsBloc),
       ],
       child: MaterialApp.router(
         routerConfig: router,

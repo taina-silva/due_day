@@ -5,6 +5,7 @@ import 'package:due_day/core/observability/observability_service.dart';
 import 'package:due_day/features/notifications/data/datasources/notifications_local_data_source.dart';
 import 'package:due_day/features/notifications/data/models/notification_model.dart';
 import 'package:due_day/features/notifications/domain/entities/notification_entity.dart';
+import 'package:due_day/features/notifications/domain/errors/notification_failures.dart';
 import 'package:due_day/features/notifications/domain/repositories/notifications_repository.dart';
 
 class NotificationsRepositoryImpl implements NotificationsRepository {
@@ -33,7 +34,7 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
         error: e,
         stackTrace: StackTrace.current,
       );
-      return Left(CacheFailure(e.message));
+      return Left(NotificationSaveFailure(e.message));
     } catch (e, stackTrace) {
       observability.error(
         'addNotification unexpected failure',
@@ -41,7 +42,7 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
         error: e,
         stackTrace: stackTrace,
       );
-      return Left(GenericFailure(e.toString()));
+      return Left(NotificationSaveFailure(e.toString()));
     }
   }
 
@@ -57,7 +58,7 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
         error: e,
         stackTrace: StackTrace.current,
       );
-      return Left(CacheFailure(e.message));
+      return Left(NotificationSaveFailure(e.message));
     } catch (e, stackTrace) {
       observability.error(
         'markAsRead unexpected failure',
@@ -65,7 +66,7 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
         error: e,
         stackTrace: stackTrace,
       );
-      return Left(GenericFailure(e.toString()));
+      return Left(NotificationSaveFailure(e.toString()));
     }
   }
 
@@ -83,7 +84,7 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
         error: e,
         stackTrace: StackTrace.current,
       );
-      return Left(CacheFailure(e.message));
+      return Left(NotificationDeleteFailure(e.message));
     } catch (e, stackTrace) {
       observability.error(
         'deleteNotification unexpected failure',
@@ -91,7 +92,7 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
         error: e,
         stackTrace: stackTrace,
       );
-      return Left(GenericFailure(e.toString()));
+      return Left(NotificationDeleteFailure(e.toString()));
     }
   }
 
