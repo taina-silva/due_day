@@ -18,7 +18,8 @@ import 'package:due_day/features/categories/presentation/bloc/category_load_bloc
 import 'package:due_day/features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_event.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_action_bloc.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_load_bloc.dart';
 import 'package:due_day/firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -117,7 +118,8 @@ class _DueDayAppState extends State<DueDayApp> {
         BlocProvider(create: (_) => di.sl<AccountActionBloc>()),
         BlocProvider(create: (_) => di.sl<CategoryLoadBloc>()),
         BlocProvider(create: (_) => di.sl<CategoryActionBloc>()),
-        BlocProvider(create: (_) => di.sl<TransactionBloc>()),
+        BlocProvider(create: (_) => di.sl<TransactionLoadBloc>()),
+        BlocProvider(create: (_) => di.sl<TransactionActionBloc>()),
         BlocProvider(create: (_) => di.sl<DashboardBloc>()),
         BlocProvider(
           create: (_) => di.sl<NotificationsBloc>()..add(LoadNotifications()),

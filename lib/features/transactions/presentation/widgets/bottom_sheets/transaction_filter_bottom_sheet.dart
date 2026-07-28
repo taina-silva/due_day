@@ -3,6 +3,7 @@ import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
+import 'package:due_day/features/transactions/presentation/utils/transaction_type_extension.dart';
 import 'package:due_day/features/transactions/presentation/widgets/bottom_sheets/category_selection_bottom_sheet.dart';
 import 'package:due_day/features/transactions/presentation/widgets/bottom_sheets/date_selection_bottom_sheet.dart';
 import 'package:due_day/features/transactions/presentation/widgets/bottom_sheets/frequency_selection_bottom_sheet.dart';

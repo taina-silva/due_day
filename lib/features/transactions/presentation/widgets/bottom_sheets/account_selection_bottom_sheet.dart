@@ -55,70 +55,75 @@ class AccountSelectionBottomSheet extends StatelessWidget {
             ),
             child: BlocBuilder<AccountLoadBloc, AccountLoadState>(
               builder: (context, state) {
-                if (state is AccountLoading || state is AccountInitial) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is AccountError) {
-                  return Center(
-                    child: Text(state.failure.toLocalizedString(context)),
-                  );
-                } else if (state is AccountLoaded) {
-                  final accounts = state.activeAccounts;
-
-                  if (accounts.isEmpty) {
+                switch (state) {
+                  case AccountLoading():
+                  case AccountInitial():
+                    return const Center(child: CircularProgressIndicator());
+                  case AccountError():
                     return Center(
-                      child: Padding(
-                        padding: EdgeInsets.all(spacing.largeExtraLarge.height),
-                        child: Text(
-                          l10n.accountsEmpty,
-                          style: typography.body.medium,
-                        ),
-                      ),
+                      child: Text(state.failure.toLocalizedString(context)),
                     );
-                  }
+                  case AccountLoaded():
+                    final accounts = state.activeAccounts;
 
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    padding: EdgeInsets.only(
-                      bottom: spacing.largeExtraLarge.height,
-                    ),
-                    itemCount: accounts.length,
-                    itemBuilder: (context, index) {
-                      final acc = accounts[index];
-
-                      return ListTile(
-                        leading: Container(
-                          padding: EdgeInsets.all(spacing.small.width),
-                          decoration: BoxDecoration(
-                            color: colors.resource.primary.withValues(
-                              alpha: 0.15,
-                            ),
-                            shape: BoxShape.circle,
+                    if (accounts.isEmpty) {
+                      return Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(
+                            spacing.largeExtraLarge.height,
                           ),
-                          child: Icon(
-                            Icons.account_balance_rounded,
-                            color: colors.resource.primary,
-                            size: 20.width,
+                          child: Text(
+                            l10n.accountsEmpty,
+                            style: typography.body.medium,
                           ),
                         ),
-                        title: Text(acc.name, style: typography.body.large),
-                        subtitle: Text(
-                          acc.category.localizedName(l10n),
-                          style: typography.label.medium,
-                        ),
-                        trailing: Text(
-                          NumberFormat.simpleCurrency(
-                            locale: localeStr,
-                          ).format(acc.balance),
-                          style: typography.body.large.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        onTap: () => Navigator.pop(context, acc),
                       );
-                    },
-                  );
+                    }
+
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.only(
+                        bottom: spacing.largeExtraLarge.height,
+                      ),
+                      itemCount: accounts.length,
+                      itemBuilder: (context, index) {
+                        final acc = accounts[index];
+
+                        return ListTile(
+                          leading: Container(
+                            padding: EdgeInsets.all(spacing.small.width),
+                            decoration: BoxDecoration(
+                              color: colors.resource.primary.withValues(
+                                alpha: 0.15,
+                              ),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.account_balance_rounded,
+                              color: colors.resource.primary,
+                              size: 20.width,
+                            ),
+                          ),
+                          title: Text(acc.name, style: typography.body.large),
+                          subtitle: Text(
+                            acc.category.localizedName(l10n),
+                            style: typography.label.medium,
+                          ),
+                          trailing: Text(
+                            NumberFormat.simpleCurrency(
+                              locale: localeStr,
+                            ).format(acc.balance),
+                            style: typography.body.large.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          onTap: () => Navigator.pop(context, acc),
+                        );
+                      },
+                    );
+                  default:
+                    return const SizedBox();
                 }
-                return const SizedBox();
               },
             ),
           ),

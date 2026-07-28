@@ -575,6 +575,14 @@ class AppLocalizationsPt extends AppLocalizations {
       'Ocorreu um erro ao gerenciar suas transações.';
 
   @override
+  String get transactionsErrorSaveFailed =>
+      'Falha ao salvar a transação. Tente novamente.';
+
+  @override
+  String get transactionsErrorDeleteFailed =>
+      'Falha ao excluir a transação. Tente novamente.';
+
+  @override
   String get transactionsNotificationOverdueTitle => 'Conta atrasada!';
 
   @override

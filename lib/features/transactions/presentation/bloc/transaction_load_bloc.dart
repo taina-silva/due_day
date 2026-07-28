@@ -11,17 +11,15 @@ import 'package:due_day/features/transactions/domain/entities/transaction_entity
 import 'package:due_day/features/transactions/domain/usecases/classify_transaction_reminders.dart';
 import 'package:due_day/features/transactions/domain/usecases/sync_recurring_transactions.dart';
 import 'package:due_day/features/transactions/domain/usecases/transaction_usecases.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_state.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_load_event.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_load_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 const _remindersEquality = ListEquality<TransactionReminder>();
 
-class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
-  final AddTransaction addTransaction;
-  final UpdateTransaction updateTransaction;
-  final DeleteTransaction deleteTransaction;
+class TransactionLoadBloc
+    extends Bloc<TransactionLoadEvent, TransactionLoadState> {
   final GetTransactions getTransactions;
   final SettingsBloc settingsBloc;
   final NotificationService notificationService;
@@ -33,10 +31,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
   StreamSubscription? _transactionsSubscription;
   List<TransactionReminder>? _lastReminders;
 
-  TransactionBloc({
-    required this.addTransaction,
-    required this.updateTransaction,
-    required this.deleteTransaction,
+  TransactionLoadBloc({
     required this.getTransactions,
     required this.settingsBloc,
     required this.notificationService,
@@ -46,10 +41,6 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     required this.getCurrentUser,
   }) : super(TransactionInitial()) {
     on<LoadTransactions>(_onLoadTransactions);
-    on<AddTransactionEvent>(_onAddTransaction);
-    on<UpdateTransactionEvent>(_onUpdateTransaction);
-    on<DeleteTransactionEvent>(_onDeleteTransaction);
-    // ignore: library_private_types_in_public_api
     on<TransactionsUpdated>(_onTransactionsUpdated);
     on<TransactionLoadFailed>(_onTransactionLoadFailed);
     on<SyncRecurringTransactionsRequested>(
@@ -59,7 +50,7 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   void _onLoadTransactions(
     LoadTransactions event,
-    Emitter<TransactionState> emit,
+    Emitter<TransactionLoadState> emit,
   ) {
     emit(TransactionLoading());
     _transactionsSubscription?.cancel();
@@ -80,14 +71,14 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
 
   void _onTransactionLoadFailed(
     TransactionLoadFailed event,
-    Emitter<TransactionState> emit,
+    Emitter<TransactionLoadState> emit,
   ) {
     emit(TransactionError(failure: event.failure));
   }
 
   void _onTransactionsUpdated(
     TransactionsUpdated event,
-    Emitter<TransactionState> emit,
+    Emitter<TransactionLoadState> emit,
   ) async {
     emit(TransactionLoaded(transactions: event.transactions));
 
@@ -209,33 +200,9 @@ class TransactionBloc extends Bloc<TransactionEvent, TransactionState> {
     } catch (_) {}
   }
 
-  Future<void> _onAddTransaction(
-    AddTransactionEvent event,
-    Emitter<TransactionState> emit,
-  ) async {
-    final result = await addTransaction(event.transaction);
-    result.fold((failure) => emit(TransactionError(failure: failure)), (_) {});
-  }
-
-  Future<void> _onUpdateTransaction(
-    UpdateTransactionEvent event,
-    Emitter<TransactionState> emit,
-  ) async {
-    final result = await updateTransaction(event.transaction);
-    result.fold((failure) => emit(TransactionError(failure: failure)), (_) {});
-  }
-
-  Future<void> _onDeleteTransaction(
-    DeleteTransactionEvent event,
-    Emitter<TransactionState> emit,
-  ) async {
-    final result = await deleteTransaction(event.transactionId);
-    result.fold((failure) => emit(TransactionError(failure: failure)), (_) {});
-  }
-
   Future<void> _onSyncRecurringTransactionsRequested(
     SyncRecurringTransactionsRequested event,
-    Emitter<TransactionState> emit,
+    Emitter<TransactionLoadState> emit,
   ) async {
     final userResult = await getCurrentUser();
     await userResult.fold((failure) async => null, (user) async {

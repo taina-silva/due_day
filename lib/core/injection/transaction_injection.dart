@@ -4,18 +4,16 @@ import 'package:due_day/features/transactions/domain/repositories/transaction_re
 import 'package:due_day/features/transactions/domain/usecases/classify_transaction_reminders.dart';
 import 'package:due_day/features/transactions/domain/usecases/sync_recurring_transactions.dart';
 import 'package:due_day/features/transactions/domain/usecases/transaction_usecases.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_action_bloc.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_load_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 void initTransactions() {
   final sl = GetIt.instance;
 
-  // Bloc
+  // Blocs
   sl.registerFactory(
-    () => TransactionBloc(
-      addTransaction: sl(),
-      updateTransaction: sl(),
-      deleteTransaction: sl(),
+    () => TransactionLoadBloc(
       getTransactions: sl(),
       settingsBloc: sl(),
       notificationService: sl(),
@@ -23,6 +21,13 @@ void initTransactions() {
       classifyTransactionReminders: sl(),
       syncRecurringTransactions: sl(),
       getCurrentUser: sl(),
+    ),
+  );
+  sl.registerFactory(
+    () => TransactionActionBloc(
+      addTransaction: sl(),
+      updateTransaction: sl(),
+      deleteTransaction: sl(),
     ),
   );
 

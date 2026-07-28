@@ -92,7 +92,7 @@ class _TypeItem extends StatelessWidget {
             color: isSelected
                 ? activeColor
                 : colors.resource.secondary.withValues(alpha: 0.1),
-            width: isSelected ? 2 : 1,
+            width: isSelected ? context.stroke.large : context.stroke.small,
           ),
           boxShadow: isSelected
               ? [

@@ -1,6 +1,6 @@
+import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/features/schedule/domain/usecases/get_schedule_data.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
-import 'package:due_day/features/transactions/domain/errors/transaction_failures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mocktail/mocktail.dart';
@@ -71,16 +71,14 @@ void main() {
         type: TransactionType.expense,
       ),
     ).thenAnswer(
-      (_) => Stream.value(
-        const Left(TransactionOperationFailure('Expense stream failed')),
-      ),
+      (_) => Stream.value(const Left(ServerFailure('Expense stream failed'))),
     );
 
     final result = await getScheduleData.execute().first;
 
     expect(result.isLeft(), true);
     result.fold(
-      (failure) => expect(failure, isA<TransactionOperationFailure>()),
+      (failure) => expect(failure, isA<ServerFailure>()),
       (_) => fail('Should not succeed'),
     );
   });

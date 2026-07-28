@@ -6,9 +6,9 @@ import 'package:due_day/features/categories/domain/entities/category_entity.dart
 import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_state.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_load_bloc.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_load_event.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_load_state.dart';
 import 'package:due_day/features/transactions/presentation/utils/transaction_failure_extension.dart';
 import 'package:due_day/features/transactions/presentation/widgets/bottom_sheets/category_selection_bottom_sheet.dart';
 import 'package:due_day/features/transactions/presentation/widgets/bottom_sheets/date_selection_bottom_sheet.dart';
@@ -93,41 +93,44 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                   onOpenAdvancedFilters: () => _openAdvancedFilters(categories),
                 ),
                 Expanded(
-                  child: BlocBuilder<TransactionBloc, TransactionState>(
+                  child: BlocBuilder<TransactionLoadBloc, TransactionLoadState>(
                     builder: (context, state) {
-                      if (state is TransactionLoading) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (state is TransactionError) {
-                        return Center(
-                          child: Text(
-                            state.failure.toLocalizedString(context),
-                            style: typography.body.medium,
-                          ),
-                        );
-                      } else if (state is TransactionLoaded) {
-                        final transactions = state.transactions;
-                        if (transactions.isEmpty) {
+                      switch (state) {
+                        case TransactionLoading():
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        case TransactionError():
+                          return Center(
+                            child: Text(
+                              state.failure.toLocalizedString(context),
+                              style: typography.body.medium,
+                            ),
+                          );
+                        case TransactionLoaded():
+                          final transactions = state.transactions;
+                          if (transactions.isEmpty) {
+                            return Center(
+                              child: Text(
+                                l10n.transactionsEmpty,
+                                style: typography.body.medium,
+                              ),
+                            );
+                          }
+
+                          return TransactionHistoryList(
+                            transactions: transactions,
+                            categories: categories,
+                            onTransactionTap: _openTransactionDetails,
+                          );
+                        default:
                           return Center(
                             child: Text(
                               l10n.transactionsEmpty,
                               style: typography.body.medium,
                             ),
                           );
-                        }
-
-                        return TransactionHistoryList(
-                          transactions: transactions,
-                          categories: categories,
-                          onTransactionTap: _openTransactionDetails,
-                        );
                       }
-
-                      return Center(
-                        child: Text(
-                          l10n.transactionsEmpty,
-                          style: typography.body.medium,
-                        ),
-                      );
                     },
                   ),
                 ),
@@ -198,7 +201,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
   }
 
   void _loadTransactions() {
-    context.read<TransactionBloc>().add(
+    context.read<TransactionLoadBloc>().add(
       LoadTransactions(
         type: _selectedType,
         frequency: _selectedFrequency,

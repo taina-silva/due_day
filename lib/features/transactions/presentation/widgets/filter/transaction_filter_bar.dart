@@ -4,6 +4,7 @@ import 'package:due_day/core/utils/extensions/date_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
+import 'package:due_day/features/transactions/presentation/utils/transaction_type_extension.dart';
 import 'package:flutter/material.dart';
 
 class TransactionFilterBar extends StatelessWidget {

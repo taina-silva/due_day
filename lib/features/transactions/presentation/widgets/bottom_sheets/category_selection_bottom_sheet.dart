@@ -65,54 +65,57 @@ class CategorySelectionBottomSheet extends StatelessWidget {
             ),
             child: BlocBuilder<CategoryLoadBloc, CategoryLoadState>(
               builder: (context, state) {
-                if (state is CategoryLoading || state is CategoryInitial) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (state is CategoryError) {
-                  return Center(
-                    child: Text(state.failure.toLocalizedString(context)),
-                  );
-                } else if (state is CategoryLoaded) {
-                  final categories = state.categories;
+                switch (state) {
+                  case CategoryLoading():
+                  case CategoryInitial():
+                    return const Center(child: CircularProgressIndicator());
+                  case CategoryError():
+                    return Center(
+                      child: Text(state.failure.toLocalizedString(context)),
+                    );
+                  case CategoryLoaded():
+                    final categories = state.categories;
 
-                  return ListView(
-                    shrinkWrap: true,
-                    children: [
-                      if (showAllOption)
-                        _CategoryItem(
-                          name: l10n.all,
-                          color: colors.resource.secondary,
-                          isSelected: selectedCategoryId == null,
-                          onTap: () => Navigator.pop(context, null),
-                        ),
-                      ...categories.map((c) {
-                        Color parsedColor = colors.resource.primary;
-                        try {
-                          parsedColor = Color(
-                            int.parse(c.color.replaceAll('#', '0xff')),
+                    return ListView(
+                      shrinkWrap: true,
+                      children: [
+                        if (showAllOption)
+                          _CategoryItem(
+                            name: l10n.all,
+                            color: colors.resource.secondary,
+                            isSelected: selectedCategoryId == null,
+                            onTap: () => Navigator.pop(context, null),
+                          ),
+                        ...categories.map((c) {
+                          Color parsedColor = colors.resource.primary;
+                          try {
+                            parsedColor = Color(
+                              int.parse(c.color.replaceAll('#', '0xff')),
+                            );
+                          } catch (_) {}
+
+                          return _CategoryItem(
+                            name: c.name,
+                            color: parsedColor,
+                            isSelected: selectedCategoryId == c.id,
+                            onTap: () => Navigator.pop(context, c),
                           );
-                        } catch (_) {}
-
-                        return _CategoryItem(
-                          name: c.name,
-                          color: parsedColor,
-                          isSelected: selectedCategoryId == c.id,
-                          onTap: () => Navigator.pop(context, c),
-                        );
-                      }),
-                      if (categories.isEmpty && !showAllOption)
-                        Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(spacing.large.scale),
-                            child: Text(
-                              l10n.categoriesEmpty,
-                              style: typography.body.medium,
+                        }),
+                        if (categories.isEmpty && !showAllOption)
+                          Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(spacing.large.scale),
+                              child: Text(
+                                l10n.categoriesEmpty,
+                                style: typography.body.medium,
+                              ),
                             ),
                           ),
-                        ),
-                    ],
-                  );
+                      ],
+                    );
+                  default:
+                    return const SizedBox();
                 }
-                return const SizedBox();
               },
             ),
           ),

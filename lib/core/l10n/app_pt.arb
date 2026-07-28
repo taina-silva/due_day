@@ -246,6 +246,8 @@
     "transactionsErrorNotFound": "Transação não encontrada.",
     "transactionsErrorNotAuthenticated": "Usuário não autenticado. Faça login novamente.",
     "transactionsErrorFallback": "Ocorreu um erro ao gerenciar suas transações.",
+    "transactionsErrorSaveFailed": "Falha ao salvar a transação. Tente novamente.",
+    "transactionsErrorDeleteFailed": "Falha ao excluir a transação. Tente novamente.",
     "transactionsNotificationOverdueTitle": "Conta atrasada!",
     "transactionsNotificationOverdueBody": "A transação '{description}' de {amount} está atrasada desde {date}.",
     "@transactionsNotificationOverdueBody": {
