@@ -25,6 +25,8 @@ void main() {
   late MockNotificationService mockNotificationService;
   late MockAddNotification mockAddNotification;
   late MockClassifyTransactionReminders mockClassifyTransactionReminders;
+  late MockSyncRecurringTransactions mockSyncRecurringTransactions;
+  late MockGetCurrentUser mockGetCurrentUser;
   late TransactionBloc transactionBloc;
 
   setUpAll(() async {
@@ -54,6 +56,8 @@ void main() {
     mockNotificationService = MockNotificationService();
     mockAddNotification = MockAddNotification();
     mockClassifyTransactionReminders = MockClassifyTransactionReminders();
+    mockSyncRecurringTransactions = MockSyncRecurringTransactions();
+    mockGetCurrentUser = MockGetCurrentUser();
 
     when(() => mockNotificationService.cancelAll()).thenAnswer((_) async {});
     when(
@@ -70,6 +74,8 @@ void main() {
       notificationService: mockNotificationService,
       addNotification: mockAddNotification,
       classifyTransactionReminders: mockClassifyTransactionReminders,
+      syncRecurringTransactions: mockSyncRecurringTransactions,
+      getCurrentUser: mockGetCurrentUser,
     );
   });
 
@@ -283,6 +289,74 @@ void main() {
       expect: () => <TransactionState>[],
       verify: (_) {
         verify(() => mockDeleteTransaction('transaction-1')).called(1);
+      },
+    );
+  });
+
+  group('SyncRecurringTransactionsRequested', () {
+    blocTest<TransactionBloc, TransactionState>(
+      'should call SyncRecurringTransactions when user is authenticated',
+      build: () {
+        when(
+          () => mockGetCurrentUser(),
+        ).thenAnswer((_) async => Right(tUserEntity));
+        when(
+          () => mockSyncRecurringTransactions(any()),
+        ).thenAnswer((_) async => <TransactionEntity>[]);
+        return transactionBloc;
+      },
+      act: (bloc) => bloc.add(SyncRecurringTransactionsRequested()),
+      expect: () => <TransactionState>[],
+      verify: (_) {
+        verify(() => mockGetCurrentUser()).called(1);
+        verify(() => mockSyncRecurringTransactions('user-1')).called(1);
+      },
+    );
+
+    blocTest<TransactionBloc, TransactionState>(
+      'should not call SyncRecurringTransactions when user is not authenticated',
+      build: () {
+        when(
+          () => mockGetCurrentUser(),
+        ).thenAnswer((_) async => const Right(null));
+        return transactionBloc;
+      },
+      act: (bloc) => bloc.add(SyncRecurringTransactionsRequested()),
+      expect: () => <TransactionState>[],
+      verify: (_) {
+        verify(() => mockGetCurrentUser()).called(1);
+        verifyNever(() => mockSyncRecurringTransactions(any()));
+      },
+    );
+
+    blocTest<TransactionBloc, TransactionState>(
+      'should notify recurring debited instances when sync creates paid instances',
+      build: () {
+        when(
+          () => mockSettingsBloc.state,
+        ).thenReturn(const SettingsState(languageCode: 'en'));
+        when(
+          () => mockGetCurrentUser(),
+        ).thenAnswer((_) async => Right(tUserEntity));
+        final debitedInstance = TransactionEntity(
+          id: 'recurring-1',
+          userId: 'user-1',
+          type: TransactionType.expense,
+          amount: 30.0,
+          paid: true,
+          isRecurring: false,
+          createdAt: tDateTime,
+          notes: 'Subscription',
+        );
+        when(
+          () => mockSyncRecurringTransactions(any()),
+        ).thenAnswer((_) async => [debitedInstance]);
+        return transactionBloc;
+      },
+      act: (bloc) => bloc.add(SyncRecurringTransactionsRequested()),
+      expect: () => <TransactionState>[],
+      verify: (_) {
+        verify(() => mockAddNotification(any())).called(1);
       },
     );
   });

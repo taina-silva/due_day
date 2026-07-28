@@ -71,6 +71,41 @@ class GetDashboardSummary {
       monthlyExpenses: monthlyExpenses,
       upcomingDues: upcomingDues.take(5).toList(),
       spendingByCategory: spendingByCategory,
+      insight: _classifyInsight(
+        monthlyIncome: monthlyIncome,
+        monthlyExpenses: monthlyExpenses,
+        spendingByCategory: spendingByCategory,
+      ),
     );
+  }
+
+  DashboardInsight _classifyInsight({
+    required double monthlyIncome,
+    required double monthlyExpenses,
+    required Map<String, double> spendingByCategory,
+  }) {
+    var insight = const DashboardInsight(type: DashboardInsightType.healthy);
+
+    if (monthlyIncome > 0 && monthlyExpenses > monthlyIncome) {
+      insight = DashboardInsight(
+        type: DashboardInsightType.budgetWarning,
+        budgetPercentage: ((monthlyExpenses / monthlyIncome) * 100).toInt(),
+      );
+    }
+
+    if (monthlyIncome > 0 && spendingByCategory.isNotEmpty) {
+      final highestCategoryEntry = spendingByCategory.entries.reduce(
+        (a, b) => a.value > b.value ? a : b,
+      );
+
+      if (highestCategoryEntry.value > (monthlyIncome * 0.3)) {
+        insight = DashboardInsight(
+          type: DashboardInsightType.categoryWarning,
+          categoryId: highestCategoryEntry.key,
+        );
+      }
+    }
+
+    return insight;
   }
 }

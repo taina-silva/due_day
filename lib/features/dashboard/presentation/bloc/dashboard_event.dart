@@ -19,8 +19,6 @@ class DashboardLoadRequested extends DashboardEvent {
   List<Object?> get props => [forceRefresh];
 }
 
-class DashboardSyncRecurringRequested extends DashboardEvent {}
-
 class DashboardFilterAccountsRequested extends DashboardEvent {
   final List<String> selectedAccountIds;
 

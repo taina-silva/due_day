@@ -25,6 +25,7 @@ class FinancialHealthCard extends StatelessWidget {
     final typography = context.typography;
     final spacing = context.spacing;
     final radius = context.radius;
+    final size = context.sizes;
 
     final l10n = AppLocalizations.of(context);
     final localeStr = context.localeString;
@@ -68,7 +69,7 @@ class FinancialHealthCard extends StatelessWidget {
                 Icon(
                   Icons.filter_list_rounded,
                   color: colors.onDarkBackground.withValues(alpha: 0.8),
-                  size: 20.scale,
+                  size: size.large.scale,
                 ),
               ],
             ),
@@ -77,7 +78,7 @@ class FinancialHealthCard extends StatelessWidget {
               formattedBalance,
               style: typography.headline.large.copyWith(
                 color: colors.onDarkBackground,
-                fontSize: 40.fontSize,
+                fontSize: size.twoExtraLargeMedium.fontSize,
               ),
             ),
             SizedBox(height: spacing.medium.height),
@@ -97,7 +98,7 @@ class FinancialHealthCard extends StatelessWidget {
                 Icon(
                   Icons.analytics_outlined,
                   color: colors.onDarkBackground.withValues(alpha: 0.6),
-                  size: 20.scale,
+                  size: size.large.scale,
                 ),
                 SizedBox(width: spacing.small.width),
                 Text(
