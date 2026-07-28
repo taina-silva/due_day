@@ -3,7 +3,8 @@ import 'package:due_day/features/notifications/data/datasources/notifications_lo
 import 'package:due_day/features/notifications/data/repositories/notifications_repository_impl.dart';
 import 'package:due_day/features/notifications/domain/repositories/notifications_repository.dart';
 import 'package:due_day/features/notifications/domain/usecases/notification_usecases.dart';
-import 'package:due_day/features/notifications/presentation/bloc/notifications_bloc.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_action_bloc.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_load_bloc.dart';
 
 void initNotifications() {
   // Datasource
@@ -23,10 +24,10 @@ void initNotifications() {
   sl.registerLazySingleton(() => MarkNotificationAsRead(sl()));
   sl.registerLazySingleton(() => DeleteNotification(sl()));
 
-  // Bloc
+  // Blocs
+  sl.registerFactory(() => NotificationsLoadBloc(getNotifications: sl()));
   sl.registerFactory(
-    () => NotificationsBloc(
-      getNotifications: sl(),
+    () => NotificationsActionBloc(
       markNotificationAsRead: sl(),
       deleteNotification: sl(),
     ),

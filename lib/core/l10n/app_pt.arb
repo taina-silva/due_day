@@ -179,6 +179,8 @@
     "notificationsEmptyTitle": "Tudo em dia!",
     "notificationsEmptyDesc": "Você não tem nenhuma notificação pendente no momento.",
     "notificationsErrorLoading": "Erro ao carregar notificações.",
+    "notificationsErrorSaveFailed": "Falha ao atualizar a notificação.",
+    "notificationsErrorDeleteFailed": "Falha ao excluir a notificação.",
     "notifMinutesAgo": "Há {count} minuto(s)",
     "@notifMinutesAgo": {
         "placeholders": {

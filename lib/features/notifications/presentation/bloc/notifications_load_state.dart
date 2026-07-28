@@ -1,18 +1,19 @@
+import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/features/notifications/domain/entities/notification_entity.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class NotificationsState extends Equatable {
-  const NotificationsState();
+abstract class NotificationsLoadState extends Equatable {
+  const NotificationsLoadState();
 
   @override
   List<Object?> get props => [];
 }
 
-class NotificationsInitial extends NotificationsState {}
+class NotificationsInitial extends NotificationsLoadState {}
 
-class NotificationsLoading extends NotificationsState {}
+class NotificationsLoading extends NotificationsLoadState {}
 
-class NotificationsLoaded extends NotificationsState {
+class NotificationsLoaded extends NotificationsLoadState {
   final List<NotificationEntity> newNotifications;
   final List<NotificationEntity> earlierNotifications;
   final int urgentCount;
@@ -31,11 +32,11 @@ class NotificationsLoaded extends NotificationsState {
   ];
 }
 
-class NotificationsError extends NotificationsState {
-  final String message;
+class NotificationsError extends NotificationsLoadState {
+  final Failure failure;
 
-  const NotificationsError({required this.message});
+  const NotificationsError({required this.failure});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [failure];
 }

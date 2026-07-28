@@ -890,6 +890,18 @@ abstract class AppLocalizations {
   /// **'Erro ao carregar notificações.'**
   String get notificationsErrorLoading;
 
+  /// No description provided for @notificationsErrorSaveFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao atualizar a notificação.'**
+  String get notificationsErrorSaveFailed;
+
+  /// No description provided for @notificationsErrorDeleteFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao excluir a notificação.'**
+  String get notificationsErrorDeleteFailed;
+
   /// No description provided for @notifMinutesAgo.
   ///
   /// In pt, this message translates to:

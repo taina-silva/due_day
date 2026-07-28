@@ -432,6 +432,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notificationsErrorLoading => 'Error loading notifications.';
 
   @override
+  String get notificationsErrorSaveFailed =>
+      'Failed to update the notification.';
+
+  @override
+  String get notificationsErrorDeleteFailed =>
+      'Failed to delete the notification.';
+
+  @override
   String notifMinutesAgo(int count) {
     return '$count minute(s) ago';
   }
