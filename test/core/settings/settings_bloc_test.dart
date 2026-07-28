@@ -53,8 +53,14 @@ void main() {
 
   group('ToggleBiometricsEvent', () {
     blocTest<SettingsBloc, SettingsState>(
-      'given user enables biometrics then persist the preference and emit enabled state',
+      'given device supports biometrics and user authenticates then persist the preference and emit enabled state',
       build: () {
+        when(
+          () => mockSecurityService.canAuthenticate(),
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockSecurityService.authenticate(),
+        ).thenAnswer((_) async => BiometricAuthResult.success);
         when(
           () => mockSecurityService.setBiometricsEnabled(true),
         ).thenAnswer((_) async {});
@@ -65,25 +71,91 @@ void main() {
       // states asserted below.
       seed: () => const SettingsState(),
       act: (bloc) => bloc.add(const ToggleBiometricsEvent(true)),
-      expect: () => [const SettingsState(isBiometricsEnabled: true)],
+      expect: () => [
+        const SettingsState(isTogglingBiometrics: true),
+        const SettingsState(isBiometricsEnabled: true),
+      ],
       verify: (_) {
         verify(() => mockSecurityService.setBiometricsEnabled(true)).called(1);
       },
     );
 
     blocTest<SettingsBloc, SettingsState>(
-      'given user disables biometrics then persist the preference and emit disabled state',
+      'given device supports biometrics and user authenticates then persist the preference and emit disabled state',
       seed: () => const SettingsState(isBiometricsEnabled: true),
       build: () {
+        // Aligns the constructor's own LoadBiometricsSettingsEvent result with
+        // the seeded state, so its concurrent emission is a no-op (equal
+        // states are deduped by Bloc) instead of racing with the toggle flow.
+        when(
+          () => mockSecurityService.isBiometricsEnabled(),
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockSecurityService.canAuthenticate(),
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockSecurityService.authenticate(),
+        ).thenAnswer((_) async => BiometricAuthResult.success);
         when(
           () => mockSecurityService.setBiometricsEnabled(false),
         ).thenAnswer((_) async {});
         return buildBloc();
       },
       act: (bloc) => bloc.add(const ToggleBiometricsEvent(false)),
-      expect: () => [const SettingsState(isBiometricsEnabled: false)],
+      expect: () => [
+        const SettingsState(
+          isBiometricsEnabled: true,
+          isTogglingBiometrics: true,
+        ),
+        const SettingsState(isBiometricsEnabled: false),
+      ],
       verify: (_) {
         verify(() => mockSecurityService.setBiometricsEnabled(false)).called(1);
+      },
+    );
+
+    blocTest<SettingsBloc, SettingsState>(
+      'given device does not support biometrics then emit a notAvailable error and never persist',
+      seed: () => const SettingsState(),
+      build: () {
+        when(
+          () => mockSecurityService.canAuthenticate(),
+        ).thenAnswer((_) async => false);
+        return buildBloc();
+      },
+      act: (bloc) => bloc.add(const ToggleBiometricsEvent(true)),
+      expect: () => [
+        const SettingsState(isTogglingBiometrics: true),
+        const SettingsState(
+          biometricsToggleError: BiometricAuthResult.notAvailable,
+        ),
+      ],
+      verify: (_) {
+        verifyNever(() => mockSecurityService.setBiometricsEnabled(any()));
+      },
+    );
+
+    blocTest<SettingsBloc, SettingsState>(
+      'given user fails biometric authentication then emit the failure result and never persist',
+      seed: () => const SettingsState(),
+      build: () {
+        when(
+          () => mockSecurityService.canAuthenticate(),
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockSecurityService.authenticate(),
+        ).thenAnswer((_) async => BiometricAuthResult.lockedOut);
+        return buildBloc();
+      },
+      act: (bloc) => bloc.add(const ToggleBiometricsEvent(true)),
+      expect: () => [
+        const SettingsState(isTogglingBiometrics: true),
+        const SettingsState(
+          biometricsToggleError: BiometricAuthResult.lockedOut,
+        ),
+      ],
+      verify: (_) {
+        verifyNever(() => mockSecurityService.setBiometricsEnabled(any()));
       },
     );
   });

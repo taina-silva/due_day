@@ -24,12 +24,11 @@ class ProfilePage extends StatelessWidget {
     final spacing = context.spacing;
     final l10n = AppLocalizations.of(context);
 
-    // Ensure state provides user info
     String userName = l10n.profileDefaultUserName;
     String userEmail = '';
     String initials = 'U';
 
-    final authState = context.read<AuthBloc>().state;
+    final authState = context.watch<AuthBloc>().state;
 
     if (authState is AuthAuthenticated) {
       userName = authState.user.name ?? l10n.profileDefaultUserName;

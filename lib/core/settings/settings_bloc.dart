@@ -104,8 +104,42 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     ToggleBiometricsEvent event,
     Emitter<SettingsState> emit,
   ) async {
+    emit(
+      state.copyWith(
+        isTogglingBiometrics: true,
+        clearBiometricsToggleError: true,
+      ),
+    );
+
+    final canAuthenticate = await securityService.canAuthenticate();
+    if (!canAuthenticate) {
+      emit(
+        state.copyWith(
+          isTogglingBiometrics: false,
+          biometricsToggleError: BiometricAuthResult.notAvailable,
+        ),
+      );
+      return;
+    }
+
+    final result = await securityService.authenticate();
+    if (result != BiometricAuthResult.success) {
+      emit(
+        state.copyWith(
+          isTogglingBiometrics: false,
+          biometricsToggleError: result,
+        ),
+      );
+      return;
+    }
+
     await securityService.setBiometricsEnabled(event.enabled);
-    emit(state.copyWith(isBiometricsEnabled: event.enabled));
+    emit(
+      state.copyWith(
+        isBiometricsEnabled: event.enabled,
+        isTogglingBiometrics: false,
+      ),
+    );
   }
 
   Future<void> _onLoadBiometricsSettings(
