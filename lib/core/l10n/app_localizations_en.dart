@@ -761,4 +761,12 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get scheduleErrorFallback =>
       'An error occurred while loading your schedule.';
+
+  @override
+  String get scheduleErrorNotAuthenticated =>
+      'User not authenticated. Please log in again.';
+
+  @override
+  String get scheduleActionErrorFallback =>
+      'Failed to update your schedule. Please try again.';
 }

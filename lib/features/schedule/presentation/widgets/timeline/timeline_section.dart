@@ -3,8 +3,8 @@ import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
 import 'package:due_day/features/schedule/domain/entities/schedule_summary.dart';
-import 'package:due_day/features/schedule/presentation/bloc/schedule_bloc.dart';
-import 'package:due_day/features/schedule/presentation/bloc/schedule_event.dart';
+import 'package:due_day/features/schedule/presentation/bloc/schedule_action_bloc.dart';
+import 'package:due_day/features/schedule/presentation/bloc/schedule_action_event.dart';
 import 'package:due_day/features/schedule/presentation/widgets/timeline/schedule_item_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,7 +36,7 @@ class TimelineSection extends StatelessWidget {
             children: [
               Icon(
                 Icons.calendar_today_outlined,
-                size: 48,
+                size: 48.scale,
                 color: colors.resource.secondary.withValues(alpha: 0.3),
               ),
               SizedBox(height: spacing.medium.height),
@@ -89,7 +89,7 @@ class TimelineSection extends StatelessWidget {
               categoryIcon: category?.icon,
               categoryColor: category?.color,
               onMarkAsPaid: () {
-                context.read<ScheduleBloc>().add(MarkAsPaid(tx));
+                context.read<ScheduleActionBloc>().add(MarkAsPaidEvent(tx));
               },
             );
           },

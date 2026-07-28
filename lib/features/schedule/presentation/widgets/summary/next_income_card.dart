@@ -81,7 +81,7 @@ class NextIncomeCard extends StatelessWidget {
                 style: typography.headline.medium.copyWith(
                   fontWeight: FontWeight.bold,
                   color: onPrimary,
-                  fontSize: 32.width,
+                  fontSize: 32.fs,
                 ),
               ),
               const Spacer(),

@@ -57,7 +57,7 @@ class WeeklyOverviewCard extends StatelessWidget {
             currencyFormat.format(totalAmount),
             style: typography.headline.large.copyWith(
               fontWeight: FontWeight.bold,
-              fontSize: 36.width,
+              fontSize: 36.fs,
             ),
           ),
           SizedBox(height: spacing.extraLarge.height),
@@ -72,7 +72,7 @@ class WeeklyOverviewCard extends StatelessWidget {
                       style: typography.label.small.copyWith(
                         color: colors.resource.secondary.withValues(alpha: 0.5),
                         fontWeight: FontWeight.bold,
-                        fontSize: 10.width,
+                        fontSize: 10.fs,
                         letterSpacing: 1,
                       ),
                     ),
@@ -101,7 +101,7 @@ class WeeklyOverviewCard extends StatelessWidget {
                       style: typography.label.small.copyWith(
                         color: colors.resource.secondary.withValues(alpha: 0.5),
                         fontWeight: FontWeight.bold,
-                        fontSize: 10.width,
+                        fontSize: 10.fs,
                         letterSpacing: 1,
                       ),
                     ),

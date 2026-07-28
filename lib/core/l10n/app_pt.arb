@@ -344,5 +344,7 @@
     "categoriesErrorSaveFailed": "Falha ao salvar a categoria. Tente novamente.",
     "categoriesErrorDeleteFailed": "Falha ao deletar a categoria. Tente novamente.",
     "dashboardErrorFallback": "Ocorreu um erro ao carregar o painel.",
-    "scheduleErrorFallback": "Ocorreu um erro ao carregar sua agenda."
+    "scheduleErrorFallback": "Ocorreu um erro ao carregar sua agenda.",
+    "scheduleErrorNotAuthenticated": "Usuário não autenticado. Por favor, faça login novamente.",
+    "scheduleActionErrorFallback": "Falha ao atualizar sua agenda. Tente novamente."
 }

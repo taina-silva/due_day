@@ -1,4 +1,6 @@
 import 'package:due_day/features/schedule/domain/usecases/get_schedule_data.dart';
+import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
+import 'package:due_day/features/transactions/domain/errors/transaction_failures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:mocktail/mocktail.dart';
@@ -12,16 +14,22 @@ void main() {
   setUp(() {
     mockTransactionRepository = MockTransactionRepository();
     getScheduleData = GetScheduleData(mockTransactionRepository);
+
+    when(
+      () => mockTransactionRepository.getTransactions(
+        type: TransactionType.expense,
+      ),
+    ).thenAnswer((_) => Stream.value(Right(tExpenseTransactions)));
+    when(
+      () => mockTransactionRepository.getTransactions(
+        type: TransactionType.income,
+      ),
+    ).thenAnswer((_) => Stream.value(Right(tIncomeTransactions)));
   });
 
   test(
-    'should return grouped and filtered schedule data from repository',
+    'should query transactions by type and return grouped, filtered schedule data',
     () async {
-      // Arrange
-      when(
-        () => mockTransactionRepository.getTransactions(),
-      ).thenAnswer((_) => Stream.value(Right(tTransactionsList)));
-
       // Act
       final resultStream = getScheduleData.execute();
 
@@ -34,7 +42,6 @@ void main() {
         expect(summary.totalPaid, 200.0);
         expect(summary.totalToPay, 100.0);
 
-        // Transactions list should be filtered: only expenses
         // Sorted by due date: tx-2 (2 days), tx-3 (5 days)
         expect(summary.transactions.length, 2);
         expect(summary.transactions[0].id, 'tx-2');
@@ -45,7 +52,36 @@ void main() {
         expect(summary.nextIncomeDate, tDateTime.add(const Duration(days: 3)));
       });
 
-      verify(() => mockTransactionRepository.getTransactions()).called(1);
+      verify(
+        () => mockTransactionRepository.getTransactions(
+          type: TransactionType.expense,
+        ),
+      ).called(1);
+      verify(
+        () => mockTransactionRepository.getTransactions(
+          type: TransactionType.income,
+        ),
+      ).called(1);
     },
   );
+
+  test('should propagate a failure from the expense stream', () async {
+    when(
+      () => mockTransactionRepository.getTransactions(
+        type: TransactionType.expense,
+      ),
+    ).thenAnswer(
+      (_) => Stream.value(
+        const Left(TransactionOperationFailure('Expense stream failed')),
+      ),
+    );
+
+    final result = await getScheduleData.execute().first;
+
+    expect(result.isLeft(), true);
+    result.fold(
+      (failure) => expect(failure, isA<TransactionOperationFailure>()),
+      (_) => fail('Should not succeed'),
+    );
+  });
 }

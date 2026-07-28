@@ -85,6 +85,42 @@ class TransactionEntity extends Equatable {
     this.parentRecurringId,
   });
 
+  TransactionEntity copyWith({
+    String? id,
+    String? userId,
+    TransactionType? type,
+    double? amount,
+    String? category,
+    String? accountFrom,
+    String? accountTo,
+    DateTime? dueDate,
+    DateTime? paidDate,
+    bool? paid,
+    bool? isRecurring,
+    TransactionFrequency? frequency,
+    String? notes,
+    String? parentRecurringId,
+    DateTime? createdAt,
+  }) {
+    return TransactionEntity(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      type: type ?? this.type,
+      amount: amount ?? this.amount,
+      category: category ?? this.category,
+      accountFrom: accountFrom ?? this.accountFrom,
+      accountTo: accountTo ?? this.accountTo,
+      dueDate: dueDate ?? this.dueDate,
+      paidDate: paidDate ?? this.paidDate,
+      paid: paid ?? this.paid,
+      isRecurring: isRecurring ?? this.isRecurring,
+      frequency: frequency ?? this.frequency,
+      notes: notes ?? this.notes,
+      parentRecurringId: parentRecurringId ?? this.parentRecurringId,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
+
   @override
   List<Object?> get props => [
     id,
