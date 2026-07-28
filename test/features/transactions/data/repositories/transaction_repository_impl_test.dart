@@ -54,7 +54,7 @@ void main() {
       );
 
       test(
-        'should return ServerFailure for general server exceptions',
+        'should return TransactionSaveFailure for general server exceptions',
         () async {
           when(
             () => mockRemoteDataSource.addTransaction(any()),
@@ -62,7 +62,10 @@ void main() {
 
           final result = await repository.addTransaction(tTransactionEntity);
 
-          expect(result, equals(const Left(ServerFailure('Server error'))));
+          expect(
+            result,
+            equals(const Left(TransactionSaveFailure('Server error'))),
+          );
         },
       );
     });
@@ -80,6 +83,22 @@ void main() {
           () => mockRemoteDataSource.updateTransaction(tTransactionModel),
         ).called(1);
       });
+
+      test(
+        'should return TransactionSaveFailure for general server exceptions',
+        () async {
+          when(
+            () => mockRemoteDataSource.updateTransaction(any()),
+          ).thenThrow(const ServerException('Server error'));
+
+          final result = await repository.updateTransaction(tTransactionEntity);
+
+          expect(
+            result,
+            equals(const Left(TransactionSaveFailure('Server error'))),
+          );
+        },
+      );
     });
 
     group('deleteTransaction', () {
@@ -95,6 +114,22 @@ void main() {
           () => mockRemoteDataSource.deleteTransaction('transaction-1'),
         ).called(1);
       });
+
+      test(
+        'should return TransactionDeleteFailure for general server exceptions',
+        () async {
+          when(
+            () => mockRemoteDataSource.deleteTransaction(any()),
+          ).thenThrow(const ServerException('Server error'));
+
+          final result = await repository.deleteTransaction('transaction-1');
+
+          expect(
+            result,
+            equals(const Left(TransactionDeleteFailure('Server error'))),
+          );
+        },
+      );
     });
 
     group('getTransaction', () {

@@ -19,14 +19,21 @@ class TransactionRepositoryImpl implements TransactionRepository {
     required this.observability,
   });
 
-  Failure _mapServerExceptionToFailure(ServerException e) {
+  // [fallback] is operation-specific: reads (getTransaction/getTransactions)
+  // fall back to a generic ServerFailure, while add/update/delete fall back
+  // to TransactionSaveFailure/TransactionDeleteFailure so the action bottom
+  // sheet can show wording distinct from the load-stream error text.
+  Failure _mapServerExceptionToFailure(
+    ServerException e, {
+    required Failure fallback,
+  }) {
     if (e.code == 'unauthenticated' || e.message.contains('authenticated')) {
       return const UserNotAuthenticatedFailure();
     }
     if (e.code == 'not-found' || e.message.contains('not found')) {
       return const TransactionNotFoundFailure();
     }
-    return ServerFailure(e.message);
+    return fallback;
   }
 
   @override
@@ -44,7 +51,12 @@ class TransactionRepositoryImpl implements TransactionRepository {
         error: e,
         stackTrace: StackTrace.current,
       );
-      return Left(_mapServerExceptionToFailure(e));
+      return Left(
+        _mapServerExceptionToFailure(
+          e,
+          fallback: TransactionSaveFailure(e.message),
+        ),
+      );
     } catch (e, stackTrace) {
       observability.error(
         'addTransaction unexpected failure',
@@ -52,7 +64,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
         error: e,
         stackTrace: stackTrace,
       );
-      return Left(GenericFailure(e.toString()));
+      return Left(TransactionSaveFailure(e.toString()));
     }
   }
 
@@ -71,7 +83,12 @@ class TransactionRepositoryImpl implements TransactionRepository {
         error: e,
         stackTrace: StackTrace.current,
       );
-      return Left(_mapServerExceptionToFailure(e));
+      return Left(
+        _mapServerExceptionToFailure(
+          e,
+          fallback: TransactionSaveFailure(e.message),
+        ),
+      );
     } catch (e, stackTrace) {
       observability.error(
         'updateTransaction unexpected failure',
@@ -79,7 +96,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
         error: e,
         stackTrace: stackTrace,
       );
-      return Left(GenericFailure(e.toString()));
+      return Left(TransactionSaveFailure(e.toString()));
     }
   }
 
@@ -95,7 +112,12 @@ class TransactionRepositoryImpl implements TransactionRepository {
         error: e,
         stackTrace: StackTrace.current,
       );
-      return Left(_mapServerExceptionToFailure(e));
+      return Left(
+        _mapServerExceptionToFailure(
+          e,
+          fallback: TransactionDeleteFailure(e.message),
+        ),
+      );
     } catch (e, stackTrace) {
       observability.error(
         'deleteTransaction unexpected failure',
@@ -103,7 +125,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
         error: e,
         stackTrace: stackTrace,
       );
-      return Left(GenericFailure(e.toString()));
+      return Left(TransactionDeleteFailure(e.toString()));
     }
   }
 
@@ -121,7 +143,9 @@ class TransactionRepositoryImpl implements TransactionRepository {
         error: e,
         stackTrace: StackTrace.current,
       );
-      return Left(_mapServerExceptionToFailure(e));
+      return Left(
+        _mapServerExceptionToFailure(e, fallback: ServerFailure(e.message)),
+      );
     } catch (e, stackTrace) {
       observability.error(
         'getTransaction unexpected failure',
@@ -161,7 +185,7 @@ class TransactionRepositoryImpl implements TransactionRepository {
         stackTrace: StackTrace.current,
       );
       yield Left<Failure, List<TransactionEntity>>(
-        _mapServerExceptionToFailure(e),
+        _mapServerExceptionToFailure(e, fallback: ServerFailure(e.message)),
       );
     } catch (e, stackTrace) {
       observability.error(

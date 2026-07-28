@@ -7,13 +7,17 @@ extension TransactionFailureExtension on Failure {
   String toLocalizedString(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    if (this is TransactionNotFoundFailure) {
-      return l10n.transactionsErrorNotFound;
+    switch (this) {
+      case TransactionNotFoundFailure():
+        return l10n.transactionsErrorNotFound;
+      case UserNotAuthenticatedFailure():
+        return l10n.transactionsErrorNotAuthenticated;
+      case TransactionSaveFailure():
+        return l10n.transactionsErrorSaveFailed;
+      case TransactionDeleteFailure():
+        return l10n.transactionsErrorDeleteFailed;
+      default:
+        return l10n.transactionsErrorFallback;
     }
-    if (this is UserNotAuthenticatedFailure) {
-      return l10n.transactionsErrorNotAuthenticated;
-    }
-
-    return l10n.transactionsErrorFallback;
   }
 }

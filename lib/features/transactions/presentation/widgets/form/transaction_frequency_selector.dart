@@ -82,7 +82,7 @@ class _FrequencyItem extends StatelessWidget {
               color: isSelected
                   ? colors.resource.primary
                   : colors.resource.secondary.withValues(alpha: 0.1),
-              width: 1,
+              width: context.stroke.small,
             ),
           ),
           child: Center(

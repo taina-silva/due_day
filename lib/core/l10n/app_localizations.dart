@@ -1154,6 +1154,18 @@ abstract class AppLocalizations {
   /// **'Ocorreu um erro ao gerenciar suas transações.'**
   String get transactionsErrorFallback;
 
+  /// No description provided for @transactionsErrorSaveFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao salvar a transação. Tente novamente.'**
+  String get transactionsErrorSaveFailed;
+
+  /// No description provided for @transactionsErrorDeleteFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao excluir a transação. Tente novamente.'**
+  String get transactionsErrorDeleteFailed;
+
   /// No description provided for @transactionsNotificationOverdueTitle.
   ///
   /// In pt, this message translates to:

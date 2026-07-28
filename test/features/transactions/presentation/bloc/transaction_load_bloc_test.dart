@@ -4,11 +4,10 @@ import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/core/settings/settings_state.dart';
 import 'package:due_day/features/notifications/domain/entities/notification_entity.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
-import 'package:due_day/features/transactions/domain/errors/transaction_failures.dart';
 import 'package:due_day/features/transactions/domain/usecases/classify_transaction_reminders.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_state.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_load_bloc.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_load_event.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_load_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -17,9 +16,6 @@ import 'package:mocktail/mocktail.dart';
 import '../../helpers/transaction_test_helpers.dart';
 
 void main() {
-  late MockAddTransaction mockAddTransaction;
-  late MockUpdateTransaction mockUpdateTransaction;
-  late MockDeleteTransaction mockDeleteTransaction;
   late MockGetTransactions mockGetTransactions;
   late MockSettingsBloc mockSettingsBloc;
   late MockNotificationService mockNotificationService;
@@ -27,12 +23,10 @@ void main() {
   late MockClassifyTransactionReminders mockClassifyTransactionReminders;
   late MockSyncRecurringTransactions mockSyncRecurringTransactions;
   late MockGetCurrentUser mockGetCurrentUser;
-  late TransactionBloc transactionBloc;
+  late TransactionLoadBloc transactionLoadBloc;
 
   setUpAll(() async {
     await initializeDateFormatting('en');
-    registerFallbackValue(tTransactionEntity);
-    registerFallbackValue(<TransactionEntity>[]);
     registerFallbackValue(
       NotificationEntity(
         id: 'fallback',
@@ -48,9 +42,6 @@ void main() {
   });
 
   setUp(() {
-    mockAddTransaction = MockAddTransaction();
-    mockUpdateTransaction = MockUpdateTransaction();
-    mockDeleteTransaction = MockDeleteTransaction();
     mockGetTransactions = MockGetTransactions();
     mockSettingsBloc = MockSettingsBloc();
     mockNotificationService = MockNotificationService();
@@ -65,10 +56,7 @@ void main() {
     ).thenAnswer((_) async => const dartz.Right(null));
     when(() => mockClassifyTransactionReminders(any())).thenReturn(const []);
 
-    transactionBloc = TransactionBloc(
-      addTransaction: mockAddTransaction,
-      updateTransaction: mockUpdateTransaction,
-      deleteTransaction: mockDeleteTransaction,
+    transactionLoadBloc = TransactionLoadBloc(
       getTransactions: mockGetTransactions,
       settingsBloc: mockSettingsBloc,
       notificationService: mockNotificationService,
@@ -80,15 +68,15 @@ void main() {
   });
 
   tearDown(() {
-    transactionBloc.close();
+    transactionLoadBloc.close();
   });
 
   test('initial state should be TransactionInitial', () {
-    expect(transactionBloc.state, equals(TransactionInitial()));
+    expect(transactionLoadBloc.state, equals(TransactionInitial()));
   });
 
   group('LoadTransactions Event', () {
-    blocTest<TransactionBloc, TransactionState>(
+    blocTest<TransactionLoadBloc, TransactionLoadState>(
       'should emit [TransactionLoading, TransactionLoaded] on success '
       'when push notifications are disabled',
       build: () {
@@ -104,7 +92,7 @@ void main() {
             frequency: any(named: 'frequency'),
           ),
         ).thenAnswer((_) => Stream.value(Right([tTransactionEntity])));
-        return transactionBloc;
+        return transactionLoadBloc;
       },
       act: (bloc) => bloc.add(const LoadTransactions()),
       expect: () => [
@@ -117,7 +105,7 @@ void main() {
       },
     );
 
-    blocTest<TransactionBloc, TransactionState>(
+    blocTest<TransactionLoadBloc, TransactionLoadState>(
       'should emit [TransactionLoading, TransactionError] on stream failure',
       build: () {
         when(
@@ -134,7 +122,7 @@ void main() {
         ).thenAnswer(
           (_) => Stream.value(const Left(ServerFailure('Fetch failed'))),
         );
-        return transactionBloc;
+        return transactionLoadBloc;
       },
       act: (bloc) => bloc.add(const LoadTransactions()),
       expect: () => [
@@ -143,7 +131,7 @@ void main() {
       ],
     );
 
-    blocTest<TransactionBloc, TransactionState>(
+    blocTest<TransactionLoadBloc, TransactionLoadState>(
       'should schedule an overdue notification when push notifications are enabled',
       build: () {
         when(() => mockSettingsBloc.state).thenReturn(
@@ -178,7 +166,7 @@ void main() {
             frequency: any(named: 'frequency'),
           ),
         ).thenAnswer((_) => Stream.value(Right([overdueTx])));
-        return transactionBloc;
+        return transactionLoadBloc;
       },
       act: (bloc) => bloc.add(const LoadTransactions()),
       wait: const Duration(milliseconds: 50),
@@ -188,7 +176,7 @@ void main() {
       },
     );
 
-    blocTest<TransactionBloc, TransactionState>(
+    blocTest<TransactionLoadBloc, TransactionLoadState>(
       'should not call cancelAll or addNotification again when the same '
       'transactions are emitted twice in a row',
       build: () {
@@ -229,7 +217,7 @@ void main() {
             Right([overdueTx]),
           ]),
         );
-        return transactionBloc;
+        return transactionLoadBloc;
       },
       act: (bloc) => bloc.add(const LoadTransactions()),
       wait: const Duration(milliseconds: 50),
@@ -245,56 +233,8 @@ void main() {
     );
   });
 
-  group('AddTransactionEvent', () {
-    blocTest<TransactionBloc, TransactionState>(
-      'should call AddTransaction usecase and emit nothing on success',
-      build: () {
-        when(
-          () => mockAddTransaction(any()),
-        ).thenAnswer((_) async => Right(tTransactionEntity));
-        return transactionBloc;
-      },
-      act: (bloc) => bloc.add(AddTransactionEvent(tTransactionEntity)),
-      expect: () => <TransactionState>[],
-      verify: (_) {
-        verify(() => mockAddTransaction(tTransactionEntity)).called(1);
-      },
-    );
-
-    blocTest<TransactionBloc, TransactionState>(
-      'should emit TransactionError when AddTransaction fails',
-      build: () {
-        when(
-          () => mockAddTransaction(any()),
-        ).thenAnswer((_) async => const Left(TransactionOperationFailure()));
-        return transactionBloc;
-      },
-      act: (bloc) => bloc.add(AddTransactionEvent(tTransactionEntity)),
-      expect: () => [
-        const TransactionError(failure: TransactionOperationFailure()),
-      ],
-    );
-  });
-
-  group('DeleteTransactionEvent', () {
-    blocTest<TransactionBloc, TransactionState>(
-      'should call DeleteTransaction usecase and emit nothing on success',
-      build: () {
-        when(
-          () => mockDeleteTransaction(any()),
-        ).thenAnswer((_) async => const Right(null));
-        return transactionBloc;
-      },
-      act: (bloc) => bloc.add(const DeleteTransactionEvent('transaction-1')),
-      expect: () => <TransactionState>[],
-      verify: (_) {
-        verify(() => mockDeleteTransaction('transaction-1')).called(1);
-      },
-    );
-  });
-
   group('SyncRecurringTransactionsRequested', () {
-    blocTest<TransactionBloc, TransactionState>(
+    blocTest<TransactionLoadBloc, TransactionLoadState>(
       'should call SyncRecurringTransactions when user is authenticated',
       build: () {
         when(
@@ -303,33 +243,33 @@ void main() {
         when(
           () => mockSyncRecurringTransactions(any()),
         ).thenAnswer((_) async => <TransactionEntity>[]);
-        return transactionBloc;
+        return transactionLoadBloc;
       },
       act: (bloc) => bloc.add(SyncRecurringTransactionsRequested()),
-      expect: () => <TransactionState>[],
+      expect: () => <TransactionLoadState>[],
       verify: (_) {
         verify(() => mockGetCurrentUser()).called(1);
         verify(() => mockSyncRecurringTransactions('user-1')).called(1);
       },
     );
 
-    blocTest<TransactionBloc, TransactionState>(
+    blocTest<TransactionLoadBloc, TransactionLoadState>(
       'should not call SyncRecurringTransactions when user is not authenticated',
       build: () {
         when(
           () => mockGetCurrentUser(),
         ).thenAnswer((_) async => const Right(null));
-        return transactionBloc;
+        return transactionLoadBloc;
       },
       act: (bloc) => bloc.add(SyncRecurringTransactionsRequested()),
-      expect: () => <TransactionState>[],
+      expect: () => <TransactionLoadState>[],
       verify: (_) {
         verify(() => mockGetCurrentUser()).called(1);
         verifyNever(() => mockSyncRecurringTransactions(any()));
       },
     );
 
-    blocTest<TransactionBloc, TransactionState>(
+    blocTest<TransactionLoadBloc, TransactionLoadState>(
       'should notify recurring debited instances when sync creates paid instances',
       build: () {
         when(
@@ -351,10 +291,10 @@ void main() {
         when(
           () => mockSyncRecurringTransactions(any()),
         ).thenAnswer((_) async => [debitedInstance]);
-        return transactionBloc;
+        return transactionLoadBloc;
       },
       act: (bloc) => bloc.add(SyncRecurringTransactionsRequested()),
-      expect: () => <TransactionState>[],
+      expect: () => <TransactionLoadState>[],
       verify: (_) {
         verify(() => mockAddNotification(any())).called(1);
       },

@@ -22,8 +22,8 @@ import 'package:due_day/features/dashboard/presentation/widgets/cards/summary_ca
 import 'package:due_day/features/dashboard/presentation/widgets/dashboard_app_bar.dart';
 import 'package:due_day/features/dashboard/presentation/widgets/insights/insight_card.dart';
 import 'package:due_day/features/dashboard/presentation/widgets/spending/category_spending_list.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_load_bloc.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_load_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -41,7 +41,9 @@ class _DashboardPageState extends State<DashboardPage> {
     super.initState();
 
     context.read<DashboardBloc>().add(const DashboardLoadRequested());
-    context.read<TransactionBloc>().add(SyncRecurringTransactionsRequested());
+    context.read<TransactionLoadBloc>().add(
+      SyncRecurringTransactionsRequested(),
+    );
   }
 
   @override

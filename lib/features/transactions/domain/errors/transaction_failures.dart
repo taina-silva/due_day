@@ -10,8 +10,12 @@ class UserNotAuthenticatedFailure extends Failure {
   ]);
 }
 
-class TransactionOperationFailure extends Failure {
-  const TransactionOperationFailure([
-    super.message = 'Transaction operation failed.',
+class TransactionSaveFailure extends Failure {
+  const TransactionSaveFailure([super.message = 'Failed to save transaction.']);
+}
+
+class TransactionDeleteFailure extends Failure {
+  const TransactionDeleteFailure([
+    super.message = 'Failed to delete transaction.',
   ]);
 }

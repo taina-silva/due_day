@@ -238,6 +238,8 @@
     "transactionsErrorNotFound": "Transaction not found.",
     "transactionsErrorNotAuthenticated": "User not authenticated. Please log in again.",
     "transactionsErrorFallback": "An error occurred while managing your transactions.",
+    "transactionsErrorSaveFailed": "Failed to save transaction. Please try again.",
+    "transactionsErrorDeleteFailed": "Failed to delete transaction. Please try again.",
     "transactionsNotificationOverdueTitle": "Overdue bill!",
     "transactionsNotificationOverdueBody": "The transaction '{description}' of {amount} is overdue since {date}.",
     "@transactionsNotificationOverdueBody": {

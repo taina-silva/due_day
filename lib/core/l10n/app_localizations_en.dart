@@ -573,6 +573,14 @@ class AppLocalizationsEn extends AppLocalizations {
       'An error occurred while managing your transactions.';
 
   @override
+  String get transactionsErrorSaveFailed =>
+      'Failed to save transaction. Please try again.';
+
+  @override
+  String get transactionsErrorDeleteFailed =>
+      'Failed to delete transaction. Please try again.';
+
+  @override
   String get transactionsNotificationOverdueTitle => 'Overdue bill!';
 
   @override

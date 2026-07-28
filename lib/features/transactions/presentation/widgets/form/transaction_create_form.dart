@@ -16,9 +16,9 @@ import 'package:due_day/features/categories/presentation/bloc/category_load_bloc
 import 'package:due_day/features/categories/presentation/bloc/category_load_event.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_state.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_action_bloc.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_action_event.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_action_state.dart';
 import 'package:due_day/features/transactions/presentation/utils/transaction_failure_extension.dart';
 import 'package:due_day/features/transactions/presentation/widgets/bottom_sheets/account_selection_bottom_sheet.dart';
 import 'package:due_day/features/transactions/presentation/widgets/bottom_sheets/category_selection_bottom_sheet.dart';
@@ -56,6 +56,7 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
   TransactionFrequency _selectedFrequency = TransactionFrequency.none;
 
   bool _isInitialized = false;
+  bool _isSubmitting = false;
 
   @override
   void initState() {
@@ -156,13 +157,19 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
             }
           },
         ),
-        BlocListener<TransactionBloc, TransactionState>(
+        BlocListener<TransactionActionBloc, TransactionActionState>(
           listener: (context, state) {
-            if (state is TransactionError) {
+            if (!_isSubmitting) return;
+
+            if (state is TransactionActionError) {
+              setState(() => _isSubmitting = false);
               AppMessenger.showError(
                 context,
                 state.failure.toLocalizedString(context),
               );
+            } else if (state is TransactionActionSuccess) {
+              _isSubmitting = false;
+              _onSaveSuccess(context);
             }
           },
         ),
@@ -289,7 +296,8 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
   }
 
   void _submit() {
-    final l10n = AppLocalizations.of(context);
+    if (_isSubmitting) return;
+
     // Remove all non-numeric characters and parse as cents
     final digitsOnly = _amountController.text.replaceAll(RegExp(r'[^0-9]'), '');
     final amountValue = double.tryParse(digitsOnly);
@@ -320,11 +328,24 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
       createdAt: widget.transaction?.createdAt ?? DateTime.now(),
     );
 
-    if (widget.transaction != null) {
-      context.read<TransactionBloc>().add(UpdateTransactionEvent(transaction));
-    } else {
-      context.read<TransactionBloc>().add(AddTransactionEvent(transaction));
+    setState(() => _isSubmitting = true);
 
+    if (widget.transaction != null) {
+      context.read<TransactionActionBloc>().add(
+        UpdateTransactionEvent(transaction),
+      );
+    } else {
+      context.read<TransactionActionBloc>().add(
+        AddTransactionEvent(transaction),
+      );
+    }
+  }
+
+  void _onSaveSuccess(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    AppMessenger.showSuccess(context, l10n.transactionsSavedSuccess);
+
+    if (widget.transaction == null) {
       _amountController.clear();
       _notesController.clear();
       setState(() {
@@ -334,10 +355,6 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
       });
     }
 
-    AppMessenger.showSuccess(context, l10n.transactionsSavedSuccess);
-
-    if (widget.onSave != null) {
-      widget.onSave!();
-    }
+    widget.onSave?.call();
   }
 }

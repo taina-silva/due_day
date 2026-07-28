@@ -15,9 +15,9 @@ import 'package:due_day/features/accounts/presentation/bloc/account_load_state.d
 import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_event.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_bloc.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_event.dart';
-import 'package:due_day/features/transactions/presentation/bloc/transaction_state.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_load_bloc.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_load_event.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_load_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -31,8 +31,9 @@ class MockCategoryLoadBloc
     extends MockBloc<CategoryLoadEvent, CategoryLoadState>
     implements CategoryLoadBloc {}
 
-class MockTransactionBloc extends MockBloc<TransactionEvent, TransactionState>
-    implements TransactionBloc {}
+class MockTransactionLoadBloc
+    extends MockBloc<TransactionLoadEvent, TransactionLoadState>
+    implements TransactionLoadBloc {}
 
 class MockSettingsBloc extends MockBloc<SettingsEvent, SettingsState>
     implements SettingsBloc {}
@@ -42,14 +43,14 @@ class MockSecurityService extends Mock implements SecurityService {}
 void main() {
   late MockAccountLoadBloc mockAccountBloc;
   late MockCategoryLoadBloc mockCategoryLoadBloc;
-  late MockTransactionBloc mockTransactionBloc;
+  late MockTransactionLoadBloc mockTransactionBloc;
   late MockSettingsBloc mockSettingsBloc;
   late MockSecurityService mockSecurityService;
 
   setUp(() async {
     mockAccountBloc = MockAccountLoadBloc();
     mockCategoryLoadBloc = MockCategoryLoadBloc();
-    mockTransactionBloc = MockTransactionBloc();
+    mockTransactionBloc = MockTransactionLoadBloc();
     mockSettingsBloc = MockSettingsBloc();
     mockSecurityService = MockSecurityService();
 
@@ -102,7 +103,7 @@ void main() {
       providers: [
         BlocProvider<AccountLoadBloc>.value(value: mockAccountBloc),
         BlocProvider<CategoryLoadBloc>.value(value: mockCategoryLoadBloc),
-        BlocProvider<TransactionBloc>.value(value: mockTransactionBloc),
+        BlocProvider<TransactionLoadBloc>.value(value: mockTransactionBloc),
         BlocProvider<SettingsBloc>.value(value: mockSettingsBloc),
       ],
       child: MaterialApp.router(

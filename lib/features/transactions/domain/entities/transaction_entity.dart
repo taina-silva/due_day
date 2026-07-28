@@ -1,6 +1,4 @@
-import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 
 enum TransactionType {
   income,
@@ -12,14 +10,6 @@ enum TransactionType {
       (e) => e.name == value,
       orElse: () => TransactionType.expense,
     );
-  }
-
-  String getLabel(BuildContext context) {
-    return switch (this) {
-      TransactionType.income => context.l10n.income,
-      TransactionType.expense => context.l10n.expense,
-      TransactionType.transfer => context.l10n.transfer,
-    };
   }
 }
 
@@ -35,17 +25,6 @@ enum TransactionFrequency {
       (e) => e.name == value,
       orElse: () => TransactionFrequency.none,
     );
-  }
-
-  String getLabel(BuildContext context) {
-    return switch (this) {
-      TransactionFrequency.none => context.l10n.transactionsFrequencyNone,
-      TransactionFrequency.weekly => context.l10n.transactionsFrequencyWeekly,
-      TransactionFrequency.biWeekly =>
-        context.l10n.transactionsFrequencyBiWeekly,
-      TransactionFrequency.monthly => context.l10n.transactionsFrequencyMonthly,
-      TransactionFrequency.yearly => context.l10n.transactionsFrequencyYearly,
-    };
   }
 }
 
