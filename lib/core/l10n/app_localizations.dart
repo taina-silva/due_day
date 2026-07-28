@@ -200,23 +200,11 @@ abstract class AppLocalizations {
   /// **'Transação'**
   String get defaultTransaction;
 
-  /// No description provided for @loginWelcome.
-  ///
-  /// In pt, this message translates to:
-  /// **'Boas-vindas!'**
-  String get loginWelcome;
-
   /// No description provided for @loginSubtitle.
   ///
   /// In pt, this message translates to:
   /// **'O seu curador digital financeiro.'**
   String get loginSubtitle;
-
-  /// No description provided for @loginAccessAccount.
-  ///
-  /// In pt, this message translates to:
-  /// **'Acesse sua conta para continuar.'**
-  String get loginAccessAccount;
 
   /// No description provided for @loginEmailLabel.
   ///
@@ -224,23 +212,11 @@ abstract class AppLocalizations {
   /// **'E-mail'**
   String get loginEmailLabel;
 
-  /// No description provided for @loginEmailHint.
-  ///
-  /// In pt, this message translates to:
-  /// **'Digite seu e-mail'**
-  String get loginEmailHint;
-
   /// No description provided for @loginPasswordLabel.
   ///
   /// In pt, this message translates to:
   /// **'Senha'**
   String get loginPasswordLabel;
-
-  /// No description provided for @loginPasswordHint.
-  ///
-  /// In pt, this message translates to:
-  /// **'Digite sua senha'**
-  String get loginPasswordHint;
 
   /// No description provided for @loginSubmitButton.
   ///
@@ -337,24 +313,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Criar conta'**
   String get signupSubmitButton;
-
-  /// No description provided for @signupHaveAccount.
-  ///
-  /// In pt, this message translates to:
-  /// **'Já tem uma conta? '**
-  String get signupHaveAccount;
-
-  /// No description provided for @signupDoLogin.
-  ///
-  /// In pt, this message translates to:
-  /// **'Fazer login'**
-  String get signupDoLogin;
-
-  /// No description provided for @signupEmptyFields.
-  ///
-  /// In pt, this message translates to:
-  /// **'Preencha todos os campos'**
-  String get signupEmptyFields;
 
   /// No description provided for @signupErrorFallback.
   ///

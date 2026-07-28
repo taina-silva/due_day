@@ -50,13 +50,9 @@
     },
     "defaultTransaction": "Transação",
 
-    "loginWelcome": "Boas-vindas!",
     "loginSubtitle": "O seu curador digital financeiro.",
-    "loginAccessAccount": "Acesse sua conta para continuar.",
     "loginEmailLabel": "E-mail",
-    "loginEmailHint": "Digite seu e-mail",
     "loginPasswordLabel": "Senha",
-    "loginPasswordHint": "Digite sua senha",
     "loginSubmitButton": "Entrar",
     "loginGoogleButton": "Continuar com o Google",
     "loginNoAccount": "Não tem uma conta? ",
@@ -74,9 +70,6 @@
     "signupNameLabel": "Nome",
     "signupNameHint": "Digite seu nome",
     "signupSubmitButton": "Criar conta",
-    "signupHaveAccount": "Já tem uma conta? ",
-    "signupDoLogin": "Fazer login",
-    "signupEmptyFields": "Preencha todos os campos",
     "signupErrorFallback": "Ocorreu um erro ao criar conta.",
 
     "navHome": "Home",

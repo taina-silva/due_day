@@ -65,7 +65,6 @@ class _LoginPageState extends State<LoginPage> {
                   'DueDay',
                   style: typography.headline.large.copyWith(
                     color: colors.resource.primary,
-                    fontSize: 48.fontSize,
                   ),
                   textAlign: TextAlign.center,
                 ),

@@ -69,25 +69,13 @@ class AppLocalizationsPt extends AppLocalizations {
   String get defaultTransaction => 'Transação';
 
   @override
-  String get loginWelcome => 'Boas-vindas!';
-
-  @override
   String get loginSubtitle => 'O seu curador digital financeiro.';
-
-  @override
-  String get loginAccessAccount => 'Acesse sua conta para continuar.';
 
   @override
   String get loginEmailLabel => 'E-mail';
 
   @override
-  String get loginEmailHint => 'Digite seu e-mail';
-
-  @override
   String get loginPasswordLabel => 'Senha';
-
-  @override
-  String get loginPasswordHint => 'Digite sua senha';
 
   @override
   String get loginSubmitButton => 'Entrar';
@@ -136,15 +124,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get signupSubmitButton => 'Criar conta';
-
-  @override
-  String get signupHaveAccount => 'Já tem uma conta? ';
-
-  @override
-  String get signupDoLogin => 'Fazer login';
-
-  @override
-  String get signupEmptyFields => 'Preencha todos os campos';
 
   @override
   String get signupErrorFallback => 'Ocorreu um erro ao criar conta.';

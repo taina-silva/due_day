@@ -42,13 +42,9 @@
     },
     "defaultTransaction": "Transaction",
 
-    "loginWelcome": "Welcome back!",
     "loginSubtitle": "Your digital financial curator.",
-    "loginAccessAccount": "Access your account to continue.",
     "loginEmailLabel": "Email",
-    "loginEmailHint": "Enter your email",
     "loginPasswordLabel": "Password",
-    "loginPasswordHint": "Enter your password",
     "loginSubmitButton": "Sign In",
     "loginGoogleButton": "Continue with Google",
     "loginNoAccount": "Don't have an account? ",
@@ -66,9 +62,6 @@
     "signupNameLabel": "Name",
     "signupNameHint": "Enter your name",
     "signupSubmitButton": "Create account",
-    "signupHaveAccount": "Already have an account? ",
-    "signupDoLogin": "Sign in",
-    "signupEmptyFields": "Please fill in all fields",
     "signupErrorFallback": "An error occurred while creating your account.",
 
     "navHome": "Home",

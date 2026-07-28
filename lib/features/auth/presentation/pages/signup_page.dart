@@ -51,7 +51,10 @@ class _SignUpPageState extends State<SignUpPage> {
           } else if (state is AuthError) {
             AppMessenger.showError(
               context,
-              state.failure.toLocalizedString(context),
+              state.failure.toLocalizedString(
+                context,
+                fallbackContext: AuthFallbackContext.signup,
+              ),
             );
           }
         },

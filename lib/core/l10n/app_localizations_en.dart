@@ -68,25 +68,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get defaultTransaction => 'Transaction';
 
   @override
-  String get loginWelcome => 'Welcome back!';
-
-  @override
   String get loginSubtitle => 'Your digital financial curator.';
-
-  @override
-  String get loginAccessAccount => 'Access your account to continue.';
 
   @override
   String get loginEmailLabel => 'Email';
 
   @override
-  String get loginEmailHint => 'Enter your email';
-
-  @override
   String get loginPasswordLabel => 'Password';
-
-  @override
-  String get loginPasswordHint => 'Enter your password';
 
   @override
   String get loginSubmitButton => 'Sign In';
@@ -135,15 +123,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get signupSubmitButton => 'Create account';
-
-  @override
-  String get signupHaveAccount => 'Already have an account? ';
-
-  @override
-  String get signupDoLogin => 'Sign in';
-
-  @override
-  String get signupEmptyFields => 'Please fill in all fields';
 
   @override
   String get signupErrorFallback =>
