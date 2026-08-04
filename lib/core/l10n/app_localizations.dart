@@ -701,7 +701,7 @@ abstract class AppLocalizations {
   /// No description provided for @profileSecurityDesc.
   ///
   /// In pt, this message translates to:
-  /// **'Ativa para todas as transações'**
+  /// **'Bloqueia o acesso ao app'**
   String get profileSecurityDesc;
 
   /// No description provided for @profileBiometricsNotSupported.
