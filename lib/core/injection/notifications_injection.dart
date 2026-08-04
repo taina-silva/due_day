@@ -22,6 +22,7 @@ void initNotifications() {
   sl.registerLazySingleton(() => GetNotifications(sl()));
   sl.registerLazySingleton(() => AddNotification(sl()));
   sl.registerLazySingleton(() => MarkNotificationAsRead(sl()));
+  sl.registerLazySingleton(() => MarkAllNotificationsAsRead(sl()));
   sl.registerLazySingleton(() => DeleteNotification(sl()));
 
   // Blocs
@@ -29,6 +30,7 @@ void initNotifications() {
   sl.registerFactory(
     () => NotificationsActionBloc(
       markNotificationAsRead: sl(),
+      markAllNotificationsAsRead: sl(),
       deleteNotification: sl(),
     ),
   );

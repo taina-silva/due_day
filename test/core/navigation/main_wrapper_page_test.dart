@@ -242,6 +242,118 @@ void main() {
     );
 
     testWidgets(
+      'given the biometric prompt blips the lifecycle through '
+      'inactive/resumed without true backgrounding then it does not '
+      'retrigger authenticate()',
+      (tester) async {
+        setupTestWindow(tester);
+        when(
+          () => mockSecurityService.canAuthenticate(),
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockSecurityService.authenticate(),
+        ).thenAnswer((_) async => BiometricAuthResult.success);
+
+        await tester.pumpWidget(buildTestableWidget(biometricsEnabled: true));
+        await tester.pumpAndSettle();
+
+        expect(find.byType(BiometricLockOverlay), findsNothing);
+
+        // Mirrors the transient inactive -> resumed blip the system
+        // biometric prompt itself causes, without ever truly backgrounding
+        // the app (i.e. no `paused` state in between).
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.inactive,
+        );
+        await tester.pump();
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        );
+        await tester.pump();
+
+        expect(find.byType(BiometricLockOverlay), findsNothing);
+        verify(() => mockSecurityService.authenticate()).called(1);
+      },
+    );
+
+    testWidgets(
+      'given the app is genuinely backgrounded and resumed then it re-locks '
+      'and calls authenticate() again',
+      (tester) async {
+        setupTestWindow(tester);
+        when(
+          () => mockSecurityService.canAuthenticate(),
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockSecurityService.authenticate(),
+        ).thenAnswer((_) async => BiometricAuthResult.success);
+
+        await tester.pumpWidget(buildTestableWidget(biometricsEnabled: true));
+        await tester.pumpAndSettle();
+        expect(find.byType(BiometricLockOverlay), findsNothing);
+
+        final secondAuthCompleter = Completer<BiometricAuthResult>();
+        when(
+          () => mockSecurityService.authenticate(),
+        ).thenAnswer((_) => secondAuthCompleter.future);
+
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.paused,
+        );
+        await tester.pump();
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        );
+        await tester.pump();
+
+        expect(find.byType(BiometricLockOverlay), findsOneWidget);
+
+        secondAuthCompleter.complete(BiometricAuthResult.success);
+        await tester.pumpAndSettle();
+
+        expect(find.byType(BiometricLockOverlay), findsNothing);
+        verify(() => mockSecurityService.authenticate()).called(2);
+      },
+    );
+
+    testWidgets(
+      'given the settings toggle already owns an in-flight authentication '
+      'then a genuine app resume does not start a competing '
+      'authenticate() call',
+      (tester) async {
+        setupTestWindow(tester);
+        when(
+          () => mockSecurityService.canAuthenticate(),
+        ).thenAnswer((_) async => true);
+        when(
+          () => mockSecurityService.authenticate(),
+        ).thenAnswer((_) async => BiometricAuthResult.success);
+
+        await tester.pumpWidget(buildTestableWidget(biometricsEnabled: true));
+        await tester.pumpAndSettle();
+        clearInteractions(mockSecurityService);
+
+        when(() => mockSettingsBloc.state).thenReturn(
+          const SettingsState(
+            isBiometricsEnabled: true,
+            isTogglingBiometrics: true,
+          ),
+        );
+
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.paused,
+        );
+        await tester.pump();
+        tester.binding.handleAppLifecycleStateChanged(
+          AppLifecycleState.resumed,
+        );
+        await tester.pump();
+
+        verifyNever(() => mockSecurityService.authenticate());
+      },
+    );
+
+    testWidgets(
       'given a temporary lockout then the overlay shows the localized '
       'lockout message',
       (tester) async {

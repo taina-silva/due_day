@@ -442,6 +442,9 @@ class AppLocalizationsPt extends AppLocalizations {
       'Falha ao excluir a notificação.';
 
   @override
+  String get notificationsMarkAllAsRead => 'Marcar todas como lidas';
+
+  @override
   String notifMinutesAgo(int count) {
     return 'Há $count minuto(s)';
   }

@@ -22,6 +22,9 @@ class MockAddNotification extends Mock implements AddNotification {}
 class MockMarkNotificationAsRead extends Mock
     implements MarkNotificationAsRead {}
 
+class MockMarkAllNotificationsAsRead extends Mock
+    implements MarkAllNotificationsAsRead {}
+
 class MockDeleteNotification extends Mock implements DeleteNotification {}
 
 final tDateTime = DateTime(2026, 7, 7, 8, 0);

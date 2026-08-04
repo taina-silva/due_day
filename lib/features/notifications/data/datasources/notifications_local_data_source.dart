@@ -8,6 +8,7 @@ const int kMaxStoredNotifications = 100;
 abstract class NotificationsLocalDataSource {
   Future<void> addNotification(NotificationModel notification);
   Future<void> markAsRead(String notificationId);
+  Future<void> markAllAsRead();
   Future<void> deleteNotification(String notificationId);
   Stream<List<NotificationModel>> getNotifications();
 }
@@ -24,7 +25,12 @@ class NotificationsLocalDataSourceImpl implements NotificationsLocalDataSource {
   @override
   Future<void> addNotification(NotificationModel notification) async {
     try {
-      await box.put(notification.id, notification.toJson());
+      final existing = box.get(notification.id);
+      final alreadyRead = existing != null && existing['read'] == true;
+      final toStore = alreadyRead
+          ? notification.copyWith(read: true)
+          : notification;
+      await box.put(notification.id, toStore.toJson());
       await _enforceMaxSize();
     } catch (e) {
       throw CacheException('Error saving notification: $e');
@@ -39,6 +45,27 @@ class NotificationsLocalDataSourceImpl implements NotificationsLocalDataSource {
       await box.put(notificationId, {...json, 'read': true});
     } catch (e) {
       throw CacheException('Error updating notification: $e');
+    }
+  }
+
+  @override
+  Future<void> markAllAsRead() async {
+    try {
+      final userId = firebaseAuth.currentUser?.uid;
+      if (userId == null) return;
+
+      final updates = <dynamic, Map>{};
+      for (final key in box.keys) {
+        final json = box.get(key);
+        if (json == null || json['userId'] != userId || json['read'] == true) {
+          continue;
+        }
+        updates[key] = {...json, 'read': true};
+      }
+      if (updates.isEmpty) return;
+      await box.putAll(updates);
+    } catch (e) {
+      throw CacheException('Error updating notifications: $e');
     }
   }
 

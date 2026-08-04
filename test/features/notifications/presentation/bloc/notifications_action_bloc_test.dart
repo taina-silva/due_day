@@ -11,15 +11,18 @@ import '../../helpers/notifications_test_helpers.dart';
 
 void main() {
   late MockMarkNotificationAsRead mockMarkNotificationAsRead;
+  late MockMarkAllNotificationsAsRead mockMarkAllNotificationsAsRead;
   late MockDeleteNotification mockDeleteNotification;
   late NotificationsActionBloc notificationsActionBloc;
 
   setUp(() {
     mockMarkNotificationAsRead = MockMarkNotificationAsRead();
+    mockMarkAllNotificationsAsRead = MockMarkAllNotificationsAsRead();
     mockDeleteNotification = MockDeleteNotification();
 
     notificationsActionBloc = NotificationsActionBloc(
       markNotificationAsRead: mockMarkNotificationAsRead,
+      markAllNotificationsAsRead: mockMarkAllNotificationsAsRead,
       deleteNotification: mockDeleteNotification,
     );
   });
@@ -60,6 +63,43 @@ void main() {
         return notificationsActionBloc;
       },
       act: (bloc) => bloc.add(const MarkAsReadEvent('notification-1')),
+      expect: () => [
+        NotificationsActionInProgress(),
+        const NotificationsActionError(
+          failure: NotificationSaveFailure('Cache error'),
+        ),
+      ],
+    );
+  });
+
+  group('MarkAllAsReadEvent', () {
+    blocTest<NotificationsActionBloc, NotificationsActionState>(
+      'given a successful call when MarkAllAsReadEvent is added then emit [InProgress, Success]',
+      build: () {
+        when(
+          () => mockMarkAllNotificationsAsRead(),
+        ).thenAnswer((_) async => const Right(null));
+        return notificationsActionBloc;
+      },
+      act: (bloc) => bloc.add(const MarkAllAsReadEvent()),
+      expect: () => [
+        NotificationsActionInProgress(),
+        NotificationsActionSuccess(),
+      ],
+      verify: (_) {
+        verify(() => mockMarkAllNotificationsAsRead()).called(1);
+      },
+    );
+
+    blocTest<NotificationsActionBloc, NotificationsActionState>(
+      'given a failed call when MarkAllAsReadEvent is added then emit [InProgress, Error]',
+      build: () {
+        when(() => mockMarkAllNotificationsAsRead()).thenAnswer(
+          (_) async => const Left(NotificationSaveFailure('Cache error')),
+        );
+        return notificationsActionBloc;
+      },
+      act: (bloc) => bloc.add(const MarkAllAsReadEvent()),
       expect: () => [
         NotificationsActionInProgress(),
         const NotificationsActionError(

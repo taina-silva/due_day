@@ -29,6 +29,7 @@ class _MainWrapperPageState extends State<MainWrapperPage>
   bool _isLocked = false;
   bool _isAuthenticating = false;
   BiometricAuthResult? _lastAuthResult;
+  AppLifecycleState? _lastLifecycleState;
 
   @override
   void initState() {
@@ -61,14 +62,21 @@ class _MainWrapperPageState extends State<MainWrapperPage>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      final settingsBloc = context.read<SettingsBloc>();
-      if (settingsBloc.state.isBiometricsEnabled) {
-        setState(() {
-          _isLocked = true;
-        });
-        _authenticate();
-      }
+    final AppLifecycleState? previousState = _lastLifecycleState;
+    _lastLifecycleState = state;
+
+    if (state != AppLifecycleState.resumed ||
+        previousState != AppLifecycleState.paused) {
+      return;
+    }
+
+    final settingsBloc = context.read<SettingsBloc>();
+    if (settingsBloc.state.isBiometricsEnabled &&
+        !settingsBloc.state.isTogglingBiometrics) {
+      setState(() {
+        _isLocked = true;
+      });
+      _authenticate();
     }
   }
 

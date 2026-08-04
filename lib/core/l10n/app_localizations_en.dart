@@ -440,6 +440,9 @@ class AppLocalizationsEn extends AppLocalizations {
       'Failed to delete the notification.';
 
   @override
+  String get notificationsMarkAllAsRead => 'Mark all as read';
+
+  @override
   String notifMinutesAgo(int count) {
     return '$count minute(s) ago';
   }

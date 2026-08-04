@@ -87,6 +87,37 @@ void main() {
     );
   });
 
+  group('MarkAllNotificationsAsRead', () {
+    test(
+      'given a call when invoked then delegate to the repository and return Right(null)',
+      () async {
+        final usecase = MarkAllNotificationsAsRead(mockRepository);
+        when(
+          () => mockRepository.markAllAsRead(),
+        ).thenAnswer((_) async => const Right(null));
+
+        final result = await usecase();
+
+        expect(result, const Right(null));
+        verify(() => mockRepository.markAllAsRead()).called(1);
+      },
+    );
+
+    test(
+      'given a repository failure when invoked then return Left(failure)',
+      () async {
+        final usecase = MarkAllNotificationsAsRead(mockRepository);
+        when(
+          () => mockRepository.markAllAsRead(),
+        ).thenAnswer((_) async => const Left(CacheFailure('Cache error')));
+
+        final result = await usecase();
+
+        expect(result, const Left(CacheFailure('Cache error')));
+      },
+    );
+  });
+
   group('DeleteNotification', () {
     test(
       'given an id when call is invoked then delegate to the repository and return Right(null)',

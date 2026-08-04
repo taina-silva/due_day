@@ -181,6 +181,7 @@
     "notificationsErrorLoading": "Erro ao carregar notificações.",
     "notificationsErrorSaveFailed": "Falha ao atualizar a notificação.",
     "notificationsErrorDeleteFailed": "Falha ao excluir a notificação.",
+    "notificationsMarkAllAsRead": "Marcar todas como lidas",
     "notifMinutesAgo": "Há {count} minuto(s)",
     "@notifMinutesAgo": {
         "placeholders": {

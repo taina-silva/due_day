@@ -73,6 +73,21 @@ void main() {
     );
 
     test(
+      'given a notification already marked as read when addNotification is called again with the same id then the read status is preserved',
+      () async {
+        await dataSource.addNotification(buildModel(id: 'n1'));
+        await dataSource.markAsRead('n1');
+
+        await dataSource.addNotification(buildModel(id: 'n1', read: false));
+
+        final updated = NotificationModel.fromJson(
+          Map<String, dynamic>.from(box.get('n1')!),
+        );
+        expect(updated.read, isTrue);
+      },
+    );
+
+    test(
       'given more than 100 notifications when addNotification is called then only the last 100 are kept',
       () async {
         for (var i = 0; i < 100; i++) {
@@ -120,6 +135,59 @@ void main() {
         await dataSource.markAsRead('missing');
 
         expect(box.containsKey('missing'), isFalse);
+      },
+    );
+  });
+
+  group('markAllAsRead', () {
+    test(
+      'given unread notifications for the current user when markAllAsRead is called then all become read',
+      () async {
+        await dataSource.addNotification(buildModel(id: 'n1'));
+        await dataSource.addNotification(buildModel(id: 'n2'));
+        await dataSource.addNotification(buildModel(id: 'n3', read: true));
+
+        await dataSource.markAllAsRead();
+
+        final n1 = NotificationModel.fromJson(
+          Map<String, dynamic>.from(box.get('n1')!),
+        );
+        final n2 = NotificationModel.fromJson(
+          Map<String, dynamic>.from(box.get('n2')!),
+        );
+        expect(n1.read, isTrue);
+        expect(n2.read, isTrue);
+      },
+    );
+
+    test(
+      'given notifications from another user when markAllAsRead is called then they remain untouched',
+      () async {
+        await dataSource.addNotification(
+          buildModel(id: 'n1', userId: 'other-user'),
+        );
+
+        await dataSource.markAllAsRead();
+
+        final n1 = NotificationModel.fromJson(
+          Map<String, dynamic>.from(box.get('n1')!),
+        );
+        expect(n1.read, isFalse);
+      },
+    );
+
+    test(
+      'given no authenticated user when markAllAsRead is called then nothing changes',
+      () async {
+        await dataSource.addNotification(buildModel(id: 'n1'));
+        when(() => mockFirebaseAuth.currentUser).thenReturn(null);
+
+        await dataSource.markAllAsRead();
+
+        final n1 = NotificationModel.fromJson(
+          Map<String, dynamic>.from(box.get('n1')!),
+        );
+        expect(n1.read, isFalse);
       },
     );
   });

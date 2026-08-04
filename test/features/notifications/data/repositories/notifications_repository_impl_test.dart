@@ -85,6 +85,35 @@ void main() {
     );
   });
 
+  group('markAllAsRead', () {
+    test(
+      'given a successful call when markAllAsRead is called then return Right(null)',
+      () async {
+        when(
+          () => mockLocalDataSource.markAllAsRead(),
+        ).thenAnswer((_) async {});
+
+        final result = await repository.markAllAsRead();
+
+        expect(result, const Right(null));
+        verify(() => mockLocalDataSource.markAllAsRead()).called(1);
+      },
+    );
+
+    test(
+      'given a CacheException when markAllAsRead is called then return Left(NotificationSaveFailure)',
+      () async {
+        when(
+          () => mockLocalDataSource.markAllAsRead(),
+        ).thenThrow(const CacheException('Cache error'));
+
+        final result = await repository.markAllAsRead();
+
+        expect(result, const Left(NotificationSaveFailure('Cache error')));
+      },
+    );
+  });
+
   group('deleteNotification', () {
     test(
       'given a successful call when deleteNotification is called then return Right(null)',
