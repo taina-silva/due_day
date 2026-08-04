@@ -19,6 +19,7 @@ import 'package:due_day/features/dashboard/presentation/bloc/dashboard_bloc.dart
 import 'package:due_day/features/notifications/presentation/bloc/notifications_action_bloc.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_load_bloc.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_load_event.dart';
+import 'package:due_day/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_action_bloc.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_load_bloc.dart';
 import 'package:due_day/firebase_options.dart';
@@ -127,6 +128,7 @@ class _DueDayAppState extends State<DueDayApp> {
               di.sl<NotificationsLoadBloc>()..add(LoadNotifications()),
         ),
         BlocProvider(create: (_) => di.sl<NotificationsActionBloc>()),
+        BlocProvider(create: (_) => di.sl<ProfileBloc>()),
       ],
       child: BlocBuilder<SettingsBloc, SettingsState>(
         builder: (context, state) {

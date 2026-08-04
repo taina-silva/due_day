@@ -369,6 +369,23 @@ class AppLocalizationsPt extends AppLocalizations {
   String get profileThemeDark => 'Modo Escuro';
 
   @override
+  String get profileChangePhoto => 'Alterar Foto';
+
+  @override
+  String get profileTakePhoto => 'Tirar Foto';
+
+  @override
+  String get profileChooseFromGallery => 'Escolher da Galeria';
+
+  @override
+  String get profilePhotoTooLargeError =>
+      'Essa imagem é muito grande. Tente outra foto.';
+
+  @override
+  String get profilePhotoPickError =>
+      'Não foi possível atualizar sua foto. Tente novamente.';
+
+  @override
   String get notificationsTitle => 'Notificações';
 
   @override
@@ -481,6 +498,18 @@ class AppLocalizationsPt extends AppLocalizations {
   String get transactionsPending => 'Pendente';
 
   @override
+  String get transactionsSectionUpcoming => 'Próximos';
+
+  @override
+  String get transactionsSectionLastWeek => 'Última Semana';
+
+  @override
+  String get transactionsSectionLastMonth => 'Último Mês';
+
+  @override
+  String get transactionsSectionPast => 'Passados';
+
+  @override
   String get transactionsNew => 'Nova Transação';
 
   @override
@@ -570,6 +599,9 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get transactionsConfirmDelete =>
       'Tem certeza que deseja excluir esta transação?';
+
+  @override
+  String get transactionsMarkAsPaid => 'Marcar como Pago';
 
   @override
   String get transactionsDetailTitle => 'Detalhes da Transação';
@@ -689,9 +721,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get dateToday => 'Hoje';
-
-  @override
-  String get dateYesterday => 'Ontem';
 
   @override
   String get validatorRequired => 'Campo obrigatório';

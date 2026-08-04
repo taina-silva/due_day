@@ -112,14 +112,52 @@ class TransactionItem extends StatelessWidget {
                 ),
               ),
               SizedBox(width: spacing.medium.width),
-              Text(
-                '${isExpense ? '-' : '+'}${NumberFormat.simpleCurrency(locale: context.localeString).format(transaction.amount.abs())}',
-                style: typography.body.large.copyWith(
-                  color: isExpense
-                      ? colors.system.error
-                      : colors.system.success,
-                  fontWeight: FontWeight.bold,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    DateFormat.MMMd(
+                      context.localeString,
+                    ).format(transaction.dueDate ?? transaction.createdAt),
+                    style: typography.label.small.copyWith(
+                      color: colors.resource.secondary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: spacing.extraSmall.height),
+                  Text(
+                    '${isExpense ? '-' : '+'}${NumberFormat.simpleCurrency(locale: context.localeString).format(transaction.amount.abs())}',
+                    style: typography.body.large.copyWith(
+                      color: isExpense
+                          ? colors.system.error
+                          : colors.system.success,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  if (!transaction.paid) ...[
+                    SizedBox(height: spacing.extraSmall.height),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: spacing.extraSmall.width,
+                        vertical: 2.height,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colors.system.warning.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(
+                          context.radius.circle,
+                        ),
+                      ),
+                      child: Text(
+                        l10n.transactionsPending.toUpperCase(),
+                        style: typography.label.small.copyWith(
+                          color: colors.system.warning,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10.fs,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ],
           ),

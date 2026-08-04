@@ -158,6 +158,11 @@
     "profileThemeSystem": "Padrão do Sistema",
     "profileThemeLight": "Modo Claro",
     "profileThemeDark": "Modo Escuro",
+    "profileChangePhoto": "Alterar Foto",
+    "profileTakePhoto": "Tirar Foto",
+    "profileChooseFromGallery": "Escolher da Galeria",
+    "profilePhotoTooLargeError": "Essa imagem é muito grande. Tente outra foto.",
+    "profilePhotoPickError": "Não foi possível atualizar sua foto. Tente novamente.",
 
     "notificationsTitle": "Notificações",
     "notifAppUpdateTitle": "Atualização do Sistema",
@@ -214,6 +219,10 @@
     "transactionsEmpty": "Nenhuma transação encontrada.",
     "transactionsPaid": "Paga",
     "transactionsPending": "Pendente",
+    "transactionsSectionUpcoming": "Próximos",
+    "transactionsSectionLastWeek": "Última Semana",
+    "transactionsSectionLastMonth": "Último Mês",
+    "transactionsSectionPast": "Passados",
 
     "transactionsNew": "Nova Transação",
     "transactionsAmount": "VALOR",
@@ -245,6 +254,7 @@
     "transactionsAddTransaction": "Nova Transação",
     "transactionsDeleteTransaction": "Excluir Transação",
     "transactionsConfirmDelete": "Tem certeza que deseja excluir esta transação?",
+    "transactionsMarkAsPaid": "Marcar como Pago",
     "transactionsDetailTitle": "Detalhes da Transação",
     "transactionsErrorNotFound": "Transação não encontrada.",
     "transactionsErrorNotAuthenticated": "Usuário não autenticado. Faça login novamente.",
@@ -321,7 +331,6 @@
     "splashLogoSemanticLabel": "Logo do DueDay",
 
     "dateToday": "Hoje",
-    "dateYesterday": "Ontem",
     "validatorRequired": "Campo obrigatório",
     "hintSelect": "Selecione",
     "filters": "Filtros",

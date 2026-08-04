@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
+import 'package:due_day/core/utils/app_constants.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/schedule/presentation/bloc/schedule_action_bloc.dart';
@@ -80,6 +81,41 @@ void main() {
         supportedLocales: AppLocalizations.supportedLocales,
         locale: Locale('en'),
         home: ScheduleView(),
+      ),
+    );
+  }
+
+  // Mirrors how MainWrapperPage stacks the app's floating bottom nav bar on
+  // top of every shell page's body, so this reproduces the real overlap
+  // scenario instead of testing ScheduleView in isolation.
+  Widget buildTestableWidgetWithFloatingNavOverlay() {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ScheduleLoadBloc>.value(value: mockScheduleLoadBloc),
+        BlocProvider<ScheduleActionBloc>.value(value: mockScheduleActionBloc),
+        BlocProvider<CategoryLoadBloc>.value(value: mockCategoryLoadBloc),
+      ],
+      child: MaterialApp(
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        locale: const Locale('en'),
+        home: Scaffold(
+          body: Stack(
+            children: [
+              const ScheduleView(),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  key: const Key('fake_floating_bottom_nav'),
+                  height: AppConstants.bottomNavHeight,
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -164,6 +200,45 @@ void main() {
         verify(
           () => mockScheduleActionBloc.add(any(that: isA<MarkAsPaidEvent>())),
         ).called(1);
+      },
+    );
+
+    testWidgets(
+      'given the floating bottom nav overlays the page when the timeline is '
+      'scrolled to the bottom then the See All button stays fully above it',
+      (tester) async {
+        // A shorter viewport than the shared 844pt one forces the timeline
+        // content to actually overflow and scroll, which is what exposes
+        // the floating bottom nav overlap in the first place.
+        tester.view.physicalSize = const Size(390, 500);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(() {
+          tester.view.resetPhysicalSize();
+          tester.view.resetDevicePixelRatio();
+        });
+        when(
+          () => mockScheduleLoadBloc.state,
+        ).thenReturn(ScheduleLoaded(tScheduleSummaryNoIncome));
+        when(
+          () => mockScheduleLoadBloc.stream,
+        ).thenAnswer((_) => const Stream.empty());
+
+        await tester.pumpWidget(buildTestableWidgetWithFloatingNavOverlay());
+        await tester.pumpAndSettle();
+
+        await tester.dragUntilVisible(
+          find.text('See All'),
+          find.byType(SingleChildScrollView),
+          const Offset(0, -300),
+        );
+        await tester.pumpAndSettle();
+
+        final seeAllRect = tester.getRect(find.text('See All'));
+        final navRect = tester.getRect(
+          find.byKey(const Key('fake_floating_bottom_nav')),
+        );
+
+        expect(seeAllRect.bottom, lessThanOrEqualTo(navRect.top));
       },
     );
 

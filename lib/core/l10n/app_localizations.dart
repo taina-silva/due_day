@@ -770,6 +770,36 @@ abstract class AppLocalizations {
   /// **'Modo Escuro'**
   String get profileThemeDark;
 
+  /// No description provided for @profileChangePhoto.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alterar Foto'**
+  String get profileChangePhoto;
+
+  /// No description provided for @profileTakePhoto.
+  ///
+  /// In pt, this message translates to:
+  /// **'Tirar Foto'**
+  String get profileTakePhoto;
+
+  /// No description provided for @profileChooseFromGallery.
+  ///
+  /// In pt, this message translates to:
+  /// **'Escolher da Galeria'**
+  String get profileChooseFromGallery;
+
+  /// No description provided for @profilePhotoTooLargeError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Essa imagem é muito grande. Tente outra foto.'**
+  String get profilePhotoTooLargeError;
+
+  /// No description provided for @profilePhotoPickError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível atualizar sua foto. Tente novamente.'**
+  String get profilePhotoPickError;
+
   /// No description provided for @notificationsTitle.
   ///
   /// In pt, this message translates to:
@@ -968,6 +998,30 @@ abstract class AppLocalizations {
   /// **'Pendente'**
   String get transactionsPending;
 
+  /// No description provided for @transactionsSectionUpcoming.
+  ///
+  /// In pt, this message translates to:
+  /// **'Próximos'**
+  String get transactionsSectionUpcoming;
+
+  /// No description provided for @transactionsSectionLastWeek.
+  ///
+  /// In pt, this message translates to:
+  /// **'Última Semana'**
+  String get transactionsSectionLastWeek;
+
+  /// No description provided for @transactionsSectionLastMonth.
+  ///
+  /// In pt, this message translates to:
+  /// **'Último Mês'**
+  String get transactionsSectionLastMonth;
+
+  /// No description provided for @transactionsSectionPast.
+  ///
+  /// In pt, this message translates to:
+  /// **'Passados'**
+  String get transactionsSectionPast;
+
   /// No description provided for @transactionsNew.
   ///
   /// In pt, this message translates to:
@@ -1147,6 +1201,12 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Tem certeza que deseja excluir esta transação?'**
   String get transactionsConfirmDelete;
+
+  /// No description provided for @transactionsMarkAsPaid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Marcar como Pago'**
+  String get transactionsMarkAsPaid;
 
   /// No description provided for @transactionsDetailTitle.
   ///
@@ -1346,12 +1406,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Hoje'**
   String get dateToday;
-
-  /// No description provided for @dateYesterday.
-  ///
-  /// In pt, this message translates to:
-  /// **'Ontem'**
-  String get dateYesterday;
 
   /// No description provided for @validatorRequired.
   ///

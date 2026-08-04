@@ -5,6 +5,7 @@ import 'package:due_day/core/services/security_service.dart';
 import 'package:due_day/core/settings/settings_bloc.dart';
 import 'package:due_day/core/settings/settings_event.dart';
 import 'package:due_day/core/settings/settings_state.dart';
+import 'package:due_day/features/auth/domain/entities/user_entity.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_state.dart';
 import 'package:due_day/features/profile/presentation/pages/profile_page.dart';
@@ -31,10 +32,19 @@ void main() {
     mockSettingsBloc = MockSettingsBloc();
     mockSecurityService = MockSecurityService();
 
-    // Setup default states
+    // Setup default states. Uses a user without a photoUrl so ProfileAvatar
+    // falls back to rendering initials instead of attempting a real network
+    // image load (UserEntity.copyWith can't null out a non-null field).
+    final userWithoutPhoto = UserEntity(
+      uid: tUserEntity.uid,
+      email: tUserEntity.email,
+      name: tUserEntity.name,
+      createdAt: tUserEntity.createdAt,
+      themePreference: tUserEntity.themePreference,
+    );
     when(
       () => mockAuthBloc.state,
-    ).thenReturn(AuthAuthenticated(user: tUserEntity));
+    ).thenReturn(AuthAuthenticated(user: userWithoutPhoto));
     when(() => mockAuthBloc.stream).thenAnswer((_) => const Stream.empty());
 
     when(() => mockSettingsBloc.state).thenReturn(

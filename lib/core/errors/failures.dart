@@ -20,3 +20,7 @@ class CacheFailure extends Failure {
 class GenericFailure extends Failure {
   const GenericFailure([super.message = 'An unexpected error occurred']);
 }
+
+class ImageTooLargeFailure extends Failure {
+  const ImageTooLargeFailure([super.message = 'Image is too large']);
+}

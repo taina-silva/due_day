@@ -1,6 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
+import 'package:due_day/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:due_day/features/auth/presentation/bloc/auth_state.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/categories/presentation/pages/categories_page.dart';
@@ -13,6 +15,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../../auth/helpers/auth_test_helpers.dart';
 import '../../helpers/category_test_helpers.dart';
 
 class MockNotificationsBloc
@@ -22,6 +25,7 @@ class MockNotificationsBloc
 void main() {
   late MockCategoryLoadBloc mockCategoryLoadBloc;
   late MockNotificationsBloc mockNotificationsBloc;
+  late MockAuthBloc mockAuthBloc;
 
   setUp(() {
     mockCategoryLoadBloc = MockCategoryLoadBloc();
@@ -35,6 +39,10 @@ void main() {
     when(
       () => mockNotificationsBloc.stream,
     ).thenAnswer((_) => const Stream.empty());
+
+    mockAuthBloc = MockAuthBloc();
+    when(() => mockAuthBloc.state).thenReturn(AuthUnauthenticated());
+    when(() => mockAuthBloc.stream).thenAnswer((_) => const Stream.empty());
   });
 
   void setupTestWindow(WidgetTester tester) {
@@ -54,6 +62,7 @@ void main() {
       providers: [
         BlocProvider<CategoryLoadBloc>.value(value: mockCategoryLoadBloc),
         BlocProvider<NotificationsLoadBloc>.value(value: mockNotificationsBloc),
+        BlocProvider<AuthBloc>.value(value: mockAuthBloc),
       ],
       child: MaterialApp.router(
         routerConfig: router,
