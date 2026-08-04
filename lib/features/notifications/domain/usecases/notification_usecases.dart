@@ -33,6 +33,16 @@ class MarkNotificationAsRead {
   }
 }
 
+class MarkAllNotificationsAsRead {
+  final NotificationsRepository repository;
+
+  MarkAllNotificationsAsRead(this.repository);
+
+  Future<Either<Failure, void>> call() {
+    return repository.markAllAsRead();
+  }
+}
+
 class DeleteNotification {
   final NotificationsRepository repository;
 

@@ -71,6 +71,30 @@ class NotificationsRepositoryImpl implements NotificationsRepository {
   }
 
   @override
+  Future<Either<Failure, void>> markAllAsRead() async {
+    try {
+      await localDataSource.markAllAsRead();
+      return const Right(null);
+    } on CacheException catch (e) {
+      observability.error(
+        'markAllAsRead failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
+      return Left(NotificationSaveFailure(e.message));
+    } catch (e, stackTrace) {
+      observability.error(
+        'markAllAsRead unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
+      return Left(NotificationSaveFailure(e.toString()));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> deleteNotification(
     String notificationId,
   ) async {

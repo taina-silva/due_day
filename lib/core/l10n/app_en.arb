@@ -173,6 +173,7 @@
     "notificationsErrorLoading": "Error loading notifications.",
     "notificationsErrorSaveFailed": "Failed to update the notification.",
     "notificationsErrorDeleteFailed": "Failed to delete the notification.",
+    "notificationsMarkAllAsRead": "Mark all as read",
     "notifMinutesAgo": "{count} minute(s) ago",
     "@notifMinutesAgo": {
         "placeholders": {

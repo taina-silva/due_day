@@ -902,6 +902,12 @@ abstract class AppLocalizations {
   /// **'Falha ao excluir a notificação.'**
   String get notificationsErrorDeleteFailed;
 
+  /// No description provided for @notificationsMarkAllAsRead.
+  ///
+  /// In pt, this message translates to:
+  /// **'Marcar todas como lidas'**
+  String get notificationsMarkAllAsRead;
+
   /// No description provided for @notifMinutesAgo.
   ///
   /// In pt, this message translates to:

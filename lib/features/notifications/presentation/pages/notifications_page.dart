@@ -56,7 +56,32 @@ class _NotificationsView extends StatelessWidget {
         }
       },
       child: CustomScaffold(
-        appBar: CustomAppBar(titleText: l10n.notificationsTitle),
+        appBar: CustomAppBar(
+          titleText: l10n.notificationsTitle,
+          actions: [
+            BlocBuilder<NotificationsLoadBloc, NotificationsLoadState>(
+              builder: (context, state) {
+                final hasUnread =
+                    state is NotificationsLoaded &&
+                    state.newNotifications.isNotEmpty;
+                if (!hasUnread) return const SizedBox.shrink();
+
+                return IconButton(
+                  icon: Icon(
+                    Icons.done_all_rounded,
+                    color: colors.resource.primary,
+                  ),
+                  tooltip: l10n.notificationsMarkAllAsRead,
+                  onPressed: () {
+                    context.read<NotificationsActionBloc>().add(
+                      const MarkAllAsReadEvent(),
+                    );
+                  },
+                );
+              },
+            ),
+          ],
+        ),
         body: SafeArea(
           child: BlocBuilder<NotificationsLoadBloc, NotificationsLoadState>(
             builder: (context, state) {

@@ -16,6 +16,10 @@ class MarkAsReadEvent extends NotificationsActionEvent {
   List<Object?> get props => [id];
 }
 
+class MarkAllAsReadEvent extends NotificationsActionEvent {
+  const MarkAllAsReadEvent();
+}
+
 class DeleteNotificationEvent extends NotificationsActionEvent {
   final String id;
 
