@@ -138,7 +138,7 @@
     "profileLogOut": "Log Out",
     "profileDeleteAccount": "Delete Account",
     "profileSecurity": "Biometric Security",
-    "profileSecurityDesc": "Active for all transactions",
+    "profileSecurityDesc": "Locks access to the app",
     "profileBiometricsNotSupported": "This device does not have active biometric support.",
     "profileBiometricsAuthFailed": "Authentication cancelled or incorrect.",
     "profileBiometricsLockedOut": "Too many failed attempts. Biometric authentication has been temporarily locked.",

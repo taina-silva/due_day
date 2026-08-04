@@ -326,7 +326,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileSecurity => 'Biometric Security';
 
   @override
-  String get profileSecurityDesc => 'Active for all transactions';
+  String get profileSecurityDesc => 'Locks access to the app';
 
   @override
   String get profileBiometricsNotSupported =>

@@ -146,7 +146,7 @@
     "profileLogOut": "Sair da Conta",
     "profileDeleteAccount": "Deletar Conta",
     "profileSecurity": "Segurança Biométrica",
-    "profileSecurityDesc": "Ativa para todas as transações",
+    "profileSecurityDesc": "Bloqueia o acesso ao app",
     "profileBiometricsNotSupported": "Este dispositivo não possui suporte biométrico ativo.",
     "profileBiometricsAuthFailed": "Autenticação cancelada ou incorreta.",
     "profileBiometricsLockedOut": "Muitas tentativas falhas. A autenticação biométrica foi bloqueada temporariamente.",
