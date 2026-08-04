@@ -119,6 +119,15 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
                           }
 
                           return TransactionHistoryList(
+                            key: ValueKey(
+                              Object.hash(
+                                _selectedType,
+                                _selectedCategoryId,
+                                _selectedFrequency,
+                                _startDate,
+                                _endDate,
+                              ),
+                            ),
                             transactions: transactions,
                             categories: categories,
                             onTransactionTap: _openTransactionDetails,

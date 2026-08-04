@@ -1,6 +1,9 @@
+import 'package:due_day/core/design_system/components/avatar/user_avatar.dart';
 import 'package:due_day/core/design_system/components/structure/custom_app_bar.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
+import 'package:due_day/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:due_day/features/auth/presentation/bloc/auth_state.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_load_bloc.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_load_state.dart';
 import 'package:flutter/material.dart';
@@ -47,20 +50,32 @@ class DashboardAppBar extends StatelessWidget implements PreferredSizeWidget {
             );
           },
         ),
-        GestureDetector(
-          onTap: () => context.push('/profile'),
-          behavior: HitTestBehavior.opaque,
-          child: Container(
-            alignment: Alignment.center,
-            width: 44.scale,
-            height: 44.scale,
-            margin: EdgeInsets.only(right: spacing.largeExtraLarge.width),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: colors.resource.primaryWith15Opacity,
-            ),
-            child: Icon(Icons.person, color: colors.resource.primary),
-          ),
+        BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            final photoUrl = state is AuthAuthenticated
+                ? state.user.photoUrl
+                : null;
+
+            return GestureDetector(
+              onTap: () => context.push('/profile'),
+              behavior: HitTestBehavior.opaque,
+              child: Container(
+                alignment: Alignment.center,
+                width: 44.scale,
+                height: 44.scale,
+                margin: EdgeInsets.only(right: spacing.largeExtraLarge.width),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: colors.resource.primaryWith15Opacity,
+                ),
+                child: UserAvatar(
+                  size: 44.scale,
+                  photoUrl: photoUrl,
+                  fallback: Icon(Icons.person, color: colors.resource.primary),
+                ),
+              ),
+            );
+          },
         ),
       ],
     );

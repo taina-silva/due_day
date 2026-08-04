@@ -4,6 +4,8 @@ import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_load_bloc.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_load_state.dart';
 import 'package:due_day/features/accounts/presentation/pages/accounts_page.dart';
+import 'package:due_day/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:due_day/features/auth/presentation/bloc/auth_state.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_load_bloc.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_load_event.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_load_state.dart';
@@ -13,6 +15,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
+import '../../../auth/helpers/auth_test_helpers.dart';
 import '../../helpers/account_test_helpers.dart';
 
 class MockNotificationsBloc
@@ -22,6 +25,7 @@ class MockNotificationsBloc
 void main() {
   late MockAccountLoadBloc mockAccountLoadBloc;
   late MockNotificationsBloc mockNotificationsBloc;
+  late MockAuthBloc mockAuthBloc;
 
   setUp(() {
     mockAccountLoadBloc = MockAccountLoadBloc();
@@ -35,6 +39,10 @@ void main() {
     when(
       () => mockNotificationsBloc.stream,
     ).thenAnswer((_) => const Stream.empty());
+
+    mockAuthBloc = MockAuthBloc();
+    when(() => mockAuthBloc.state).thenReturn(AuthUnauthenticated());
+    when(() => mockAuthBloc.stream).thenAnswer((_) => const Stream.empty());
   });
 
   void setupTestWindow(WidgetTester tester) {
@@ -54,6 +62,7 @@ void main() {
       providers: [
         BlocProvider<AccountLoadBloc>.value(value: mockAccountLoadBloc),
         BlocProvider<NotificationsLoadBloc>.value(value: mockNotificationsBloc),
+        BlocProvider<AuthBloc>.value(value: mockAuthBloc),
       ],
       child: MaterialApp.router(
         routerConfig: router,

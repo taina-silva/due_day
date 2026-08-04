@@ -239,6 +239,15 @@ class _TransactionDetailsBottomSheetState
                 icon: Icons.repeat_rounded,
               ),
             SizedBox(height: dimensions.spacing.twoExtraLarge.height),
+            if (!transaction.paid) ...[
+              AppTextButtonPrimary(
+                label: l10n.transactionsMarkAsPaid,
+                onPressed: () => _onMarkAsPaid(context),
+                prefixIcon: Icons.check_circle_outline,
+                isLoading: _isSubmitting,
+              ),
+              SizedBox(height: dimensions.spacing.medium.height),
+            ],
             AppTextButtonSecondary(
               label: l10n.transactionsDeleteTransaction,
               onPressed: () => _onDelete(context),
@@ -298,6 +307,15 @@ class _TransactionDetailsBottomSheetState
       useRootNavigator: true,
       builder: (context) =>
           AddEditTransactionBottomSheet(transaction: widget.transaction),
+    );
+  }
+
+  void _onMarkAsPaid(BuildContext context) {
+    setState(() => _isSubmitting = true);
+    context.read<TransactionActionBloc>().add(
+      UpdateTransactionEvent(
+        widget.transaction.copyWith(paid: true, paidDate: DateTime.now()),
+      ),
     );
   }
 

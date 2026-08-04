@@ -13,7 +13,7 @@ Represents a single user profile.
 | :--- | :--- | :--- |
 | `email` | String | User's primary email address (from Firebase Auth). |
 | `displayName` | String | User's full name. |
-| `photoUrl` | String | URL to user's profile avatar image (optional). |
+| `photoUrl` | String | User's profile avatar (optional). Either an external URL (e.g. from Google Sign-In) or a client-compressed `data:image/jpeg;base64,...` string picked from the device — the app has no Firebase Storage upgrade, so custom avatars are stored inline, resized/compressed client-side to stay well under Firestore's 1 MiB document limit. |
 | `createdAt` | Timestamp | Date and time the account was registered. |
 
 ---

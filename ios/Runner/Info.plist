@@ -68,6 +68,10 @@
 	</array>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Precisamos da sua biometria para proteger suas transações e dados financeiros.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Precisamos da câmera para você tirar uma nova foto de perfil.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Precisamos acessar suas fotos para você escolher uma foto de perfil.</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>

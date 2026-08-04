@@ -3,7 +3,7 @@ import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/features/auth/domain/errors/auth_failures.dart';
 import 'package:flutter/material.dart';
 
-enum AuthFallbackContext { login, signup }
+enum AuthFallbackContext { login, signup, profile }
 
 extension AuthFailureExtension on Failure {
   String toLocalizedString(
@@ -25,10 +25,17 @@ extension AuthFailureExtension on Failure {
         return l10n.authErrorCancelled;
       case UserNotFoundFailure():
         return l10n.authErrorUserNotFound;
+      case ImageTooLargeFailure():
+        return l10n.profilePhotoTooLargeError;
       default:
-        return fallbackContext == AuthFallbackContext.signup
-            ? l10n.signupErrorFallback
-            : l10n.loginErrorFallback;
+        switch (fallbackContext) {
+          case AuthFallbackContext.signup:
+            return l10n.signupErrorFallback;
+          case AuthFallbackContext.profile:
+            return l10n.profilePhotoPickError;
+          case AuthFallbackContext.login:
+            return l10n.loginErrorFallback;
+        }
     }
   }
 }

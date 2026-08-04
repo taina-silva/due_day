@@ -9,8 +9,15 @@ import 'package:due_day/core/settings/settings_state.dart';
 import 'package:due_day/features/accounts/domain/entities/account_category.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:due_day/features/accounts/domain/repositories/account_repository.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_bloc.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_event.dart';
+import 'package:due_day/features/accounts/presentation/bloc/account_load_state.dart';
 import 'package:due_day/features/auth/domain/entities/user_entity.dart';
 import 'package:due_day/features/auth/domain/usecases/auth_usecases.dart';
+import 'package:due_day/features/categories/domain/entities/category_entity.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_event.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/notifications/domain/usecases/notification_usecases.dart';
 import 'package:due_day/features/transactions/data/datasources/transaction_remote_data_source.dart';
 import 'package:due_day/features/transactions/data/models/transaction_model.dart';
@@ -19,6 +26,9 @@ import 'package:due_day/features/transactions/domain/repositories/transaction_re
 import 'package:due_day/features/transactions/domain/usecases/classify_transaction_reminders.dart';
 import 'package:due_day/features/transactions/domain/usecases/sync_recurring_transactions.dart';
 import 'package:due_day/features/transactions/domain/usecases/transaction_usecases.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_action_bloc.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_action_event.dart';
+import 'package:due_day/features/transactions/presentation/bloc/transaction_action_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -69,6 +79,18 @@ class MockGetCurrentUser extends Mock implements GetCurrentUser {}
 class MockSettingsBloc extends MockBloc<SettingsEvent, SettingsState>
     implements SettingsBloc {}
 
+// BLoC Mocks
+class MockTransactionActionBloc
+    extends MockBloc<TransactionActionEvent, TransactionActionState>
+    implements TransactionActionBloc {}
+
+class MockAccountLoadBloc extends MockBloc<AccountLoadEvent, AccountLoadState>
+    implements AccountLoadBloc {}
+
+class MockCategoryLoadBloc
+    extends MockBloc<CategoryLoadEvent, CategoryLoadState>
+    implements CategoryLoadBloc {}
+
 // UseCases
 class MockAddTransaction extends Mock implements AddTransaction {}
 
@@ -116,6 +138,15 @@ final tAccountEntity = AccountEntity(
   name: 'Checking Account',
   category: AccountCategory.dailyUse,
   balance: 1000.0,
+  createdAt: tDateTime,
+);
+
+final tCategoryExpense = CategoryEntity(
+  id: 'category-1',
+  userId: 'user-1',
+  name: 'Groceries',
+  icon: 'shopping_cart',
+  color: '0xFFF44336',
   createdAt: tDateTime,
 );
 

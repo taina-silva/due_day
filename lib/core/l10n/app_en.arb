@@ -150,6 +150,11 @@
     "profileThemeSystem": "System Default",
     "profileThemeLight": "Light Mode",
     "profileThemeDark": "Dark Mode",
+    "profileChangePhoto": "Change Photo",
+    "profileTakePhoto": "Take Photo",
+    "profileChooseFromGallery": "Choose from Gallery",
+    "profilePhotoTooLargeError": "This image is too large. Try a different photo.",
+    "profilePhotoPickError": "Couldn't update your photo. Please try again.",
 
     "notificationsTitle": "Notifications",
     "notifAppUpdateTitle": "System Update",
@@ -206,6 +211,10 @@
     "transactionsEmpty": "No transactions found.",
     "transactionsPaid": "Paid",
     "transactionsPending": "Pending",
+    "transactionsSectionUpcoming": "Upcoming",
+    "transactionsSectionLastWeek": "Last Week",
+    "transactionsSectionLastMonth": "Last Month",
+    "transactionsSectionPast": "Past",
 
     "transactionsNew": "New Transaction",
     "transactionsAmount": "AMOUNT",
@@ -237,6 +246,7 @@
     "transactionsAddTransaction": "Add Transaction",
     "transactionsDeleteTransaction": "Delete Transaction",
     "transactionsConfirmDelete": "Are you sure you want to delete this transaction?",
+    "transactionsMarkAsPaid": "Mark as Paid",
     "transactionsDetailTitle": "Transaction Details",
     "transactionsErrorNotFound": "Transaction not found.",
     "transactionsErrorNotAuthenticated": "User not authenticated. Please log in again.",
@@ -313,7 +323,6 @@
     "splashLogoSemanticLabel": "DueDay logo",
 
     "dateToday": "Today",
-    "dateYesterday": "Yesterday",
     "validatorRequired": "Required field",
     "hintSelect": "Select",
     "filters": "Filters",

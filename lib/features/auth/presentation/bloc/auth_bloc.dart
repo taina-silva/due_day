@@ -24,6 +24,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthSignUpEmailEvent>(_onSignUpEmail);
     on<AuthGoogleSignInEvent>(_onGoogleSignIn);
     on<AuthSignOutEvent>(_onSignOut);
+    on<AuthUserRefreshed>(_onUserRefreshed);
   }
 
   Future<void> _onAuthCheckRequested(
@@ -98,5 +99,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (failure) => emit(AuthError(failure: failure)),
       (_) => emit(AuthUnauthenticated()),
     );
+  }
+
+  void _onUserRefreshed(AuthUserRefreshed event, Emitter<AuthState> emit) {
+    emit(AuthAuthenticated(user: event.user));
   }
 }

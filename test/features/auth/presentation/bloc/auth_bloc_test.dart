@@ -161,4 +161,21 @@ void main() {
       expect: () => [AuthLoading(), AuthUnauthenticated()],
     );
   });
+
+  group('AuthUserRefreshed', () {
+    blocTest<AuthBloc, AuthState>(
+      'given an updated user when AuthUserRefreshed is added then emit [AuthAuthenticated] with the updated user',
+      build: () => authBloc,
+      act: (bloc) => bloc.add(
+        AuthUserRefreshed(
+          tUserEntity.copyWith(photoUrl: 'data:image/jpeg;base64,abc'),
+        ),
+      ),
+      expect: () => [
+        AuthAuthenticated(
+          user: tUserEntity.copyWith(photoUrl: 'data:image/jpeg;base64,abc'),
+        ),
+      ],
+    );
+  });
 }

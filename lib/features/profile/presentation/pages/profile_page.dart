@@ -4,9 +4,11 @@ import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/utils/app_constants.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
+import 'package:due_day/features/auth/domain/entities/user_entity.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_state.dart';
 import 'package:due_day/features/profile/presentation/widgets/account/account_actions.dart';
+import 'package:due_day/features/profile/presentation/widgets/bottom_sheets/change_photo_bottom_sheet.dart';
 import 'package:due_day/features/profile/presentation/widgets/header/profile_avatar.dart';
 import 'package:due_day/features/profile/presentation/widgets/header/profile_info.dart';
 import 'package:due_day/features/profile/presentation/widgets/settings/language_selector.dart';
@@ -27,12 +29,14 @@ class ProfilePage extends StatelessWidget {
     String userName = l10n.profileDefaultUserName;
     String userEmail = '';
     String initials = 'U';
+    UserEntity? user;
 
     final authState = context.watch<AuthBloc>().state;
 
     if (authState is AuthAuthenticated) {
-      userName = authState.user.name ?? l10n.profileDefaultUserName;
-      userEmail = authState.user.email;
+      user = authState.user;
+      userName = user.name ?? l10n.profileDefaultUserName;
+      userEmail = user.email;
       if (userName.isNotEmpty) {
         final parts = userName.split(' ');
         if (parts.length > 1) {
@@ -56,7 +60,19 @@ class ProfilePage extends StatelessWidget {
             // Profile Header
             Column(
               children: [
-                ProfileAvatar(initials: initials),
+                ProfileAvatar(
+                  initials: initials,
+                  photoUrl: user?.photoUrl,
+                  onTap: user == null
+                      ? null
+                      : () => showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          useRootNavigator: true,
+                          builder: (_) =>
+                              ChangePhotoBottomSheet(currentUser: user!),
+                        ),
+                ),
                 ProfileInfo(userName: userName, userEmail: userEmail),
               ],
             ),

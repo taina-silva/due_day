@@ -367,6 +367,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileThemeDark => 'Dark Mode';
 
   @override
+  String get profileChangePhoto => 'Change Photo';
+
+  @override
+  String get profileTakePhoto => 'Take Photo';
+
+  @override
+  String get profileChooseFromGallery => 'Choose from Gallery';
+
+  @override
+  String get profilePhotoTooLargeError =>
+      'This image is too large. Try a different photo.';
+
+  @override
+  String get profilePhotoPickError =>
+      'Couldn\'t update your photo. Please try again.';
+
+  @override
   String get notificationsTitle => 'Notifications';
 
   @override
@@ -479,6 +496,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get transactionsPending => 'Pending';
 
   @override
+  String get transactionsSectionUpcoming => 'Upcoming';
+
+  @override
+  String get transactionsSectionLastWeek => 'Last Week';
+
+  @override
+  String get transactionsSectionLastMonth => 'Last Month';
+
+  @override
+  String get transactionsSectionPast => 'Past';
+
+  @override
   String get transactionsNew => 'New Transaction';
 
   @override
@@ -568,6 +597,9 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get transactionsConfirmDelete =>
       'Are you sure you want to delete this transaction?';
+
+  @override
+  String get transactionsMarkAsPaid => 'Mark as Paid';
 
   @override
   String get transactionsDetailTitle => 'Transaction Details';
@@ -687,9 +719,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get dateToday => 'Today';
-
-  @override
-  String get dateYesterday => 'Yesterday';
 
   @override
   String get validatorRequired => 'Required field';

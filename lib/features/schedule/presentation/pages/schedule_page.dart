@@ -4,6 +4,7 @@ import 'package:due_day/core/design_system/components/structure/custom_scaffold.
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/injection/injection_container.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
+import 'package:due_day/core/utils/app_constants.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
@@ -123,7 +124,14 @@ class ScheduleView extends StatelessWidget {
                                   summary: summary,
                                   categories: categoryMap,
                                 ),
-                                SizedBox(height: spacing.extraLarge.height),
+                                SizedBox(
+                                  height:
+                                      AppConstants.bottomNavHeight +
+                                      AppConstants.bottomSafeArea(
+                                        context,
+                                        padding: spacing.extraLarge.height,
+                                      ),
+                                ),
                               ],
                             ),
                           ),
