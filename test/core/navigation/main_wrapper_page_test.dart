@@ -15,6 +15,9 @@ import 'package:due_day/features/accounts/presentation/bloc/account_load_state.d
 import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_event.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_load_bloc.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_load_event.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_load_state.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_load_bloc.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_load_event.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_load_state.dart';
@@ -35,6 +38,10 @@ class MockTransactionLoadBloc
     extends MockBloc<TransactionLoadEvent, TransactionLoadState>
     implements TransactionLoadBloc {}
 
+class MockNotificationsLoadBloc
+    extends MockBloc<NotificationsLoadEvent, NotificationsLoadState>
+    implements NotificationsLoadBloc {}
+
 class MockSettingsBloc extends MockBloc<SettingsEvent, SettingsState>
     implements SettingsBloc {}
 
@@ -44,6 +51,7 @@ void main() {
   late MockAccountLoadBloc mockAccountBloc;
   late MockCategoryLoadBloc mockCategoryLoadBloc;
   late MockTransactionLoadBloc mockTransactionBloc;
+  late MockNotificationsLoadBloc mockNotificationsBloc;
   late MockSettingsBloc mockSettingsBloc;
   late MockSecurityService mockSecurityService;
 
@@ -51,12 +59,16 @@ void main() {
     mockAccountBloc = MockAccountLoadBloc();
     mockCategoryLoadBloc = MockCategoryLoadBloc();
     mockTransactionBloc = MockTransactionLoadBloc();
+    mockNotificationsBloc = MockNotificationsLoadBloc();
     mockSettingsBloc = MockSettingsBloc();
     mockSecurityService = MockSecurityService();
 
     when(() => mockAccountBloc.state).thenReturn(AccountInitial());
     when(() => mockCategoryLoadBloc.state).thenReturn(CategoryInitial());
     when(() => mockTransactionBloc.state).thenReturn(TransactionInitial());
+    when(
+      () => mockNotificationsBloc.state,
+    ).thenReturn(NotificationsInitial());
 
     // GetIt.reset() is asynchronous; awaiting it avoids a race where its
     // deferred clear() runs after registerLazySingleton and wipes it out.
@@ -104,6 +116,9 @@ void main() {
         BlocProvider<AccountLoadBloc>.value(value: mockAccountBloc),
         BlocProvider<CategoryLoadBloc>.value(value: mockCategoryLoadBloc),
         BlocProvider<TransactionLoadBloc>.value(value: mockTransactionBloc),
+        BlocProvider<NotificationsLoadBloc>.value(
+          value: mockNotificationsBloc,
+        ),
         BlocProvider<SettingsBloc>.value(value: mockSettingsBloc),
       ],
       child: MaterialApp.router(

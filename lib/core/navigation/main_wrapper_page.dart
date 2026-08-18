@@ -9,6 +9,8 @@ import 'package:due_day/features/accounts/presentation/bloc/account_load_bloc.da
 import 'package:due_day/features/accounts/presentation/bloc/account_load_event.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_event.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_load_bloc.dart';
+import 'package:due_day/features/notifications/presentation/bloc/notifications_load_event.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_load_bloc.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_load_event.dart';
 import 'package:flutter/material.dart';
@@ -36,10 +38,14 @@ class _MainWrapperPageState extends State<MainWrapperPage>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    // Dispatch initial load events to listen to Firestore streams
+    // Dispatch initial load events to (re)subscribe to the signed-in user's
+    // streams. These blocs live for the whole app session, so re-firing
+    // here on every mount (i.e. every fresh login) is what keeps them from
+    // serving stale data left over from a previous account.
     context.read<AccountLoadBloc>().add(LoadAccounts());
     context.read<CategoryLoadBloc>().add(LoadCategories());
     context.read<TransactionLoadBloc>().add(const LoadTransactions());
+    context.read<NotificationsLoadBloc>().add(LoadNotifications());
 
     _checkInitialLock();
   }

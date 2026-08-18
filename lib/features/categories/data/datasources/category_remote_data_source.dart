@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/features/categories/data/models/category_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rxdart/rxdart.dart';
 
 abstract class CategoryRemoteDataSource {
   Future<CategoryModel> addCategory(CategoryModel category);
@@ -75,18 +76,33 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
 
   @override
   Stream<List<CategoryModel>> getCategories() {
-    try {
-      return _collection.snapshots().map((snapshot) {
-        return snapshot.docs
-            .map((doc) => CategoryModel.fromJson(doc.data()))
-            .toList();
-      });
-    } on ServerException {
-      rethrow;
-    } on FirebaseException catch (e) {
-      throw ServerException(e.message ?? 'Failed to fetch categories.', e.code);
-    } catch (e) {
+    // Switches the underlying Firestore listener to the signed-in user's
+    // own collection whenever the auth session changes, so a listener from
+    // a previous account never lingers (and never trips permission-denied)
+    // after logout/login.
+    return firebaseAuth.authStateChanges().switchMap((user) {
+      if (user == null) {
+        return Stream<List<CategoryModel>>.value(const []);
+      }
+
+      return firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('categories')
+          .snapshots()
+          .map((snapshot) {
+            return snapshot.docs
+                .map((doc) => CategoryModel.fromJson(doc.data()))
+                .toList();
+          });
+    }).handleError((Object e) {
+      if (e is FirebaseException) {
+        throw ServerException(
+          e.message ?? 'Failed to fetch categories.',
+          e.code,
+        );
+      }
       throw ServerException('Failed to fetch categories: $e');
-    }
+    });
   }
 }
