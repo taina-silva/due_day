@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/features/accounts/data/models/account_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rxdart/rxdart.dart';
 
 abstract class AccountRemoteDataSource {
   Future<AccountModel> addAccount(AccountModel account);
@@ -95,18 +96,30 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
 
   @override
   Stream<List<AccountModel>> getAccounts() {
-    try {
-      return _collection.snapshots().map((snapshot) {
-        return snapshot.docs
-            .map((doc) => AccountModel.fromJson(doc.data()))
-            .toList();
-      });
-    } on ServerException {
-      rethrow;
-    } on FirebaseException catch (e) {
-      throw ServerException(e.message ?? 'Failed to fetch accounts.', e.code);
-    } catch (e) {
+    // Switches the underlying Firestore listener to the signed-in user's
+    // own collection whenever the auth session changes, so a listener from
+    // a previous account never lingers (and never trips permission-denied)
+    // after logout/login.
+    return firebaseAuth.authStateChanges().switchMap((user) {
+      if (user == null) {
+        return Stream<List<AccountModel>>.value(const []);
+      }
+
+      return firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('accounts')
+          .snapshots()
+          .map((snapshot) {
+            return snapshot.docs
+                .map((doc) => AccountModel.fromJson(doc.data()))
+                .toList();
+          });
+    }).handleError((Object e) {
+      if (e is FirebaseException) {
+        throw ServerException(e.message ?? 'Failed to fetch accounts.', e.code);
+      }
       throw ServerException('Failed to fetch accounts: $e');
-    }
+    });
   }
 }

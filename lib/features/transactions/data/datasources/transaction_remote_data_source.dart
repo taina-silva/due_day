@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:due_day/core/errors/exceptions.dart';
 import 'package:due_day/features/transactions/data/models/transaction_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:rxdart/rxdart.dart';
 
 abstract class TransactionRemoteDataSource {
   Future<TransactionModel> addTransaction(TransactionModel transaction);
@@ -170,8 +171,19 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
     String? type,
     String? frequency,
   }) {
-    try {
-      Query<Map<String, dynamic>> query = _collection;
+    // Switches the underlying Firestore listener to the signed-in user's
+    // own collection whenever the auth session changes, so a listener from
+    // a previous account never lingers (and never trips permission-denied)
+    // after logout/login.
+    return firebaseAuth.authStateChanges().switchMap((user) {
+      if (user == null) {
+        return Stream<List<TransactionModel>>.value(const []);
+      }
+
+      Query<Map<String, dynamic>> query = firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('transactions');
 
       if (startDate != null) {
         query = query.where(
@@ -200,15 +212,14 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
             .map((doc) => TransactionModel.fromJson(doc.data()))
             .toList();
       });
-    } on ServerException {
-      rethrow;
-    } on FirebaseException catch (e) {
-      throw ServerException(
-        e.message ?? 'Failed to fetch transactions.',
-        e.code,
-      );
-    } catch (e) {
+    }).handleError((Object e) {
+      if (e is FirebaseException) {
+        throw ServerException(
+          e.message ?? 'Failed to fetch transactions.',
+          e.code,
+        );
+      }
       throw ServerException('Failed to fetch transactions: $e');
-    }
+    });
   }
 }
