@@ -9,12 +9,16 @@ class TransactionAmountInput extends StatelessWidget {
   final TransactionType selectedType;
   final TextEditingController controller;
   final AppLocalizations l10n;
+  final FocusNode? focusNode;
+  final ValueChanged<String>? onFieldSubmitted;
 
   const TransactionAmountInput({
     required this.selectedType,
     required this.controller,
     required this.l10n,
     super.key,
+    this.focusNode,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -54,7 +58,10 @@ class TransactionAmountInput extends StatelessWidget {
             Flexible(
               child: TextField(
                 controller: controller,
+                focusNode: focusNode,
                 keyboardType: TextInputType.number,
+                textInputAction: TextInputAction.next,
+                onSubmitted: onFieldSubmitted,
                 textAlign: TextAlign.center,
                 inputFormatters: [
                   CurrencyInputFormatter(

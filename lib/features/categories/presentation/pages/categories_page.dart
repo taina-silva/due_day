@@ -69,6 +69,7 @@ class CategoriesPage extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       useRootNavigator: true,
+      enableDrag: false,
       backgroundColor: context.surfaceColor,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(

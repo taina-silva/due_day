@@ -220,10 +220,14 @@ void main() {
         'given the auth session switches accounts when getAccounts is listened '
         'then it re-scopes to the new user and stops emitting from the old one',
         () async {
+          final mockQueryA = MockQuery();
+          when(
+            () => mockCollectionReference.where('deletedAt', isNull: true),
+          ).thenReturn(mockQueryA);
           final controllerA =
               StreamController<QuerySnapshot<Map<String, dynamic>>>();
           when(
-            () => mockCollectionReference.snapshots(),
+            () => mockQueryA.snapshots(),
           ).thenAnswer((_) => controllerA.stream);
 
           final mockUserB = MockUser();
@@ -236,10 +240,14 @@ void main() {
           when(
             () => mockUserDocRefB.collection('accounts'),
           ).thenReturn(mockCollectionReferenceB);
+          final mockQueryB = MockQuery();
+          when(
+            () => mockCollectionReferenceB.where('deletedAt', isNull: true),
+          ).thenReturn(mockQueryB);
           final controllerB =
               StreamController<QuerySnapshot<Map<String, dynamic>>>();
           when(
-            () => mockCollectionReferenceB.snapshots(),
+            () => mockQueryB.snapshots(),
           ).thenAnswer((_) => controllerB.stream);
 
           final emissions = <List<AccountModel>>[];
@@ -267,7 +275,7 @@ void main() {
           await Future.delayed(Duration.zero);
 
           expect(emissions.last, [tAccountModel]);
-          verify(() => mockCollectionReferenceB.snapshots()).called(1);
+          verify(() => mockQueryB.snapshots()).called(1);
 
           // A stale event from the old (now-abandoned) user-1 listener must
           // never surface as data for user-2.

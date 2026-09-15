@@ -22,6 +22,7 @@ class TransactionFormFields extends StatelessWidget {
   final bool isPaid;
   final TransactionFrequency selectedFrequency;
   final TextEditingController notesController;
+  final FocusNode? notesFocusNode;
   final AppLocalizations l10n;
 
   final VoidCallback onSelectDate;
@@ -48,6 +49,7 @@ class TransactionFormFields extends StatelessWidget {
     required this.onIsPaidChanged,
     required this.onFrequencyChanged,
     super.key,
+    this.notesFocusNode,
     this.selectedCategory,
     this.selectedAccountFrom,
     this.selectedAccountTo,
@@ -123,8 +125,10 @@ class TransactionFormFields extends StatelessWidget {
         SizedBox(height: spacing.medium.height),
         AppTextField(
           controller: notesController,
+          focusNode: notesFocusNode,
           label: l10n.transactionsNotesLabel,
           hintText: l10n.transactionsNotesHint,
+          textInputAction: TextInputAction.done,
           maxLines: 3,
         ),
       ],

@@ -1,5 +1,6 @@
 import 'package:due_day/core/design_system/components/form_fields/app_text_field.dart';
 import 'package:due_day/core/design_system/components/messenger/app_messenger.dart';
+import 'package:due_day/core/design_system/components/structure/pull_to_dismiss_sheet.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
@@ -10,7 +11,6 @@ import 'package:due_day/features/categories/presentation/bloc/category_action_st
 import 'package:due_day/features/categories/presentation/utils/category_failure_extension.dart';
 import 'package:due_day/features/categories/presentation/utils/category_utils.dart';
 import 'package:due_day/features/categories/presentation/widgets/bottom_sheets/parts/category_form_actions.dart';
-import 'package:due_day/features/categories/presentation/widgets/bottom_sheets/parts/category_form_header.dart';
 import 'package:due_day/features/categories/presentation/widgets/bottom_sheets/parts/category_section_title.dart';
 import 'package:due_day/features/categories/presentation/widgets/form/category_color_selector.dart';
 import 'package:due_day/features/categories/presentation/widgets/form/category_icon_selector.dart';
@@ -69,6 +69,7 @@ class _AddEditCategoryBottomSheetState
 
   @override
   Widget build(BuildContext context) {
+    final typography = context.typography;
     final dimensions = context.dimensions;
     final l10n = AppLocalizations.of(context);
 
@@ -95,56 +96,79 @@ class _AddEditCategoryBottomSheetState
           left: dimensions.spacing.medium.width,
           right: dimensions.spacing.medium.width,
         ),
-        child: Form(
-          key: _formKey,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.85,
-            ),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.85,
+          ),
+          child: PullToDismissSheet(
             child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(height: dimensions.spacing.large.height),
-                  CategoryFormHeader(
-                    title: isEditing
-                        ? l10n.categoriesEditCategory
-                        : l10n.categoriesNewCategory,
-                    onClose: () => Navigator.of(context).pop(),
-                  ),
-                  SizedBox(height: dimensions.spacing.extraLarge.height),
-                  AppTextField(
-                    controller: _nameController,
-                    label: l10n.categoriesNameLabel,
-                    hintText: l10n.categoriesNameHint,
-                    prefixIcon: Icons.label_outline_rounded,
-                    validator: Validators.requiredField(l10n),
-                  ),
-                  SizedBox(height: dimensions.spacing.extraLarge.height),
-                  CategorySectionTitle(title: l10n.categoriesSelectIcon),
-                  SizedBox(height: dimensions.spacing.medium.height),
-                  CategoryIconSelector(
-                    selectedIcon: _selectedIcon,
-                    selectedColor: _selectedColor,
-                    onIconSelected: (icon) =>
-                        setState(() => _selectedIcon = icon),
-                  ),
-                  SizedBox(height: dimensions.spacing.extraLarge.height),
-                  CategorySectionTitle(title: l10n.categoriesSelectColor),
-                  SizedBox(height: dimensions.spacing.medium.height),
-                  CategoryColorSelector(
-                    selectedColor: _selectedColor,
-                    onColorSelected: (color) =>
-                        setState(() => _selectedColor = color),
-                  ),
-                  SizedBox(height: dimensions.spacing.extraLarge.height),
-                  CategoryFormActions(
-                    onCancel: () => Navigator.of(context).pop(),
-                    onSave: _submit,
-                  ),
-                  SizedBox(height: dimensions.spacing.large.height),
-                ],
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    SizedBox(height: dimensions.spacing.large.height),
+                    Center(
+                      child: Container(
+                        width: 40.w,
+                        height: 4.h,
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurfaceVariant.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(
+                            dimensions.radius.circle,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: dimensions.spacing.large.height),
+                    Text(
+                      isEditing
+                          ? l10n.categoriesEditCategory
+                          : l10n.categoriesNewCategory,
+                      style: typography.title.large.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    SizedBox(height: dimensions.spacing.extraLarge.height),
+                    AppTextField(
+                      controller: _nameController,
+                      label: l10n.categoriesNameLabel,
+                      hintText: l10n.categoriesNameHint,
+                      prefixIcon: Icons.label_outline_rounded,
+                      textInputAction: TextInputAction.done,
+                      onFieldSubmitted: (_) =>
+                          FocusScope.of(context).unfocus(),
+                      validator: Validators.requiredField(l10n),
+                    ),
+                    SizedBox(height: dimensions.spacing.extraLarge.height),
+                    CategorySectionTitle(title: l10n.categoriesSelectIcon),
+                    SizedBox(height: dimensions.spacing.medium.height),
+                    CategoryIconSelector(
+                      selectedIcon: _selectedIcon,
+                      selectedColor: _selectedColor,
+                      onIconSelected: (icon) =>
+                          setState(() => _selectedIcon = icon),
+                    ),
+                    SizedBox(height: dimensions.spacing.extraLarge.height),
+                    CategorySectionTitle(title: l10n.categoriesSelectColor),
+                    SizedBox(height: dimensions.spacing.medium.height),
+                    CategoryColorSelector(
+                      selectedColor: _selectedColor,
+                      onColorSelected: (color) =>
+                          setState(() => _selectedColor = color),
+                    ),
+                    SizedBox(height: dimensions.spacing.extraLarge.height),
+                    CategoryFormActions(
+                      onCancel: () => Navigator.of(context).pop(),
+                      onSave: _submit,
+                    ),
+                    SizedBox(height: dimensions.spacing.large.height),
+                  ],
+                ),
               ),
             ),
           ),

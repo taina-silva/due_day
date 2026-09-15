@@ -2,6 +2,7 @@ import 'package:due_day/core/design_system/components/buttons/app_text_button.da
 import 'package:due_day/core/design_system/components/form_fields/app_dropdown_field.dart';
 import 'package:due_day/core/design_system/components/form_fields/app_text_field.dart';
 import 'package:due_day/core/design_system/components/messenger/app_messenger.dart';
+import 'package:due_day/core/design_system/components/structure/pull_to_dismiss_sheet.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
@@ -46,6 +47,10 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
   late TextEditingController _balanceController;
   late TextEditingController _dueDayController;
 
+  final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _balanceFocusNode = FocusNode();
+  final FocusNode _dueDayFocusNode = FocusNode();
+
   AccountCategory? _selectedCategory;
 
   bool _isInit = false;
@@ -86,6 +91,9 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
     _nameController.dispose();
     _balanceController.dispose();
     _dueDayController.dispose();
+    _nameFocusNode.dispose();
+    _balanceFocusNode.dispose();
+    _dueDayFocusNode.dispose();
     super.dispose();
   }
 
@@ -119,128 +127,159 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
           right: dimensions.spacing.medium.width,
           top: dimensions.spacing.large.height,
         ),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Center(
-                child: Container(
-                  width: 40.w,
-                  height: 4.h,
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurfaceVariant.withValues(alpha: 0.2),
-                    borderRadius: BorderRadius.circular(
-                      dimensions.radius.circle,
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: dimensions.spacing.large.height),
-              Text(
-                isEditing ? l10n.accountsEditAccount : l10n.accountsAddAccount,
-                style: typography.title.large.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: dimensions.spacing.extraLarge.height),
-              AppTextField(
-                controller: _nameController,
-                label: l10n.accountsNameLabel,
-                hintText: l10n.accountsNameHint,
-                prefixIcon: Icons.account_balance_wallet_outlined,
-                validator: Validators.requiredField(l10n),
-              ),
-              SizedBox(height: dimensions.spacing.large.height),
-              AppDropdownField<AccountCategory>(
-                value: _selectedCategory,
-                label: l10n.accountsCategoryLabel,
-                hintText: l10n.hintSelect,
-                prefixIcon: Icons.category_outlined,
-                items: AccountCategory.values
-                    .map(
-                      (category) => DropdownMenuItem(
-                        value: category,
-                        child: Text(category.localizedName(l10n)),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height * 0.85,
+          ),
+          child: PullToDismissSheet(
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Center(
+                      child: Container(
+                        width: 40.w,
+                        height: 4.h,
+                        decoration: BoxDecoration(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurfaceVariant.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(
+                            dimensions.radius.circle,
+                          ),
+                        ),
                       ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedCategory = value;
-                  });
-                },
-                validator: Validators.requiredSelection<AccountCategory>(l10n),
-              ),
-              SizedBox(height: dimensions.spacing.large.height),
-              AppTextField(
-                controller: _balanceController,
-                label: l10n.accountsBalanceLabel,
-                hintText: '0,00',
-                prefixIcon: Icons.attach_money_rounded,
-                keyboardType: const TextInputType.numberWithOptions(
-                  decimal: true,
-                ),
-                inputFormatters: [
-                  CurrencyInputFormatter(locale: context.localeString),
-                ],
-                validator: Validators.requiredField(l10n),
-              ),
-              if (_selectedCategory == AccountCategory.creditCard) ...[
-                SizedBox(height: dimensions.spacing.large.height),
-                AppTextField(
-                  controller: _dueDayController,
-                  label: l10n.accountsDueDateLabel,
-                  hintText: '1-31',
-                  prefixIcon: Icons.calendar_today_outlined,
-                  keyboardType: TextInputType.number,
-                  maxLength: 2,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) return null;
-                    final day = int.tryParse(value);
-                    if (day == null || day < 1 || day > 31) {
-                      return l10n.validatorRequired;
-                    }
-                    return null;
-                  },
-                ),
-              ],
-              SizedBox(height: dimensions.spacing.extraLarge.height),
-              Row(
-                children: [
-                  Expanded(
-                    child: AppTextButtonSecondary(
-                      label: l10n.profileCancel,
-                      onPressed: () => Navigator.of(context).pop(),
                     ),
-                  ),
-                  SizedBox(width: dimensions.spacing.medium.width),
-                  Expanded(
-                    child: AppTextButtonPrimary(
-                      label: l10n.accountsSaveAccount,
-                      onPressed: _submit,
+                    SizedBox(height: dimensions.spacing.large.height),
+                    Text(
+                      isEditing
+                          ? l10n.accountsEditAccount
+                          : l10n.accountsAddAccount,
+                      style: typography.title.large.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                  ),
-                ],
-              ),
-              if (isEditing) ...[
-                SizedBox(height: dimensions.spacing.medium.height),
-                AppTextButtonSecondary(
-                  label: l10n.accountsDeleteAccount,
-                  onPressed: () => _onDelete(context),
-                  prefixIcon: Icons.delete_outline,
-                  foregroundColor: Theme.of(context).colorScheme.error,
-                  borderColor: Theme.of(
-                    context,
-                  ).colorScheme.error.withValues(alpha: 0.3),
+                    SizedBox(height: dimensions.spacing.extraLarge.height),
+                    AppTextField(
+                      controller: _nameController,
+                      focusNode: _nameFocusNode,
+                      label: l10n.accountsNameLabel,
+                      hintText: l10n.accountsNameHint,
+                      prefixIcon: Icons.account_balance_wallet_outlined,
+                      textInputAction: TextInputAction.next,
+                      onFieldSubmitted: (_) =>
+                          _balanceFocusNode.requestFocus(),
+                      validator: Validators.requiredField(l10n),
+                    ),
+                    SizedBox(height: dimensions.spacing.large.height),
+                    AppDropdownField<AccountCategory>(
+                      value: _selectedCategory,
+                      label: l10n.accountsCategoryLabel,
+                      hintText: l10n.hintSelect,
+                      prefixIcon: Icons.category_outlined,
+                      items: AccountCategory.values
+                          .map(
+                            (category) => DropdownMenuItem(
+                              value: category,
+                              child: Text(category.localizedName(l10n)),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedCategory = value;
+                        });
+                      },
+                      validator: Validators.requiredSelection<AccountCategory>(
+                        l10n,
+                      ),
+                    ),
+                    SizedBox(height: dimensions.spacing.large.height),
+                    AppTextField(
+                      controller: _balanceController,
+                      focusNode: _balanceFocusNode,
+                      label: l10n.accountsBalanceLabel,
+                      hintText: '0,00',
+                      prefixIcon: Icons.attach_money_rounded,
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      inputFormatters: [
+                        CurrencyInputFormatter(locale: context.localeString),
+                      ],
+                      textInputAction: _selectedCategory ==
+                              AccountCategory.creditCard
+                          ? TextInputAction.next
+                          : TextInputAction.done,
+                      onFieldSubmitted: (_) {
+                        if (_selectedCategory == AccountCategory.creditCard) {
+                          _dueDayFocusNode.requestFocus();
+                        } else {
+                          FocusScope.of(context).unfocus();
+                        }
+                      },
+                      validator: Validators.requiredField(l10n),
+                    ),
+                    if (_selectedCategory == AccountCategory.creditCard) ...[
+                      SizedBox(height: dimensions.spacing.large.height),
+                      AppTextField(
+                        controller: _dueDayController,
+                        focusNode: _dueDayFocusNode,
+                        label: l10n.accountsDueDateLabel,
+                        hintText: '1-31',
+                        prefixIcon: Icons.calendar_today_outlined,
+                        keyboardType: TextInputType.number,
+                        maxLength: 2,
+                        textInputAction: TextInputAction.done,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) return null;
+                          final day = int.tryParse(value);
+                          if (day == null || day < 1 || day > 31) {
+                            return l10n.validatorRequired;
+                          }
+                          return null;
+                        },
+                      ),
+                    ],
+                    SizedBox(height: dimensions.spacing.extraLarge.height),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: AppTextButtonSecondary(
+                            label: l10n.profileCancel,
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                        ),
+                        SizedBox(width: dimensions.spacing.medium.width),
+                        Expanded(
+                          child: AppTextButtonPrimary(
+                            label: l10n.accountsSaveAccount,
+                            onPressed: _submit,
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (isEditing) ...[
+                      SizedBox(height: dimensions.spacing.medium.height),
+                      AppTextButtonSecondary(
+                        label: l10n.accountsDeleteAccount,
+                        onPressed: () => _onDelete(context),
+                        prefixIcon: Icons.delete_outline,
+                        foregroundColor: Theme.of(context).colorScheme.error,
+                        borderColor: Theme.of(
+                          context,
+                        ).colorScheme.error.withValues(alpha: 0.3),
+                      ),
+                    ],
+                    SizedBox(height: dimensions.spacing.large.height),
+                  ],
                 ),
-              ],
-              SizedBox(height: dimensions.spacing.large.height),
-            ],
+              ),
+            ),
           ),
         ),
       ),

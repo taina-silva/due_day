@@ -141,6 +141,7 @@ class AccountsPage extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       useRootNavigator: true,
+      enableDrag: false,
       backgroundColor: Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(

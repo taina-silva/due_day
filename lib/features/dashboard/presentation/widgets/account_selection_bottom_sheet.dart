@@ -28,7 +28,12 @@ class _AccountSelectionBottomSheetState
   @override
   void initState() {
     super.initState();
-    _selectedIds = List.from(widget.initialSelectedIds);
+    // An empty selection means "consider all accounts" (see DashboardBloc),
+    // so the sheet must open with every account already checked instead of
+    // showing none selected.
+    _selectedIds = widget.initialSelectedIds.isEmpty
+        ? widget.allAccounts.map((a) => a.id).toList()
+        : List.from(widget.initialSelectedIds);
   }
 
   void _toggleAccount(String id) {

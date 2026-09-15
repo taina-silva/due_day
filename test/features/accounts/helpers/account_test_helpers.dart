@@ -27,6 +27,8 @@ class MockUser extends Mock implements User {}
 class MockCollectionReference extends Mock
     implements CollectionReference<Map<String, dynamic>> {}
 
+class MockQuery extends Mock implements Query<Map<String, dynamic>> {}
+
 class MockDocumentReference extends Mock
     implements DocumentReference<Map<String, dynamic>> {}
 

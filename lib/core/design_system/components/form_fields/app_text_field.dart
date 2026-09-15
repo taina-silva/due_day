@@ -17,6 +17,9 @@ class AppTextField extends StatelessWidget {
   final bool autocorrect;
   final TextCapitalization textCapitalization;
   final VoidCallback? onSuffixIconPressed;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final ValueChanged<String>? onFieldSubmitted;
 
   final int? maxLength;
 
@@ -36,6 +39,9 @@ class AppTextField extends StatelessWidget {
     this.autocorrect = true,
     this.textCapitalization = TextCapitalization.none,
     this.onSuffixIconPressed,
+    this.focusNode,
+    this.textInputAction,
+    this.onFieldSubmitted,
     this.maxLength,
   });
 
@@ -47,6 +53,7 @@ class AppTextField extends StatelessWidget {
 
     return TextFormField(
       controller: controller,
+      focusNode: focusNode,
       obscureText: obscureText,
       keyboardType: keyboardType ?? TextInputType.text,
       maxLines: maxLines,
@@ -56,6 +63,8 @@ class AppTextField extends StatelessWidget {
       enableSuggestions: enableSuggestions,
       autocorrect: autocorrect,
       textCapitalization: textCapitalization,
+      textInputAction: textInputAction,
+      onFieldSubmitted: onFieldSubmitted,
       enableIMEPersonalizedLearning: true,
       style: typography.body.medium,
       decoration: InputDecoration(

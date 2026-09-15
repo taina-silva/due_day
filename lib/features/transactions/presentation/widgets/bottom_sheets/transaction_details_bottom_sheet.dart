@@ -305,6 +305,7 @@ class _TransactionDetailsBottomSheetState
       context: context,
       isScrollControlled: true,
       useRootNavigator: true,
+      enableDrag: false,
       builder: (context) =>
           AddEditTransactionBottomSheet(transaction: widget.transaction),
     );

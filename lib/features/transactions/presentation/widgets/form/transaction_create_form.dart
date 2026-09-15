@@ -46,6 +46,8 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
 
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _notesController = TextEditingController();
+  final FocusNode _amountFocusNode = FocusNode();
+  final FocusNode _notesFocusNode = FocusNode();
 
   DateTime _selectedDate = DateTime.now();
   CategoryEntity? _selectedCategory;
@@ -132,6 +134,8 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
   void dispose() {
     _amountController.dispose();
     _notesController.dispose();
+    _amountFocusNode.dispose();
+    _notesFocusNode.dispose();
 
     super.dispose();
   }
@@ -198,6 +202,8 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
           TransactionAmountInput(
             selectedType: _selectedType,
             controller: _amountController,
+            focusNode: _amountFocusNode,
+            onFieldSubmitted: (_) => _notesFocusNode.requestFocus(),
             l10n: l10n,
           ),
           SizedBox(height: spacing.twoExtraLarge.height),
@@ -211,6 +217,7 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
             isPaid: _isPaid,
             selectedFrequency: _selectedFrequency,
             notesController: _notesController,
+            notesFocusNode: _notesFocusNode,
             l10n: l10n,
             onSelectDate: _handleSelectDate,
             onSelectCategory: _handleSelectCategory,

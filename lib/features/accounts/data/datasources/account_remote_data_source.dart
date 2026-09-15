@@ -109,6 +109,7 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
           .collection('users')
           .doc(user.uid)
           .collection('accounts')
+          .where('deletedAt', isNull: true)
           .snapshots()
           .map((snapshot) {
             return snapshot.docs
