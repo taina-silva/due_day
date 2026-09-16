@@ -22,4 +22,12 @@ abstract class TransactionRepository {
     TransactionType? type,
     TransactionFrequency? frequency,
   });
+
+  Future<Either<Failure, List<TransactionEntity>>> addTransactionsBatch(
+    List<TransactionEntity> transactions,
+  );
+
+  Future<Either<Failure, Set<String>>> findExistingExternalIds(
+    Set<String> externalIds,
+  );
 }

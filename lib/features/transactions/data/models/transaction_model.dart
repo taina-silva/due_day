@@ -25,6 +25,8 @@ abstract class TransactionModel with _$TransactionModel {
     String? frequency,
     String? notes,
     String? parentRecurringId,
+    String? externalId,
+    String? importSource,
   }) = _TransactionModel;
 
   factory TransactionModel.fromJson(Map<String, dynamic> json) =>
@@ -47,6 +49,8 @@ abstract class TransactionModel with _$TransactionModel {
       notes: entity.notes,
       parentRecurringId: entity.parentRecurringId,
       createdAt: entity.createdAt,
+      externalId: entity.externalId,
+      importSource: entity.importSource,
     );
   }
 
@@ -67,6 +71,8 @@ abstract class TransactionModel with _$TransactionModel {
       notes: notes,
       parentRecurringId: parentRecurringId,
       createdAt: createdAt,
+      externalId: externalId,
+      importSource: importSource,
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:due_day/core/injection/dashboard_injection.dart';
 import 'package:due_day/core/injection/notifications_injection.dart';
 import 'package:due_day/core/injection/profile_injection.dart';
 import 'package:due_day/core/injection/schedule_injection.dart';
+import 'package:due_day/core/injection/statement_import_injection.dart';
 import 'package:due_day/core/injection/transaction_injection.dart';
 import 'package:due_day/core/services/image_picker_service.dart';
 import 'package:due_day/core/services/notification_service.dart';
@@ -65,6 +66,9 @@ Future<void> init() async {
 
   // Transactions
   initTransactions();
+
+  // Statement Import
+  initStatementImport();
 
   // Notifications
   initNotifications();

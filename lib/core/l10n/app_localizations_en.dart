@@ -624,6 +624,72 @@ class AppLocalizationsEn extends AppLocalizations {
       'Failed to delete transaction. Please try again.';
 
   @override
+  String get statementImportTitle => 'Import Statement';
+
+  @override
+  String get statementImportEntryTooltip => 'Import statement';
+
+  @override
+  String get statementImportIntroTitle => 'Import a bank statement';
+
+  @override
+  String get statementImportIntroBody =>
+      'Select an OFX or CSV file exported from your bank to import its transactions.';
+
+  @override
+  String get statementImportSelectFile => 'Select File';
+
+  @override
+  String get statementImportParsing => 'Reading statement...';
+
+  @override
+  String statementImportSectionNew(int count) {
+    return 'New ($count)';
+  }
+
+  @override
+  String statementImportSectionDuplicate(int count) {
+    return 'Already imported ($count)';
+  }
+
+  @override
+  String get statementImportSelectCategory => 'Select category';
+
+  @override
+  String statementImportConfirmButton(int count) {
+    return 'Import $count transactions';
+  }
+
+  @override
+  String statementImportSuccessMessage(
+    int imported,
+    int duplicates,
+    int excluded,
+  ) {
+    return '$imported transactions imported, $duplicates duplicates skipped, $excluded skipped.';
+  }
+
+  @override
+  String get statementImportErrorFallback =>
+      'An error occurred while importing the statement.';
+
+  @override
+  String get statementImportErrorUnsupportedFormat =>
+      'Unsupported file format. Select an OFX or CSV file.';
+
+  @override
+  String get statementImportErrorParseFailed =>
+      'Could not read the statement file.';
+
+  @override
+  String get statementImportErrorEmpty =>
+      'No transactions found in the statement.';
+
+  @override
+  String get statementImportErrorPersistFailed =>
+      'Failed to import transactions. Please try again.';
+
+  @override
   String get transactionsNotificationOverdueTitle => 'Overdue bill!';
 
   @override

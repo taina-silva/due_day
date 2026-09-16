@@ -19,6 +19,7 @@ import 'package:due_day/features/transactions/presentation/widgets/filter/transa
 import 'package:due_day/features/transactions/presentation/widgets/list/transaction_history_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class TransactionHistoryPage extends StatefulWidget {
   const TransactionHistoryPage({super.key});
@@ -37,6 +38,7 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.colors;
     final typography = context.typography;
     final l10n = context.l10n;
 
@@ -50,6 +52,14 @@ class _TransactionHistoryPageState extends State<TransactionHistoryPage> {
       appBar: CustomAppBar(
         titleText: l10n.transactionsHistory,
         actions: [
+          IconButton(
+            icon: Icon(
+              Icons.upload_file_rounded,
+              color: colors.resource.primary,
+            ),
+            tooltip: l10n.statementImportEntryTooltip,
+            onPressed: () => context.push('/transactions/import'),
+          ),
           if (hasFilters)
             IconButton(
               icon: const Icon(Icons.filter_alt_off_outlined),

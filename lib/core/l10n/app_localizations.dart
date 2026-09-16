@@ -1244,6 +1244,106 @@ abstract class AppLocalizations {
   /// **'Falha ao excluir a transação. Tente novamente.'**
   String get transactionsErrorDeleteFailed;
 
+  /// No description provided for @statementImportTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar Extrato'**
+  String get statementImportTitle;
+
+  /// No description provided for @statementImportEntryTooltip.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar extrato'**
+  String get statementImportEntryTooltip;
+
+  /// No description provided for @statementImportIntroTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importe um extrato bancário'**
+  String get statementImportIntroTitle;
+
+  /// No description provided for @statementImportIntroBody.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecione um arquivo OFX ou CSV exportado do seu banco para importar as transações.'**
+  String get statementImportIntroBody;
+
+  /// No description provided for @statementImportSelectFile.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecionar Arquivo'**
+  String get statementImportSelectFile;
+
+  /// No description provided for @statementImportParsing.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lendo extrato...'**
+  String get statementImportParsing;
+
+  /// No description provided for @statementImportSectionNew.
+  ///
+  /// In pt, this message translates to:
+  /// **'Novas ({count})'**
+  String statementImportSectionNew(int count);
+
+  /// No description provided for @statementImportSectionDuplicate.
+  ///
+  /// In pt, this message translates to:
+  /// **'Já importadas ({count})'**
+  String statementImportSectionDuplicate(int count);
+
+  /// No description provided for @statementImportSelectCategory.
+  ///
+  /// In pt, this message translates to:
+  /// **'Selecionar categoria'**
+  String get statementImportSelectCategory;
+
+  /// No description provided for @statementImportConfirmButton.
+  ///
+  /// In pt, this message translates to:
+  /// **'Importar {count} transações'**
+  String statementImportConfirmButton(int count);
+
+  /// No description provided for @statementImportSuccessMessage.
+  ///
+  /// In pt, this message translates to:
+  /// **'{imported} transações importadas, {duplicates} duplicatas ignoradas, {excluded} ignoradas.'**
+  String statementImportSuccessMessage(
+    int imported,
+    int duplicates,
+    int excluded,
+  );
+
+  /// No description provided for @statementImportErrorFallback.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ocorreu um erro ao importar o extrato.'**
+  String get statementImportErrorFallback;
+
+  /// No description provided for @statementImportErrorUnsupportedFormat.
+  ///
+  /// In pt, this message translates to:
+  /// **'Formato de arquivo não suportado. Selecione um arquivo OFX ou CSV.'**
+  String get statementImportErrorUnsupportedFormat;
+
+  /// No description provided for @statementImportErrorParseFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível ler o arquivo do extrato.'**
+  String get statementImportErrorParseFailed;
+
+  /// No description provided for @statementImportErrorEmpty.
+  ///
+  /// In pt, this message translates to:
+  /// **'Nenhuma transação encontrada no extrato.'**
+  String get statementImportErrorEmpty;
+
+  /// No description provided for @statementImportErrorPersistFailed.
+  ///
+  /// In pt, this message translates to:
+  /// **'Falha ao importar as transações. Tente novamente.'**
+  String get statementImportErrorPersistFailed;
+
   /// No description provided for @transactionsNotificationOverdueTitle.
   ///
   /// In pt, this message translates to:

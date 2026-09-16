@@ -65,6 +65,8 @@ Stores financial inputs, outputs, and inter-account transfers.
 | `isRecurring` | Boolean | Indicates whether the transaction repeats over a set period. |
 | `description` | String | Brief description or notes. |
 | `createdAt` | Timestamp | Timestamp indicating when the log was created. |
+| `externalId` | String | Composite dedup key (`rawIdentifier\|amountInCents`) set only on transactions created via bank statement import; `null` for manually-entered transactions. |
+| `importSource` | String | Origin of an imported transaction: `ofx` or `csv`; `null` for manually-entered transactions. |
 
 ---
 

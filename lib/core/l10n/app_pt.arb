@@ -261,6 +261,56 @@
     "transactionsErrorFallback": "Ocorreu um erro ao gerenciar suas transações.",
     "transactionsErrorSaveFailed": "Falha ao salvar a transação. Tente novamente.",
     "transactionsErrorDeleteFailed": "Falha ao excluir a transação. Tente novamente.",
+    "statementImportTitle": "Importar Extrato",
+    "statementImportEntryTooltip": "Importar extrato",
+    "statementImportIntroTitle": "Importe um extrato bancário",
+    "statementImportIntroBody": "Selecione um arquivo OFX ou CSV exportado do seu banco para importar as transações.",
+    "statementImportSelectFile": "Selecionar Arquivo",
+    "statementImportParsing": "Lendo extrato...",
+    "statementImportSectionNew": "Novas ({count})",
+    "@statementImportSectionNew": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "statementImportSectionDuplicate": "Já importadas ({count})",
+    "@statementImportSectionDuplicate": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "statementImportSelectCategory": "Selecionar categoria",
+    "statementImportConfirmButton": "Importar {count} transações",
+    "@statementImportConfirmButton": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "statementImportSuccessMessage": "{imported} transações importadas, {duplicates} duplicatas ignoradas, {excluded} ignoradas.",
+    "@statementImportSuccessMessage": {
+        "placeholders": {
+            "imported": {
+                "type": "int"
+            },
+            "duplicates": {
+                "type": "int"
+            },
+            "excluded": {
+                "type": "int"
+            }
+        }
+    },
+    "statementImportErrorFallback": "Ocorreu um erro ao importar o extrato.",
+    "statementImportErrorUnsupportedFormat": "Formato de arquivo não suportado. Selecione um arquivo OFX ou CSV.",
+    "statementImportErrorParseFailed": "Não foi possível ler o arquivo do extrato.",
+    "statementImportErrorEmpty": "Nenhuma transação encontrada no extrato.",
+    "statementImportErrorPersistFailed": "Falha ao importar as transações. Tente novamente.",
     "transactionsNotificationOverdueTitle": "Conta atrasada!",
     "transactionsNotificationOverdueBody": "A transação '{description}' de {amount} está atrasada desde {date}.",
     "@transactionsNotificationOverdueBody": {

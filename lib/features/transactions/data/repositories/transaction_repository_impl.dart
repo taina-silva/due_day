@@ -197,4 +197,68 @@ class TransactionRepositoryImpl implements TransactionRepository {
       yield Left<Failure, List<TransactionEntity>>(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, List<TransactionEntity>>> addTransactionsBatch(
+    List<TransactionEntity> transactions,
+  ) async {
+    try {
+      final models = transactions
+          .map((transaction) => TransactionModel.fromEntity(transaction))
+          .toList();
+      final result = await remoteDataSource.addTransactionsBatch(models);
+      return Right(result.map((model) => model.toEntity()).toList());
+    } on ServerException catch (e) {
+      observability.error(
+        'addTransactionsBatch failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
+      return Left(
+        _mapServerExceptionToFailure(
+          e,
+          fallback: TransactionSaveFailure(e.message),
+        ),
+      );
+    } catch (e, stackTrace) {
+      observability.error(
+        'addTransactionsBatch unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
+      return Left(TransactionSaveFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Set<String>>> findExistingExternalIds(
+    Set<String> externalIds,
+  ) async {
+    try {
+      final result = await remoteDataSource.findExistingExternalIds(
+        externalIds,
+      );
+      return Right(result);
+    } on ServerException catch (e) {
+      observability.error(
+        'findExistingExternalIds failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
+      return Left(
+        _mapServerExceptionToFailure(e, fallback: ServerFailure(e.message)),
+      );
+    } catch (e, stackTrace) {
+      observability.error(
+        'findExistingExternalIds unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
+      return Left(GenericFailure(e.toString()));
+    }
+  }
 }

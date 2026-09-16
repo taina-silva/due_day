@@ -16,6 +16,10 @@ abstract class TransactionRemoteDataSource {
     String? type,
     String? frequency,
   });
+  Future<List<TransactionModel>> addTransactionsBatch(
+    List<TransactionModel> transactions,
+  );
+  Future<Set<String>> findExistingExternalIds(Set<String> externalIds);
 }
 
 class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
@@ -221,5 +225,88 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
       }
       throw ServerException('Failed to fetch transactions: $e');
     });
+  }
+
+  @override
+  Future<List<TransactionModel>> addTransactionsBatch(
+    List<TransactionModel> transactions,
+  ) async {
+    try {
+      const chunkSize = 450; // headroom under Firestore's 500-writes-per-batch cap
+      final categoryDeltas = <String, int>{};
+
+      for (var i = 0; i < transactions.length; i += chunkSize) {
+        final end = (i + chunkSize < transactions.length)
+            ? i + chunkSize
+            : transactions.length;
+        final chunk = transactions.sublist(i, end);
+        final batch = firestore.batch();
+
+        for (final transaction in chunk) {
+          batch.set(_collection.doc(transaction.id), transaction.toJson());
+          if (transaction.category != null &&
+              transaction.category!.isNotEmpty) {
+            categoryDeltas[transaction.category!] =
+                (categoryDeltas[transaction.category!] ?? 0) + 1;
+          }
+        }
+
+        await batch.commit();
+      }
+
+      if (categoryDeltas.isNotEmpty) {
+        final counterBatch = firestore.batch();
+        for (final entry in categoryDeltas.entries) {
+          counterBatch.update(_categoriesCollection.doc(entry.key), {
+            'transactionCount': FieldValue.increment(entry.value),
+          });
+        }
+        await counterBatch.commit();
+      }
+
+      return transactions;
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(
+        e.message ?? 'Failed to import transactions.',
+        e.code,
+      );
+    } catch (e) {
+      throw ServerException('Failed to import transactions: $e');
+    }
+  }
+
+  @override
+  Future<Set<String>> findExistingExternalIds(Set<String> externalIds) async {
+    try {
+      final existing = <String>{};
+      final idList = externalIds.toList();
+      const chunkSize = 30; // Firestore's whereIn limit
+
+      for (var i = 0; i < idList.length; i += chunkSize) {
+        final end = (i + chunkSize < idList.length)
+            ? i + chunkSize
+            : idList.length;
+        final chunk = idList.sublist(i, end);
+        final snapshot = await _collection
+            .where('externalId', whereIn: chunk)
+            .get();
+        existing.addAll(
+          snapshot.docs.map((doc) => doc.data()['externalId'] as String),
+        );
+      }
+
+      return existing;
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(
+        e.message ?? 'Failed to check for duplicate transactions.',
+        e.code,
+      );
+    } catch (e) {
+      throw ServerException('Failed to check for duplicate transactions: $e');
+    }
   }
 }

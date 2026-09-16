@@ -10,6 +10,9 @@ import 'package:mocktail/mocktail.dart';
 
 import '../../helpers/transaction_test_helpers.dart';
 
+// ignore: subtype_of_sealed_class
+class MockQuery extends Mock implements Query<Map<String, dynamic>> {}
+
 void main() {
   late MockFirebaseAuth mockFirebaseAuth;
   late MockFirebaseFirestore mockFirebaseFirestore;
@@ -306,6 +309,122 @@ void main() {
           await controllerB.close();
         },
       );
+    });
+
+    group('addTransactionsBatch', () {
+      test(
+        'chunks writes at 450 items per batch and issues one call() per chunk',
+        () async {
+          final transactions = List.generate(
+            1200,
+            (i) => tTransactionModel.copyWith(id: 'tx-$i', category: null),
+          );
+
+          when(
+            () => mockCollectionReference.doc(any(that: isNot('user-1'))),
+          ).thenReturn(mockTransactionDocRef);
+          when(() => mockWriteBatch.set(any(), any())).thenReturn(null);
+
+          final result = await dataSource.addTransactionsBatch(transactions);
+
+          expect(result, transactions);
+          // ceil(1200 / 450) = 3 doc-write batches.
+          verify(() => mockFirebaseFirestore.batch()).called(3);
+          verify(() => mockWriteBatch.commit()).called(3);
+        },
+      );
+
+      test(
+        'aggregates category counter increments across chunks into a single update',
+        () async {
+          final transactions = List.generate(
+            500,
+            (i) => tTransactionModel.copyWith(id: 'tx-$i', category: 'cat-1'),
+          );
+
+          when(
+            () => mockCollectionReference.doc(any(that: isNot('user-1'))),
+          ).thenReturn(mockTransactionDocRef);
+          when(() => mockWriteBatch.set(any(), any())).thenReturn(null);
+          when(() => mockWriteBatch.update(any(), any())).thenReturn(null);
+
+          await dataSource.addTransactionsBatch(transactions);
+
+          // 2 doc-write batches (ceil(500/450)) + 1 counter batch = 3.
+          verify(() => mockFirebaseFirestore.batch()).called(3);
+          verify(
+            () => mockWriteBatch.update(mockTransactionDocRef, {
+              'transactionCount': FieldValue.increment(500),
+            }),
+          ).called(1);
+        },
+      );
+
+      test('throws ServerException on Firestore failure', () async {
+        when(
+          () => mockCollectionReference.doc(tTransactionModel.id),
+        ).thenReturn(mockTransactionDocRef);
+        when(() => mockWriteBatch.set(any(), any())).thenReturn(null);
+        when(() => mockWriteBatch.commit()).thenThrow(
+          FirebaseException(plugin: 'firestore', code: 'unavailable'),
+        );
+
+        expect(
+          () => dataSource.addTransactionsBatch([tTransactionModel]),
+          throwsA(isA<ServerException>()),
+        );
+      });
+    });
+
+    group('findExistingExternalIds', () {
+      test(
+        'chunks the whereIn query at 30 ids and unions the results',
+        () async {
+          final ids = List.generate(65, (i) => 'ext-$i').toSet();
+          final mockQuery = MockQuery();
+          final mockSnapshot = MockQuerySnapshot();
+          final mockDoc = MockQueryDocumentSnapshot();
+
+          when(
+            () => mockCollectionReference.where(
+              'externalId',
+              whereIn: any(named: 'whereIn'),
+            ),
+          ).thenReturn(mockQuery);
+          when(() => mockQuery.get()).thenAnswer((_) async => mockSnapshot);
+          when(() => mockSnapshot.docs).thenReturn([mockDoc]);
+          when(() => mockDoc.data()).thenReturn({'externalId': 'ext-0'});
+
+          final result = await dataSource.findExistingExternalIds(ids);
+
+          expect(result, {'ext-0'});
+          // ceil(65 / 30) = 3 chunked queries.
+          verify(
+            () => mockCollectionReference.where(
+              'externalId',
+              whereIn: any(named: 'whereIn'),
+            ),
+          ).called(3);
+        },
+      );
+
+      test('throws ServerException on Firestore failure', () async {
+        final mockQuery = MockQuery();
+        when(
+          () => mockCollectionReference.where(
+            'externalId',
+            whereIn: any(named: 'whereIn'),
+          ),
+        ).thenReturn(mockQuery);
+        when(() => mockQuery.get()).thenThrow(
+          FirebaseException(plugin: 'firestore', code: 'unavailable'),
+        );
+
+        expect(
+          () => dataSource.findExistingExternalIds({'ext-1'}),
+          throwsA(isA<ServerException>()),
+        );
+      });
     });
   });
 }

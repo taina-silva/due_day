@@ -626,6 +626,72 @@ class AppLocalizationsPt extends AppLocalizations {
       'Falha ao excluir a transação. Tente novamente.';
 
   @override
+  String get statementImportTitle => 'Importar Extrato';
+
+  @override
+  String get statementImportEntryTooltip => 'Importar extrato';
+
+  @override
+  String get statementImportIntroTitle => 'Importe um extrato bancário';
+
+  @override
+  String get statementImportIntroBody =>
+      'Selecione um arquivo OFX ou CSV exportado do seu banco para importar as transações.';
+
+  @override
+  String get statementImportSelectFile => 'Selecionar Arquivo';
+
+  @override
+  String get statementImportParsing => 'Lendo extrato...';
+
+  @override
+  String statementImportSectionNew(int count) {
+    return 'Novas ($count)';
+  }
+
+  @override
+  String statementImportSectionDuplicate(int count) {
+    return 'Já importadas ($count)';
+  }
+
+  @override
+  String get statementImportSelectCategory => 'Selecionar categoria';
+
+  @override
+  String statementImportConfirmButton(int count) {
+    return 'Importar $count transações';
+  }
+
+  @override
+  String statementImportSuccessMessage(
+    int imported,
+    int duplicates,
+    int excluded,
+  ) {
+    return '$imported transações importadas, $duplicates duplicatas ignoradas, $excluded ignoradas.';
+  }
+
+  @override
+  String get statementImportErrorFallback =>
+      'Ocorreu um erro ao importar o extrato.';
+
+  @override
+  String get statementImportErrorUnsupportedFormat =>
+      'Formato de arquivo não suportado. Selecione um arquivo OFX ou CSV.';
+
+  @override
+  String get statementImportErrorParseFailed =>
+      'Não foi possível ler o arquivo do extrato.';
+
+  @override
+  String get statementImportErrorEmpty =>
+      'Nenhuma transação encontrada no extrato.';
+
+  @override
+  String get statementImportErrorPersistFailed =>
+      'Falha ao importar as transações. Tente novamente.';
+
+  @override
   String get transactionsNotificationOverdueTitle => 'Conta atrasada!';
 
   @override

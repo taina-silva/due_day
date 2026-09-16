@@ -45,6 +45,8 @@ class TransactionEntity extends Equatable {
   final String? notes;
   final String? parentRecurringId;
   final DateTime createdAt;
+  final String? externalId; // composite dedup key set only on imported transactions
+  final String? importSource; // 'ofx' | 'csv'; null for manual entries
 
   const TransactionEntity({
     required this.id,
@@ -62,6 +64,8 @@ class TransactionEntity extends Equatable {
     this.frequency = TransactionFrequency.none,
     this.notes,
     this.parentRecurringId,
+    this.externalId,
+    this.importSource,
   });
 
   TransactionEntity copyWith({
@@ -80,6 +84,8 @@ class TransactionEntity extends Equatable {
     String? notes,
     String? parentRecurringId,
     DateTime? createdAt,
+    String? externalId,
+    String? importSource,
   }) {
     return TransactionEntity(
       id: id ?? this.id,
@@ -97,6 +103,8 @@ class TransactionEntity extends Equatable {
       notes: notes ?? this.notes,
       parentRecurringId: parentRecurringId ?? this.parentRecurringId,
       createdAt: createdAt ?? this.createdAt,
+      externalId: externalId ?? this.externalId,
+      importSource: importSource ?? this.importSource,
     );
   }
 
@@ -117,5 +125,7 @@ class TransactionEntity extends Equatable {
     notes,
     parentRecurringId,
     createdAt,
+    externalId,
+    importSource,
   ];
 }

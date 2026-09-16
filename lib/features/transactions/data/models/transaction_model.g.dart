@@ -23,6 +23,8 @@ _TransactionModel _$TransactionModelFromJson(Map<String, dynamic> json) =>
       frequency: json['frequency'] as String?,
       notes: json['notes'] as String?,
       parentRecurringId: json['parentRecurringId'] as String?,
+      externalId: json['externalId'] as String?,
+      importSource: json['importSource'] as String?,
     );
 
 Map<String, dynamic> _$TransactionModelToJson(_TransactionModel instance) =>
@@ -42,4 +44,6 @@ Map<String, dynamic> _$TransactionModelToJson(_TransactionModel instance) =>
       'frequency': instance.frequency,
       'notes': instance.notes,
       'parentRecurringId': instance.parentRecurringId,
+      'externalId': instance.externalId,
+      'importSource': instance.importSource,
     };

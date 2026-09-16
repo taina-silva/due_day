@@ -253,6 +253,56 @@
     "transactionsErrorFallback": "An error occurred while managing your transactions.",
     "transactionsErrorSaveFailed": "Failed to save transaction. Please try again.",
     "transactionsErrorDeleteFailed": "Failed to delete transaction. Please try again.",
+    "statementImportTitle": "Import Statement",
+    "statementImportEntryTooltip": "Import statement",
+    "statementImportIntroTitle": "Import a bank statement",
+    "statementImportIntroBody": "Select an OFX or CSV file exported from your bank to import its transactions.",
+    "statementImportSelectFile": "Select File",
+    "statementImportParsing": "Reading statement...",
+    "statementImportSectionNew": "New ({count})",
+    "@statementImportSectionNew": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "statementImportSectionDuplicate": "Already imported ({count})",
+    "@statementImportSectionDuplicate": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "statementImportSelectCategory": "Select category",
+    "statementImportConfirmButton": "Import {count} transactions",
+    "@statementImportConfirmButton": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "statementImportSuccessMessage": "{imported} transactions imported, {duplicates} duplicates skipped, {excluded} skipped.",
+    "@statementImportSuccessMessage": {
+        "placeholders": {
+            "imported": {
+                "type": "int"
+            },
+            "duplicates": {
+                "type": "int"
+            },
+            "excluded": {
+                "type": "int"
+            }
+        }
+    },
+    "statementImportErrorFallback": "An error occurred while importing the statement.",
+    "statementImportErrorUnsupportedFormat": "Unsupported file format. Select an OFX or CSV file.",
+    "statementImportErrorParseFailed": "Could not read the statement file.",
+    "statementImportErrorEmpty": "No transactions found in the statement.",
+    "statementImportErrorPersistFailed": "Failed to import transactions. Please try again.",
     "transactionsNotificationOverdueTitle": "Overdue bill!",
     "transactionsNotificationOverdueBody": "The transaction '{description}' of {amount} is overdue since {date}.",
     "@transactionsNotificationOverdueBody": {

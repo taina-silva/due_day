@@ -13,6 +13,7 @@ import 'package:due_day/features/profile/presentation/pages/profile_page.dart';
 import 'package:due_day/features/schedule/presentation/pages/schedule_page.dart';
 // Pages
 import 'package:due_day/features/splash/presentation/pages/splash_page.dart';
+import 'package:due_day/features/statement_import/presentation/pages/statement_import_page.dart';
 import 'package:due_day/features/transactions/presentation/pages/transaction_history_page.dart';
 import 'package:due_day/features/transactions/presentation/pages/transactions_page.dart';
 import 'package:flutter/material.dart';
@@ -83,6 +84,15 @@ GoRouter createAppRouter(AuthBloc authBloc) {
       GoRoute(
         path: '/notifications',
         builder: (context, state) => const NotificationsPage(),
+      ),
+      // Declared at root level (not nested under the Transactions branch)
+      // so it renders as a true full-screen route: nested branch routes
+      // always sit under MainWrapperPage's Stack, which paints the
+      // floating bottom nav on top of them, hiding this page's own
+      // bottom action bar and muddying the account-picker modal.
+      GoRoute(
+        path: '/transactions/import',
+        builder: (context, state) => const StatementImportPage(),
       ),
 
       StatefulShellRoute.indexedStack(
