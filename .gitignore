@@ -26,3 +26,6 @@ coverage
 
 # Docs
 /docs/
+
+# Firebase CLI logs
+firepit-log.txt
