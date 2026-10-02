@@ -3,32 +3,25 @@ name: debug-feature
 description: Use when investigating a bug in DueDay — BLoC state transitions not firing, Firestore reads/writes failing, or biometric/secure-storage issues. Covers BLoC observer logs, security-rule/index checks, and native permission checks.
 ---
 
-# Standard Procedure: Debug Feature
+# Debug Feature
 
-This guide describes how to investigate issues, debug state transitions, and analyze database changes in **DueDay**.
+Fixes follow the lightweight change flow: reproduction + expected behavior in `proposal.md`, plus a regression test ([specs/README.md](../../../specs/README.md)).
 
----
+## BLoC not updating
 
-## 🛠️ Debugging Procedures
+- `AppBlocObserver` logs only bloc type names and errors. Add temporary logs in handlers to trace transitions, and remove them afterwards.
+- Same state emitted twice? `Equatable` drops it. Action blocs must emit `XActionInProgress` first.
+- Screen blank after a mutation? Check that it reads `XLoadBloc`, not the Action Bloc.
 
-### 1. Inspecting BLoC State Transitions
-DueDay implements BLoC observers to log state transitions in debug mode.
-- Check the console logs for automated transition printouts:
-  `Transition { currentState: AuthLoading, event: LoginEvent, nextState: AuthAuthenticated }`
-- If transitions are missing, verify that the BLoC is dispatching events correctly and that states extend `Equatable` (otherwise, duplicate state emissions may be blocked).
+## Firestore
 
-### 2. Verifying Firestore Operations
-When a database read or write fails:
-1.  **Check security rules:** Verify that your query includes the authenticated user's `userId` parameter in the document path (`/users/{userId}/...`).
-2.  **Verify document layout:** Open the Firebase Console and inspect the collection documents. Ensure field names and types (e.g. double vs integer, timestamp vs string) match the Freeze model definitions.
-3.  **Check indices:** If a query fails with a Firestore exception, check the console output for a generated link to create a missing composite index.
+1. Path starts with `/users/{userId}`? Otherwise rules reject it.
+2. Document fields and types match the model ([firestore.md](../../docs/firestore.md))?
+3. Query error with a console link → missing composite index.
+4. Check repository logs (`tag` = feature).
 
-### 3. Debugging Local Storage & Secure Storage
-If biometric logins or cached configurations fail:
-- Check the logs for `CacheException` or `SecureStorage` read/write blocks.
-- On simulators/emulators, reset the device keychain or secure storage state to clear corrupted credentials:
-  - **Android Emulator:** Clear App Data in the system settings.
-  - **iOS Simulator:** Select "Device" ➔ "Erase All Content and Settings".
-- Verify that permissions are declared correctly in native files:
-  - `AndroidManifest.xml` (e.g. `USE_BIOMETRIC`)
-  - `Info.plist` (e.g. `NSFaceIDUsageDescription`)
+## Biometrics / secure storage
+
+- Look for `CacheException` or `SecurityService` warnings.
+- Reset state: Android → clear app data; iOS Simulator → Erase All Content and Settings.
+- Check `USE_BIOMETRIC` (`AndroidManifest.xml`) and `NSFaceIDUsageDescription` (`Info.plist`).

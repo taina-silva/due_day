@@ -21,11 +21,5 @@ key.properties
 # Coverage
 coverage
 
-# Agent Plans
-.claude/plans/
-
-# Docs
-/docs/
-
 # Firebase CLI logs
 firepit-log.txt

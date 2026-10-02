@@ -3,85 +3,40 @@ name: create-repository
 description: Use when implementing a repository in DueDay that bridges the Data and Domain layers. Covers separating the domain-facing interface from the data-layer implementation and converting exceptions into Either<Failure, T>.
 ---
 
-# Standard Procedure: Create Repository
+# Create Repository
 
-This guide describes how to implement a repository in the **DueDay** application, bridging the Data and Domain layers.
+## Rules
 
----
+- **Contract** in `domain/repositories/`: entities only, no models or Firebase.
+- **Implementation** in `data/repositories/`: calls datasources, converts models to entities, catches exceptions and returns `Left(Failure)`.
+- Injects `ObservabilityService observability` and logs in **every** catch block ([observability.md](../../docs/observability.md)).
+- Fallback failure per operation: reads → `ServerFailure`; add/update → `XSaveFailure`; delete → `XDeleteFailure` ([coding_standards.md](../../docs/coding_standards.md#error-handling)).
 
-## 🛠️ Repository Creation Pattern
+## Template
 
-### Rule 1: Separation of Contract and Implementation
-- **Repository Interface:** Lives in `domain/repositories/` and uses pure Domain entities (no Models or Firebase imports).
-- **Repository Implementation:** Lives in `data/repositories/` and coordinates DataSources, converts Models into Entities, and handles error mapping.
-
-### Rule 2: Exception Conversion
-Repositories must never let raw infrastructure exceptions bubble up to UseCases or the UI. They are responsible for catching exceptions (like `ServerException`) and returning them as a `Left(Failure)`.
-
-### Rule 3: Observability Logging
-Every repository takes an `ObservabilityService observability` constructor param and calls `observability.error(...)` in every catch block before mapping to `Left(Failure)` — this is the single point where exception messages (already required to be technical English strings) get recorded. See [observability.md](../../docs/observability.md).
-
----
-
-## 📝 Repository Implementation Template
-
-### 1. Abstract Domain Interface (`domain/repositories/account_repository.dart`)
 ```dart
-import 'package:fpdart/fpdart.dart';
-import 'package:due_day/core/errors/failures.dart';
-import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
-
+// domain/repositories/account_repository.dart
 abstract class AccountRepository {
   Future<Either<Failure, List<AccountEntity>>> getAccounts(String userId);
 }
-```
 
-### 2. Concrete Data Implementation (`data/repositories/account_repository_impl.dart`)
-```dart
-import 'package:fpdart/fpdart.dart';
-import 'package:due_day/core/errors/exceptions.dart';
-import 'package:due_day/core/errors/failures.dart';
-import 'package:due_day/core/observability/observability_service.dart';
-import 'package:due_day/features/accounts/data/datasources/account_remote_data_source.dart';
-import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
-import 'package:due_day/features/accounts/domain/repositories/account_repository.dart';
-
+// data/repositories/account_repository_impl.dart
 class AccountRepositoryImpl implements AccountRepository {
   final AccountRemoteDataSource remoteDataSource;
   final ObservabilityService observability;
 
-  const AccountRepositoryImpl({
-    required this.remoteDataSource,
-    required this.observability,
-  });
+  const AccountRepositoryImpl({required this.remoteDataSource, required this.observability});
 
   @override
   Future<Either<Failure, List<AccountEntity>>> getAccounts(String userId) async {
     try {
       final models = await remoteDataSource.getAccounts(userId);
-      
-      // Convert Data Models to Domain Entities
-      final entities = models.map((model) => model.toEntity()).toList();
-      
-      return Right(entities);
+      return Right(models.map((m) => m.toEntity()).toList());
     } on ServerException catch (e) {
-      observability.error(
-        'getAccounts failed',
-        tag: 'accounts',
-        error: e,
-        stackTrace: StackTrace.current,
-      );
-      if (e.code == 'account-limit-exceeded') {
-        return const Left(AccountLimitExceededFailure());
-      }
+      observability.error('getAccounts failed', tag: 'accounts', error: e, stackTrace: StackTrace.current);
       return Left(ServerFailure(e.message));
-    } catch (e, stackTrace) {
-      observability.error(
-        'getAccounts unexpected failure',
-        tag: 'accounts',
-        error: e,
-        stackTrace: stackTrace,
-      );
+    } catch (e, st) {
+      observability.error('getAccounts unexpected failure', tag: 'accounts', error: e, stackTrace: st);
       return Left(GenericFailure(e.toString()));
     }
   }

@@ -3,43 +3,29 @@ name: review-feature
 description: Use as a checklist when reviewing a DueDay feature implementation or code submission. Covers architectural integrity, design-system/token compliance, clean-code/localization rules, and test/analyze checks.
 ---
 
-# Standard Procedure: Review Feature
+# Review Feature
 
-This checklist outlines the criteria for reviewing feature implementations and code submissions in **DueDay**.
+## Spec
+- [ ] Every requirement and scenario in the change's `spec-delta.md` is implemented and tested.
+- [ ] Affected `specs/` and `.claude/docs/` files are updated in the same change.
 
----
+## Architecture ([architecture.md](../../docs/architecture.md))
+- [ ] UI → BLoC → UseCase only; no repository, datasource, or Firebase access from UI.
+- [ ] Domain is pure Dart. DataSources throw; repositories return `Either<Failure, T>`.
+- [ ] Every repository catch block logs with `tag` and never logs entities or amounts ([observability.md](../../docs/observability.md)).
+- [ ] Stream + mutations → `XLoadBloc` + `XActionBloc`; error states named `XError`; `XActionInProgress` emitted before results.
+- [ ] Mutating bottom sheets pop only on success and show `AppMessenger.showError` on error.
+- [ ] Fallback failures differ per operation (read / save / delete) ([coding_standards.md](../../docs/coding_standards.md#error-handling)).
 
-## 📋 Code Review Checklist
+## UI ([design_system.md](../../docs/design_system.md))
+- [ ] No `Colors.*`, hex literals, hardcoded sizes, `'assets/…'` paths, or raw `SnackBar`.
+- [ ] Numeric layout values use `.w` / `.h` / `.sp` / `.fs`.
+- [ ] Touch targets ≥ 44x44; WCAG AA contrast.
 
-### 1. Architectural Integrity
-- [ ] No Presentation-layer widgets or pages access Repositories or DataSources directly (everything flows through BLoC ➔ UseCase).
-- [ ] UseCases reside in the Domain layer and contain no Flutter, Firebase, or external library imports.
-- [ ] DataSources handle raw database interactions and propagate exceptions instead of returning Either.
-- [ ] Repositories catch exceptions and return `Either<Failure, T>`, mapping raw exceptions to typed domain `Failure`s (ensuring no raw exceptions or strings reach BLoC/UI).
-- [ ] Every repository catch block logs via `ObservabilityService.error(...)` before mapping to `Left(Failure)`, tagged with the feature name (see [observability.md](../../docs/observability.md)).
-- [ ] No `ObservabilityService` call logs a full entity/state object (`.toString()` dump) — only short messages and explicit `error`/`context` values, since DueDay handles financial data.
-- [ ] Any feature with a real-time list stream **and** mutating actions splits into `XLoadBloc` + `XActionBloc` (not one bloc emitting both) — see [architecture.md](../../docs/architecture.md#load-bloc--action-bloc-separation-standard-for-streamed-features).
-- [ ] Error states are named `XError` (never `XFailure`); action blocs emit `XActionInProgress` before the result so two consecutive identical failures both reach the UI.
-- [ ] Bottom sheets that dispatch add/update/delete never `Navigator.pop()` right after dispatching — they pop only from a `BlocListener` on the Action Bloc's success state, and show `AppMessenger.showError` (keeping the sheet open) on its error state.
-- [ ] No raw `SnackBar`/`ScaffoldMessenger` calls — only `AppMessenger.showSuccess/showError/showInfo`.
-- [ ] For features split into `XLoadBloc` + `XActionBloc`, the repository's fallback `Failure` differs per operation (e.g. `XSaveFailure`/`XDeleteFailure` for mutations vs. generic `ServerFailure` for reads) instead of one shared type/message for both — see [coding_standards.md §4](../../docs/coding_standards.md#-4-error-handling-pattern-functional-style--i18n-localization).
+## Code
+- [ ] `snake_case` files; every text from `AppLocalizations` (keys in both `.arb` files).
+- [ ] `switch` instead of 3+ branch `if` chains on the same value.
+- [ ] No unused imports, commented-out code, or `print`.
 
-### 2. Design System & Layout Tokens
-- [ ] No hardcoded colors (`Colors.white` or hex literals) are used in UI code. All colors reference `DueDayTheme.colors`.
-- [ ] No hardcoded spacings, margins, or padding values. All dimensions reference `DueDayTheme.dimensions`.
-- [ ] All numeric layouts scale dynamically using responsive extensions (`.w`, `.h`, `.sp`, `.fs`).
-- [ ] Interactive components (buttons, links) have a minimum touch target area of **44x44px**.
-- [ ] Color combinations meet **WCAG AA** accessibility contrast criteria.
-
-### 3. Clean Code & Project Rules
-- [ ] File names are written in `snake_case`.
-- [ ] All user-facing strings are localized using `AppLocalizations` (no hardcoded strings).
-- [ ] Translation keys follow the camelCase `featureNomeChave` naming convention.
-- [ ] No dead imports, unused imports, commented-out code blocks, or print statements are left in modified files.
-- [ ] No `if`/`else if` chain of 3+ branches on the same enum or type where a `switch` applies — see [coding_standards.md §9](../../docs/coding_standards.md#-9-control-flow-switch-over-ifelse-if-chains).
-- [ ] All modified files are formatted with `fvm dart format .`.
-
-### 4. Tests & Analysis
-- [ ] `fvm flutter analyze` passes cleanly with zero warnings or errors resolved in modified files.
-- [ ] Unit and BLoC tests cover success and failure paths.
-- [ ] `fvm flutter test` passes successfully.
+## Checks
+- [ ] `fvm dart format .` · `fvm flutter analyze` (zero issues) · `fvm flutter test` (green, success and failure paths covered).

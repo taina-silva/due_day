@@ -1,52 +1,58 @@
-# Cloud Firestore Documentation (firestore.md)
+# Firestore
 
-This document describes the database architecture, collections, queries, pagination, batch transactions, security rules, and conventions for **Cloud Firestore** in the **DueDay** project.
+Recipe: [create-firestore-query](../skills/create-firestore-query/SKILL.md). Keep the schema below in sync with `lib/features/*/data/models/` in the same change that alters a model.
 
----
+## Rules
 
-## 🗄️ 1. Subcollection-Based Database Architecture
+- All user data lives under `/users/{userId}/…`. `firestore.rules` (repo root, source of truth) allows access only when `request.auth.uid == userId`. Deploy: `firebase deploy --only firestore:rules`.
+- Lists are streamed with `.snapshots()`.
+- Writes touching more than one document use a **batch** or **transaction** (e.g. a transaction + its category counter, an import batch).
+- Compound queries need composite indexes (follow the link in the debug console error).
+- Offline cache is on: writes queue and sync later, reads serve cache. BLoCs must not spin forever while offline.
+- References (`category`, `accountFrom`, `accountTo`) store raw document ids. Deleting an account or category must handle its transactions.
+- The notifications inbox is in Hive, not Firestore.
 
-To ensure strict data isolation and security, DueDay isolates all user data under the authenticated user's root document. This guarantees that a user can never access or modify another user's financial details.
+## Schema
 
-```
-/users/{userId}
-  ├── accounts/{accountId}       — bank accounts, credit cards, cash wallets
-  ├── transactions/{transactionId} — income, expense, and transfer records
-  └── categories/{categoryId}    — user-defined transaction labels
-```
+### `/users/{userId}`
 
-Full field-by-field schema (types, descriptions, entity relationships) lives in [firestore_schema.md](../references/firestore_schema.md).
+`uid`, `email`, `name?`, `photoUrl?` (URL or inline compressed base64 JPEG, since there is no Storage), `themePreference?`, `createdAt`.
 
----
+### `accounts/{id}`
 
-## 🛡️ 2. Security Rules (`firestore.rules`)
+| Field | Type | Notes |
+| :--- | :--- | :--- |
+| `id`, `userId`, `name` | String | |
+| `category` | String | `investments`, `savings`, `daily_use`, `credit_card` |
+| `balance` | Double | Adjusted by paid transactions |
+| `dueDay` | Int? | Credit card bill day (1–31) |
+| `createdAt` | Timestamp | |
+| `deletedAt` | Timestamp? | Soft delete |
 
-The canonical rules live in `firestore.rules` at the repo root — that file is the single source of truth; do not copy its contents into documentation. Access is restricted strictly using `request.auth.uid == userId` at the root `/users/{userId}` match and every nested subcollection (`accounts`, `transactions`, `categories`) inherits the same check. No document reads or writes can bypass this rule.
+### `categories/{id}`
 
-To deploy a change: `firebase deploy --only firestore:rules` (setup prerequisites in [firebase_setup.md](../references/firebase_setup.md)).
+| Field | Type | Notes |
+| :--- | :--- | :--- |
+| `id`, `userId`, `name` | String | |
+| `color` | String | Hex |
+| `icon` | String | Icon id |
+| `transactionCount` | Int | Counter kept in sync by batch writes; default 0 |
+| `createdAt` | Timestamp | |
 
----
+### `transactions/{id}`
 
-## 🔍 3. Queries, Filtering & Indexing
-
-- **Real-Time Data Flow:** Data sources must use `.snapshots()` to stream updates directly to BLoCs, enabling real-time visual synchronization on screen.
-- **Index Optimization:** Compound queries (e.g., filtering transactions by date range AND category ID) require custom Firestore indexes. Ensure indexes are created by running the app and clicking the generated link in the debug console if a `QueryRequiredException` occurs.
-
-Full query template (filtering, ordering, stream mapping) lives in [create-firestore-query](../skills/create-firestore-query/SKILL.md).
-
----
-
-## 🔄 4. Batch Operations & Transactions
-
-- **Inter-Account Transfers:** When creating a "transfer" type transaction, always run a **Firestore Transaction** or **Batch** write to modify both accounts' balances together. If one operation fails, the transaction reverts to keep balance statements accurate.
-
-Full batch-write template lives in [create-firestore-query §Batch Document Write](../skills/create-firestore-query/SKILL.md).
-
----
-
-## ⚡ 5. Offline Support
-
-Firestore is configured with offline caching enabled. When the device is offline:
-1. Writes are stored locally and synced immediately upon reconnecting.
-2. Read operations fetch cached queries automatically.
-3. Handle stream synchronization issues in BLoCs to keep progress spinners from running infinitely.
+| Field | Type | Notes |
+| :--- | :--- | :--- |
+| `id`, `userId` | String | |
+| `type` | String | `income`, `expense`, `transfer` |
+| `amount` | Double | Always positive |
+| `category` | String? | Category id |
+| `accountFrom` / `accountTo` | String? | Source (expense, transfer) / destination (income, transfer) |
+| `dueDate` / `paidDate` | Timestamp? | |
+| `paid`, `isRecurring` | Boolean | |
+| `frequency` | String? | `none`, `weekly`, `biWeekly`, `monthly`, `yearly` |
+| `parentRecurringId` | String? | Recurring template id |
+| `notes` | String? | Statement memo on imports |
+| `externalId` | String? | Import dedup key `rawIdentifier\|amountInCents` |
+| `importSource` | String? | `ofx`, `csv`, or null (manual) |
+| `createdAt` | Timestamp | When written, **not** when the money moved |

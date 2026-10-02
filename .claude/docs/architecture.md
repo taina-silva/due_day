@@ -1,86 +1,62 @@
-# Architecture & Principles (architecture.md)
+# Architecture
 
-This document describes the architectural framework of the **DueDay** project. It outlines design choices, layer separation, dependencies, SOLID principles, and patterns that must be adhered to.
+Clean Architecture + BLoC. Product behavior lives in [`specs/`](../../specs/README.md); this file covers code structure only.
 
----
+## Layers
 
-## 🏗️ 1. Architecture: Clean Architecture + BLoC
+`Presentation → Domain ← Data`
 
-DueDay employs **Clean Architecture**, separating the project into three distinct layers. Dependencies must strictly flow inwards (Presentation ➔ Domain 🠔 Data). The core domain layer has zero external dependencies, protecting it from external frameworks or database changes.
+| Layer | Contains | May import |
+| :--- | :--- | :--- |
+| **Domain** | Entities (`Equatable`, `const`, `copyWith`), repository contracts, use cases (`call(...)` → `Future<Either<Failure, T>>`), failures | Domain, pure-Dart core. No Flutter, no Firebase. |
+| **Data** | Models (`freezed`, `fromEntity`/`toEntity`), datasources (throw `ServerException`/`CacheException`), repository implementations (catch → `Either`) | Domain, Data, Core |
+| **Presentation** | BLoCs, pages, widgets, `utils/` (failure → l10n) | Presentation, Domain, Core |
 
-```
-┌────────────────────────────────────────────────────────┐
-│  PRESENTATION LAYER (UI / BLoC / Pages / Widgets)      │
-│  → Depends on: Domain Layer                            │
-└──────────────────────────┬─────────────────────────────┘
-                           │ (Invokes Use Cases)
-                           ▼
-┌────────────────────────────────────────────────────────┐
-│  DOMAIN LAYER (Business Logic / Use Cases / Entities)  │
-│  → Pure Dart: Depends on nothing                       │
-└──────────────────────────▲─────────────────────────────┘
-                           │ (Implements Repository contract)
-                           │
-┌────────────────────────────────────────────────────────┐
-│  DATA LAYER (Repositories / DataSources / Models)      │
-│  → Depends on: Domain Layer                            │
-└────────────────────────────────────────────────────────┘
+### Cross-feature
+
+A feature may use another feature's **domain** (use cases, entities) only — never its data or presentation. Shared UI goes in `lib/core/design_system/`. Check:
+
+```bash
+grep -rhoE "package:due_day/features/[a-z_]+/[a-z]+" lib/features/<feature> | sort -u
 ```
 
-### 1.1. Domain Layer (`domain`)
-The innermost layer of the application. It is written in pure Dart with **zero references** to Flutter, Firebase, or external plugins (except formatting libraries like `Equatable` or functional libraries like `fpdart`).
-- **Entities (`domain/entities`)**: Immutable business objects. They must extend `Equatable` for value comparison and use `const` constructors alongside `copyWith`.
-- **Use Cases (`domain/usecases`)**: Classes implementing a single business logic behavior. They are callable classes implementing the `call(...)` method, returning a `Future<Either<Failure, T>>`.
-- **Repositories (`domain/repositories`)**: Abstract interfaces defining the contractual requirements of data retrieval. The domain layer specifies *what* it needs, not *how* it is retrieved.
+Any `/data` or `/presentation` hit from another feature is a violation.
 
-### 1.2. Data Layer (`data`)
-Implements the interfaces defined in the domain layer and interacts with external frameworks, APIs, and databases.
-- **Models (`data/models`)**: Concrete implementations of domain entities that add serialization and deserialization (JSON, Firestore). Built using the `freezed` and `json_serializable` packages. Models must implement:
-  - `factory Model.fromEntity(Entity entity)`
-  - `Entity toEntity()`
-- **DataSources (`data/datasources`)**: Raw data access classes.
-  - *Remote DataSources:* Talk to Firebase Services (Auth, Firestore, Cloud Messaging). They throw raw exceptions (e.g., `ServerException`).
-  - *Local DataSources:* Handle local storage operations (e.g., `FlutterSecureStorage`). They throw `CacheException`.
-- **Repositories (`data/repositories`)**: Concrete implementations of domain repository interfaces. They orchestrate DataSources, catch thrown exceptions (like `ServerException` or `CacheException`), and convert them into structured failures (`ServerFailure`, `CacheFailure`) returned inside an `Either<Failure, T>` wrapper.
+## Load / Action BLoC split
 
-### 1.3. Presentation Layer (`presentation`)
-Contains user interfaces and handles state transitions.
-- **BLoC (`presentation/bloc`)**: Manages UI state using the `flutter_bloc` library. Recovers user actions (Events), executes Domain Use Cases, and broadcasts UI updates (States). Both Events and States must extend `Equatable`.
-- **Pages (`presentation/pages`)**: Primary screens bound to routes. They listen to the BLoC's state transitions and rebuild the UI.
-- **Widgets (`presentation/widgets`)**: Small, modular, reusable visual blocks.
+Default for any feature with a live list stream **and** add/update/delete:
 
-#### Load Bloc / Action Bloc separation (standard for streamed features)
-When a feature exposes a **real-time list stream** (`getX().listen(...)`, e.g. a Firestore snapshot listener) *and* **mutating actions** (add/update/delete), split it into two BLoCs instead of one — this is the default pattern, not an exception:
+- `XLoadBloc`: `LoadX` → `XInitial` / `XLoading` / `XLoaded` / `XError`. Driven only by the stream.
+- `XActionBloc`: `Add/Update/DeleteXEvent` → `XActionInitial` / `XActionInProgress` / `XActionSuccess` / `XActionError`. Never holds the list.
 
-- **`XLoadBloc`** (`x_load_bloc.dart`, `x_load_event.dart`, `x_load_state.dart`): owns `LoadX` → `XInitial` / `XLoading` / `XLoaded` / `XError`. Nothing here ever changes because of an add/update/delete — only the underlying stream drives it.
-- **`XActionBloc`** (`x_action_bloc.dart`, `x_action_event.dart`, `x_action_state.dart`): owns `AddXEvent` / `UpdateXEvent` / `DeleteXEvent` → `XActionInitial` / `XActionInProgress` / `XActionSuccess` / `XActionError`. It does not carry the list at all — the list only ever lives in `XLoadBloc`, and a successful mutation reaches the UI through the Firestore stream re-emitting into `XLoadBloc`, not through `XActionBloc`.
+**Why:** one combined bloc leaks action states to every screen that only reads the list, which then goes blank. Reference: `categories`. Template: [create-bloc](../skills/create-bloc/SKILL.md). A single bloc is fine only when there is no list stream.
 
-**Why this is the standard, not a single combined bloc:** a single bloc that emits both `XLoaded` and an action-result state on the *same* stream leaks transient action state to every other screen that reads that bloc just for the list (dashboards, filters, selection sheets) — those screens only pattern-match `XLoaded` and silently blank out whenever an unrelated mutation happens elsewhere in the app. Splitting removes the leak structurally instead of relying on every read-only consumer to special-case the action states. See `categories` (`CategoryLoadBloc` + `CategoryActionBloc`) for the reference implementation. Full templates: [create-bloc](../skills/create-bloc/SKILL.md).
+## Layout
 
-A single combined bloc remains acceptable only for features with no persistent stream to leak into — e.g. a one-shot settings toggle with no list underneath it.
+```
+lib/
+├── main.dart
+├── core/          # design_system, errors, injection, l10n, navigation, observability, services, settings, utils
+└── features/<feature>/
+    ├── domain/        # entities, repositories, usecases, errors
+    ├── data/          # models, datasources, repositories
+    └── presentation/  # bloc, pages, widgets, utils
+```
 
----
+## Workflow for a feature or task
 
-## 🛠️ 2. SOLID Principles in DueDay
+1. Domain: entity → contract → use case ([create-usecase](../skills/create-usecase/SKILL.md))
+2. Data: model → datasource → repository ([create-model](../skills/create-model/SKILL.md), [create-datasource](../skills/create-datasource/SKILL.md), [create-repository](../skills/create-repository/SKILL.md))
+3. Presentation: bloc → screen ([create-bloc](../skills/create-bloc/SKILL.md), [create-screen](../skills/create-screen/SKILL.md))
+4. DI ([dependency_injection.md](dependency_injection.md)) · route ([add-route](../skills/add-route/SKILL.md)) · l10n ([localization.md](localization.md)) · `build_runner`
+5. Tests: Domain → Data → BLoC → Widget ([testing.md](testing.md))
 
-- **Single Responsibility Principle (S):** Each class does exactly one thing. A UseCase performs a single action (e.g., `AddAccount`). A DataSource executes basic network or cache fetches. A widget represents a single component.
-- **Open/Closed Principle (O):** We extend functionality by adding new implementations rather than modifying existing ones. E.g., we can support another login method by implementing a new DataSource/Repository without changing the Core Domain.
-- **Liskov Substitution Principle (L):** Implementations of repositories must perfectly fulfill their interfaces so that the Domain and Presentation layers can consume them interchangeably.
-- **Interface Segregation Principle (I):** Keep repository interfaces clean and focused on specific domains. Avoid bloated contract files.
-- **Dependency Inversion Principle (D):** Higher-level layers (Domain/Presentation) do not depend on low-level implementation details (Data/Firebase). They rely on abstractions. Dependency injection is managed globally via **GetIt**.
+## Rules
 
----
-
-## 🧩 3. Clean Design Rules & Anti-Patterns
-
-### ✅ Keep It Simple, Stupid (KISS)
-- **Do not create redundant database tables or repositories for data aggregation.** E.g., for screens like the Dashboard, do not create a separate "Dashboard" repository or Firestore collection. Instead, the `DashboardBloc` should inject `GetAccounts` and `GetTransactions` usecases and calculate the aggregated values (Current Balance, Projected Balance) internally.
-
-### ❌ Anti-Patterns to Avoid
-- **No Direct UI Database Calls:** Never query Firestore, Auth, or Local Storage directly from a page or widget.
-- **No UseCase-to-UseCase Dependencies:** UseCases must remain isolated. If a business workflow requires multiple UseCases, orchestrate them inside the BLoC or create an orchestrating UseCase.
-- **No Raw Exceptions in UI:** Never allow `try-catch` blocks on a page to capture Firebase errors. All exceptions must be resolved inside the Data Repositories and wrapped in `Either`.
-- **No Custom State Engines:** Stick to `flutter_bloc` to preserve state flow structure.
-- **No Premature Bottom Sheet Dismissal:** A bottom sheet that submits a mutating action (add/update/delete) must never call `Navigator.pop()` right after dispatching the event. It must wait for the action BLoC's result via a `BlocListener`: pop only on the success state, and on the error state call `AppMessenger.showError` while keeping the sheet open so the user can retry without re-entering the form. See [create-screen §Bottom Sheets with mutating actions](../skills/create-screen/SKILL.md).
-- **No Mixing Load and Action State:** Do not emit an add/update/delete result onto the same BLoC/state hierarchy that also carries the loaded list (see Load Bloc / Action Bloc separation above). A read-only screen consuming the list must never see a state shape it doesn't recognize.
-- **No Shared Fallback Error Text Between Load and Action:** Once a feature is split into `XLoadBloc` + `XActionBloc`, the repository must not reuse one generic fallback `Failure` for both read and mutating operations — see [coding_standards.md §4](coding_standards.md#-4-error-handling-pattern-functional-style--i18n-localization). Otherwise the action bottom sheet's error toast shows the same wording as the load screen's error state regardless of which operation actually failed.
+- **KISS:** no aggregation collections or repositories. Aggregate in a domain use case fed by existing use cases (e.g. `GetDashboardSummary`).
+- UI never touches Firestore, Auth, storage, datasources, or repositories.
+- Use cases don't call each other; orchestrate in the BLoC or in a dedicated orchestrating use case.
+- No `try/catch` for Firebase errors in UI; repositories return `Either`.
+- **Bottom sheets with mutating actions** never `pop()` right after dispatching. Listen to the Action Bloc: pop on success; on error, `AppMessenger.showError` and keep the sheet open.
+- Load and Action failures use different fallback texts ([coding_standards.md](coding_standards.md#error-handling)).
+- SOLID: one responsibility per class; depend on abstractions; DI via GetIt.

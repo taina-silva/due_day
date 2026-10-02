@@ -1,55 +1,38 @@
 ---
 name: add-notification
-description: Use when triggering or scheduling local/push notifications in DueDay (payment due reminders, notification inbox entries). Covers NotificationService scheduling, cancellation, and the Hive-backed notifications inbox.
+description: Use when triggering or scheduling on-device notifications in DueDay (payment due reminders, notification inbox entries); there is no push/FCM. Covers NotificationService scheduling, cancellation, and the Hive-backed notifications inbox.
 ---
 
-# Standard Procedure: Add Notification
+# Add Notification
 
-This guide describes how to trigger and schedule local or push notifications in **DueDay**.
+How it works: [notifications.md](../../docs/notifications.md). All titles and bodies come from l10n.
 
----
+## OS reminder
 
-## 🛠️ Step-by-Step Notification Recipe
+```dart
+await sl<NotificationService>().scheduleTransactionReminder(
+  id: transaction.id.hashCode,
+  title: l10n.reminderTitle,
+  body: l10n.reminderBody(description, amount),
+  scheduledDate: dueDate.subtract(const Duration(days: 1)),
+);
+```
 
-### Phase 1: Local Reminders
-Use `NotificationService` to schedule alarms for payment due dates:
+To cancel, use `cancelAll()` and reschedule what's still pending. Specific ids aren't tracked.
 
-1.  **Retrieve Service Instance:** Resolve `NotificationService` from the service locator:
-    ```dart
-    final notificationService = sl<NotificationService>();
-    ```
-2.  **Trigger Scheduler:** When saving a scheduled transaction, trigger the alert:
-    ```dart
-    await notificationService.scheduleTransactionReminder(
-      id: transaction.id.hashCode, // unique integer identifier
-      title: 'Bill Due Tomorrow',
-      body: 'Your bill for ${transaction.description} of \$${transaction.amount} is due.',
-      scheduledDate: transaction.dueDate.subtract(const Duration(days: 1)),
-    );
-    ```
-3.  **Cancel Alarms:** If a transaction is deleted or paid, cancel scheduled reminders:
-    ```dart
-    // Note: To cancel specific alarms, track scheduled IDs, or run cancelAll for simplicity.
-    await notificationService.cancelAll();
-    ```
+## Inbox entry (Hive)
 
-### Phase 2: Local Notification History (Inbox)
-Record the same event in the local notifications inbox (`hive_ce`-backed, no network round-trip) so it shows up in the "Notificações" page:
+```dart
+await sl<AddNotification>()(NotificationEntity(
+  id: '${transaction.id}_due_today',
+  userId: transaction.userId,
+  title: l10n.transactionsNotificationDueTodayTitle,
+  description: l10n.transactionsNotificationDueTodayBody(description, amount),
+  timestamp: DateTime.now(),
+  read: false,
+  isUrgent: true,
+  type: NotificationType.dueToday,
+));
+```
 
-1.  **Add to history:** Resolve `AddNotification` from the service locator and call it with a `NotificationEntity`:
-    ```dart
-    await sl<AddNotification>()(
-      NotificationEntity(
-        id: '${transaction.id}_due_today',
-        userId: transaction.userId,
-        title: l10n.transactionsNotificationDueTodayTitle,
-        description: l10n.transactionsNotificationDueTodayBody(description, amount),
-        timestamp: DateTime.now(),
-        read: false,
-        isUrgent: true,
-        type: NotificationType.dueToday,
-      ),
-    );
-    ```
-2.  **Delete when no longer relevant:** Use `DeleteNotification` (same pattern) to remove an entry — e.g. triggered by swipe-to-dismiss on `NotificationsPage`.
-3.  Only the last 100 notifications are retained on-device; older entries are pruned automatically on insert.
+Remove entries with `DeleteNotification`. Only the latest 100 are kept.
