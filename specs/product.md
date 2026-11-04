@@ -35,7 +35,7 @@ Help one person understand **where their money goes, simply**. In five seconds t
 
 **Frozen** (exists, no work planned): login, biometrics, profile photo, theme/language, notifications inbox, observability.
 
-**Later:** app rename (after 1 month of use), iOS "Open with", budgets/goals/charts, rule management screen, other banks. Push/FCM is not planned.
+**Later:** app rename (after 1 month of use), iOS "Open with", budgets/goals/charts, rule management screen, other banks, [bank sync via Meu Pluggy](ideas/pluggy-bank-sync.md) (Open Finance; file import as fallback). Push/FCM is not planned.
 
 **MVP done** = `0001`–`0004` shipped **and** 4 consecutive Sundays of imports.
 

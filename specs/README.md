@@ -8,6 +8,7 @@ Spec-driven development: every behavior change is written down, approved, then i
 | `capabilities/` | How each area behaves **today**. One file per area, created by the first change that touches it. |
 | `changes/NNNN-slug/` | An upcoming change: `proposal.md`, `spec-delta.md`, `tasks.md` |
 | `changes/archive/` | Completed changes |
+| `ideas/` | Ideas that need validation (e.g. a spike) before becoming a change |
 
 `specs/` = **what/why**. `.claude/docs/` = **how**. Link between them; never copy.
 
