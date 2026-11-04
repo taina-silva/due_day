@@ -154,9 +154,9 @@ void main() {
 
       test('should return CategoryNotFoundFailure when not found', () async {
         // Arrange
-        when(() => mockRemoteDataSource.deleteCategory(any())).thenThrow(
-          const ServerException('Category not found.', 'not-found'),
-        );
+        when(
+          () => mockRemoteDataSource.deleteCategory(any()),
+        ).thenThrow(const ServerException('Category not found.', 'not-found'));
 
         // Act
         final result = await repository.deleteCategory('category-1');

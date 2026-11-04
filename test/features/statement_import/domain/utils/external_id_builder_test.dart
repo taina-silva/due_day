@@ -47,18 +47,21 @@ void main() {
       },
     );
 
-    test('differing amounts produce differing keys for the same identifier', () {
-      final key1 = ExternalIdBuilder.build(
-        rawIdentifier: 'same-id',
-        amountInCents: 100,
-      );
-      final key2 = ExternalIdBuilder.build(
-        rawIdentifier: 'same-id',
-        amountInCents: 200,
-      );
+    test(
+      'differing amounts produce differing keys for the same identifier',
+      () {
+        final key1 = ExternalIdBuilder.build(
+          rawIdentifier: 'same-id',
+          amountInCents: 100,
+        );
+        final key2 = ExternalIdBuilder.build(
+          rawIdentifier: 'same-id',
+          amountInCents: 200,
+        );
 
-      expect(key1, isNot(equals(key2)));
-    });
+        expect(key1, isNot(equals(key2)));
+      },
+    );
 
     test('rounds fractional cents before composing the key', () {
       final key = ExternalIdBuilder.build(

@@ -1,5 +1,6 @@
 import 'package:due_day/core/utils/converters/timestamp_converter.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
+import 'package:due_day/features/categories/domain/entities/category_kind.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'category_model.freezed.dart';
@@ -17,6 +18,9 @@ abstract class CategoryModel with _$CategoryModel {
     required String icon,
     @TimestampConverter() required DateTime createdAt,
     @Default(0) int transactionCount,
+    @JsonKey(unknownEnumValue: CategoryKind.spending)
+    @Default(CategoryKind.spending)
+    CategoryKind kind,
   }) = _CategoryModel;
 
   factory CategoryModel.fromJson(Map<String, dynamic> json) =>
@@ -31,6 +35,7 @@ abstract class CategoryModel with _$CategoryModel {
       icon: entity.icon,
       createdAt: entity.createdAt,
       transactionCount: entity.transactionCount,
+      kind: entity.kind,
     );
   }
 
@@ -43,6 +48,7 @@ abstract class CategoryModel with _$CategoryModel {
       icon: icon,
       createdAt: createdAt,
       transactionCount: transactionCount,
+      kind: kind,
     );
   }
 }

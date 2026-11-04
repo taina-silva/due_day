@@ -17,13 +17,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get dashboardMonthlySummary => 'Monthly Summary';
 
   @override
-  String get dashboardGeneralBalance => 'General Balance';
-
-  @override
   String get dashboardIncomes => 'Incomes';
-
-  @override
-  String get dashboardExpenses => 'Expenses';
 
   @override
   String get dashboardUpcomingDues => 'Upcoming Dues';
@@ -41,9 +35,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String dashboardDueInDays(int days) {
     return 'Due in $days days';
   }
-
-  @override
-  String get dashboardProjectedBalance => 'Projected Balance';
 
   @override
   String get dashboardCategorySpending => 'Category Spending';
@@ -168,19 +159,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountsNameHint => 'Enter account name';
 
   @override
-  String get accountsBalanceLabel => 'INITIAL BALANCE';
-
-  @override
   String get accountsCategoryLabel => 'CATEGORY';
-
-  @override
-  String get accountsCategoryInvestments => 'Investments';
-
-  @override
-  String get accountsCategorySavings => 'Savings';
-
-  @override
-  String get accountsCategoryDailyUse => 'Daily Use';
 
   @override
   String get accountsSaveAccount => 'Save Account';
@@ -283,20 +262,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profilePremiumMember => 'PREMIUM MEMBER';
 
   @override
-  String get profileConfirmDeleteTitle => 'Confirm Deletion';
-
-  @override
-  String get profileConfirmDeleteDesc =>
-      'Do you really want to permanently delete your account? This action cannot be undone.';
-
-  @override
   String get profileCancel => 'Cancel';
 
   @override
   String get profileExclude => 'Delete';
-
-  @override
-  String get profileExcludeDevAlert => 'Delete functionality in development.';
 
   @override
   String get profileLanguage => 'Language';
@@ -318,9 +287,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get profileLogOut => 'Log Out';
-
-  @override
-  String get profileDeleteAccount => 'Delete Account';
 
   @override
   String get profileSecurity => 'Biometric Security';
@@ -883,4 +849,99 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get scheduleActionErrorFallback =>
       'Failed to update your schedule. Please try again.';
+
+  @override
+  String get accountsCategoryChecking => 'Checking';
+
+  @override
+  String get accountsCategoryCash => 'Cash';
+
+  @override
+  String get accountsDueDayInvalid => 'Enter a due day between 1 and 31.';
+
+  @override
+  String accountsDueDayValue(int day) {
+    return 'Due on day $day';
+  }
+
+  @override
+  String get categoriesSystemInvestment => 'Investment';
+
+  @override
+  String get categoriesSystemIgnored => 'Ignored';
+
+  @override
+  String get categoriesSystemProtected =>
+      'System category: it can\'t be renamed or deleted.';
+
+  @override
+  String get categoriesDefaultFood => 'Food';
+
+  @override
+  String get categoriesDefaultGroceries => 'Groceries';
+
+  @override
+  String get categoriesDefaultTransport => 'Transport';
+
+  @override
+  String get categoriesDefaultHousing => 'Housing';
+
+  @override
+  String get categoriesDefaultBills => 'Bills';
+
+  @override
+  String get categoriesDefaultHealth => 'Health';
+
+  @override
+  String get categoriesDefaultLeisure => 'Leisure';
+
+  @override
+  String get categoriesDefaultShopping => 'Shopping';
+
+  @override
+  String get categoriesDefaultSubscriptions => 'Subscriptions';
+
+  @override
+  String get categoriesDefaultEducation => 'Education';
+
+  @override
+  String get categoriesDefaultOther => 'Other';
+
+  @override
+  String get categoriesDefaultSalary => 'Salary';
+
+  @override
+  String get categoriesDefaultOtherIncome => 'Other income';
+
+  @override
+  String get dashboardPreviousMonth => 'Previous month';
+
+  @override
+  String get dashboardNextMonth => 'Next month';
+
+  @override
+  String get dashboardSpent => 'Spent';
+
+  @override
+  String get dashboardInvested => 'Invested';
+
+  @override
+  String get dashboardUncategorized => 'Uncategorized';
+
+  @override
+  String get profileDeleteAllData => 'Delete all my data';
+
+  @override
+  String get profileDeleteAllDataTitle => 'Delete all your data?';
+
+  @override
+  String get profileDeleteAllDataConfirm =>
+      'All your accounts, categories, and transactions will be deleted. Your login and preferences stay. This can\'t be undone.';
+
+  @override
+  String get profileDeleteAllDataSuccess => 'Your data was deleted.';
+
+  @override
+  String get profileDeleteAllDataError =>
+      'Couldn\'t delete your data. Please try again.';
 }

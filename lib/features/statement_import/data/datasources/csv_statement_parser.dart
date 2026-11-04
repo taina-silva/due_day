@@ -1,6 +1,9 @@
 import 'package:csv/csv.dart';
+import 'package:due_day/features/categories/domain/entities/category_kind.dart';
 import 'package:due_day/features/statement_import/domain/entities/parsed_statement_transaction.dart';
+import 'package:due_day/features/statement_import/domain/entities/statement_format.dart';
 import 'package:due_day/features/statement_import/domain/entities/statement_source.dart';
+import 'package:due_day/features/statement_import/domain/utils/bill_payment_matcher.dart';
 import 'package:due_day/features/statement_import/domain/utils/external_id_builder.dart';
 import 'package:intl/intl.dart';
 
@@ -28,7 +31,10 @@ class CsvStatementParserImpl implements CsvStatementParser {
   List<ParsedStatementTransaction> parse(String csvContent) {
     // Normalize CRLF to LF first: CsvToListConverter matches [eol] literally
     // rather than auto-detecting it, and bank exports vary between the two.
-    final normalizedContent = csvContent.replaceAll('\r\n', '\n');
+    var normalizedContent = csvContent.replaceAll('\r\n', '\n');
+    if (normalizedContent.startsWith('\uFEFF')) {
+      normalizedContent = normalizedContent.substring(1);
+    }
     final rows = _converter.convert(normalizedContent);
     if (rows.isEmpty) return const [];
 
@@ -69,6 +75,11 @@ class CsvStatementParserImpl implements CsvStatementParser {
           amount: amount,
           memo: memo,
           source: StatementSource.csv,
+          format: StatementFormat.checkingCsv,
+          // Card bill payment → *Ignored* (IMP-008).
+          suggestedCategoryKind: BillPaymentMatcher.isCheckingBillPayment(memo)
+              ? CategoryKind.ignored
+              : null,
         ),
       );
     }

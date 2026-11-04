@@ -28,6 +28,7 @@ void main() {
   setUpAll(() {
     registerFallbackValue(<String, dynamic>{});
     registerFallbackValue(MockDocumentReference());
+    registerFallbackValue(SetOptions(merge: true));
   });
 
   setUp(() {
@@ -346,16 +347,16 @@ void main() {
             () => mockCollectionReference.doc(any(that: isNot('user-1'))),
           ).thenReturn(mockTransactionDocRef);
           when(() => mockWriteBatch.set(any(), any())).thenReturn(null);
-          when(() => mockWriteBatch.update(any(), any())).thenReturn(null);
+          when(() => mockWriteBatch.set(any(), any(), any())).thenReturn(null);
 
           await dataSource.addTransactionsBatch(transactions);
 
           // 2 doc-write batches (ceil(500/450)) + 1 counter batch = 3.
           verify(() => mockFirebaseFirestore.batch()).called(3);
           verify(
-            () => mockWriteBatch.update(mockTransactionDocRef, {
+            () => mockWriteBatch.set(mockTransactionDocRef, {
               'transactionCount': FieldValue.increment(500),
-            }),
+            }, any()),
           ).called(1);
         },
       );

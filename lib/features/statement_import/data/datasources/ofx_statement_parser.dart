@@ -1,5 +1,8 @@
+import 'package:due_day/features/categories/domain/entities/category_kind.dart';
 import 'package:due_day/features/statement_import/domain/entities/parsed_statement_transaction.dart';
+import 'package:due_day/features/statement_import/domain/entities/statement_format.dart';
 import 'package:due_day/features/statement_import/domain/entities/statement_source.dart';
+import 'package:due_day/features/statement_import/domain/utils/bill_payment_matcher.dart';
 import 'package:due_day/features/statement_import/domain/utils/external_id_builder.dart';
 
 abstract class OfxStatementParser {
@@ -55,6 +58,11 @@ class OfxStatementParserImpl implements OfxStatementParser {
           amount: amount,
           memo: memo,
           source: StatementSource.ofx,
+          format: StatementFormat.nubankOfx,
+          // Card bill payment → *Ignored* (IMP-008).
+          suggestedCategoryKind: BillPaymentMatcher.isCheckingBillPayment(memo)
+              ? CategoryKind.ignored
+              : null,
         ),
       );
     }

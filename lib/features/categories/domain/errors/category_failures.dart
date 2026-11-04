@@ -17,3 +17,10 @@ class CategorySaveFailure extends Failure {
 class CategoryDeleteFailure extends Failure {
   const CategoryDeleteFailure([super.message = 'Failed to delete category.']);
 }
+
+/// *Investment* and *Ignored* can't be renamed or deleted (CAT-003).
+class SystemCategoryProtectedFailure extends Failure {
+  const SystemCategoryProtectedFailure([
+    super.message = 'System categories cannot be renamed or deleted.',
+  ]);
+}

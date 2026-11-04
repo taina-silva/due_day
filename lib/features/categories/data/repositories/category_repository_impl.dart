@@ -130,6 +130,39 @@ class CategoryRepositoryImpl implements CategoryRepository {
   }
 
   @override
+  Future<Either<Failure, void>> addCategories(
+    List<CategoryEntity> categories,
+  ) async {
+    try {
+      await remoteDataSource.addCategoriesBatch(
+        categories.map(CategoryModel.fromEntity).toList(),
+      );
+      return const Right(null);
+    } on ServerException catch (e) {
+      observability.error(
+        'addCategories failed',
+        tag: _tag,
+        error: e,
+        stackTrace: StackTrace.current,
+      );
+      return Left(
+        _mapServerExceptionToFailure(
+          e,
+          fallback: CategorySaveFailure(e.message),
+        ),
+      );
+    } catch (e, stackTrace) {
+      observability.error(
+        'addCategories unexpected failure',
+        tag: _tag,
+        error: e,
+        stackTrace: stackTrace,
+      );
+      return Left(CategorySaveFailure(e.toString()));
+    }
+  }
+
+  @override
   Stream<Either<Failure, List<CategoryEntity>>> getCategories() async* {
     try {
       await for (final models in remoteDataSource.getCategories()) {

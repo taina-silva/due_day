@@ -1,17 +1,11 @@
-import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
-import 'package:due_day/features/accounts/domain/repositories/account_repository.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:due_day/features/transactions/domain/repositories/transaction_repository.dart';
 import 'package:uuid/uuid.dart';
 
 class SyncRecurringTransactions {
   final TransactionRepository transactionRepository;
-  final AccountRepository accountRepository;
 
-  SyncRecurringTransactions({
-    required this.transactionRepository,
-    required this.accountRepository,
-  });
+  SyncRecurringTransactions({required this.transactionRepository});
 
   /// Creates the next due instance for every active recurring template and
   /// returns the newly created instances so the caller can notify the user
@@ -104,42 +98,9 @@ class SyncRecurringTransactions {
       createdAt: DateTime.now(),
     );
 
+    // Instances never touch accounts (TRX-004).
     await transactionRepository.addTransaction(newTransaction);
 
-    if (newTransaction.paid) {
-      await _updateAccountBalance(newTransaction);
-    }
-
     return newTransaction;
-  }
-
-  Future<void> _updateAccountBalance(TransactionEntity tx) async {
-    if (tx.type == TransactionType.expense && tx.accountFrom != null) {
-      await _adjustBalance(tx.accountFrom!, -tx.amount);
-    } else if (tx.type == TransactionType.income && tx.accountTo != null) {
-      await _adjustBalance(tx.accountTo!, tx.amount);
-    } else if (tx.type == TransactionType.transfer &&
-        tx.accountFrom != null &&
-        tx.accountTo != null) {
-      await _adjustBalance(tx.accountFrom!, -tx.amount);
-      await _adjustBalance(tx.accountTo!, tx.amount);
-    }
-  }
-
-  Future<void> _adjustBalance(String accountId, double amount) async {
-    final accountsResult = await accountRepository.getAccounts().first;
-    accountsResult.fold((failure) => null, (accounts) async {
-      final account = accounts.firstWhere((a) => a.id == accountId);
-      final updatedAccount = AccountEntity(
-        id: account.id,
-        userId: account.userId,
-        name: account.name,
-        category: account.category,
-        balance: account.balance + amount,
-        createdAt: account.createdAt,
-        dueDay: account.dueDay,
-      );
-      await accountRepository.updateAccount(updatedAccount);
-    });
   }
 }

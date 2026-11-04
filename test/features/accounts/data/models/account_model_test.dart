@@ -13,8 +13,7 @@ void main() {
         'id': 'account-1',
         'userId': 'user-1',
         'name': 'Checking Account',
-        'category': 'daily_use',
-        'balance': 1500.0,
+        'category': 'checking',
         'createdAt': Timestamp.fromDate(tDateTime),
         'dueDay': null,
         'deletedAt': null,
@@ -33,8 +32,7 @@ void main() {
         id: 'account-1',
         userId: 'user-1',
         name: 'Checking Account',
-        category: AccountCategory.dailyUse,
-        balance: 1500.0,
+        category: AccountCategory.checking,
         createdAt: tDateTime,
       );
 
@@ -45,8 +43,49 @@ void main() {
       expect(result['id'], 'account-1');
       expect(result['userId'], 'user-1');
       expect(result['name'], 'Checking Account');
-      expect(result['category'], 'daily_use');
-      expect(result['balance'], 1500.0);
+      expect(result['category'], 'checking');
+      expect(result.containsKey('balance'), isFalse);
+    });
+
+    for (final legacy in ['investments', 'savings', 'daily_use', 'unknown']) {
+      test('ACC-002: stored type "$legacy" loads as checking', () {
+        final result = AccountModel.fromJson({
+          'id': 'account-1',
+          'userId': 'user-1',
+          'name': 'Old account',
+          'category': legacy,
+          'createdAt': Timestamp.fromDate(tDateTime),
+        });
+
+        expect(result.category, AccountCategory.checking);
+      });
+    }
+
+    test('ACC-003: a stored balance is ignored on read and not written', () {
+      final result = AccountModel.fromJson({
+        'id': 'account-1',
+        'userId': 'user-1',
+        'name': 'Checking Account',
+        'category': 'checking',
+        'balance': 1500.0,
+        'createdAt': Timestamp.fromDate(tDateTime),
+      });
+
+      expect(result, tAccountModel);
+      expect(result.toJson().containsKey('balance'), isFalse);
+    });
+
+    test('ACC-001: cash type round-trips', () {
+      final result = AccountModel.fromJson({
+        'id': 'account-1',
+        'userId': 'user-1',
+        'name': 'Wallet',
+        'category': 'cash',
+        'createdAt': Timestamp.fromDate(tDateTime),
+      });
+
+      expect(result.category, AccountCategory.cash);
+      expect(result.toJson()['category'], 'cash');
     });
 
     test('should map properly fromEntity and toEntity', () {

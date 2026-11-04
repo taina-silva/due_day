@@ -66,7 +66,7 @@ void main() {
           () => mockPickStatementFile(),
         ).thenAnswer((_) async => const Right(pickedFile));
         when(
-          () => mockParseStatement(fileName: any(named: 'fileName'), content: any(named: 'content')),
+          () => mockParseStatement(content: any(named: 'content')),
         ).thenReturn(Right([tParsedDebit]));
         return bloc;
       },
@@ -96,9 +96,9 @@ void main() {
     blocTest<StatementImportBloc, StatementImportState>(
       'emits [Picking, Error] when the file picker fails',
       build: () {
-        when(() => mockPickStatementFile()).thenAnswer(
-          (_) async => const Left(StatementParseFailure()),
-        );
+        when(
+          () => mockPickStatementFile(),
+        ).thenAnswer((_) async => const Left(StatementParseFailure()));
         return bloc;
       },
       act: (bloc) => bloc.add(const PickFileRequested()),
@@ -115,7 +115,7 @@ void main() {
           () => mockPickStatementFile(),
         ).thenAnswer((_) async => const Right(pickedFile));
         when(
-          () => mockParseStatement(fileName: any(named: 'fileName'), content: any(named: 'content')),
+          () => mockParseStatement(content: any(named: 'content')),
         ).thenReturn(const Left(EmptyStatementFailure()));
         return bloc;
       },
@@ -136,7 +136,7 @@ void main() {
           () => mockPickStatementFile(),
         ).thenAnswer((_) async => const Right(pickedFile));
         when(
-          () => mockParseStatement(fileName: any(named: 'fileName'), content: any(named: 'content')),
+          () => mockParseStatement(content: any(named: 'content')),
         ).thenReturn(Right([tParsedDebit]));
         when(
           () => mockBuildReviewList(any()),

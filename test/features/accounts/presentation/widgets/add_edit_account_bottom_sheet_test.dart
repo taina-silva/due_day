@@ -56,12 +56,7 @@ void main() {
 
   Future<void> pumpBottomSheet(
     WidgetTester tester, {
-    required void Function(
-      String name,
-      AccountCategory category,
-      double balance,
-      int? dueDay,
-    )
+    required void Function(String name, AccountCategory category, int? dueDay)
     onSave,
     AccountEntity? account,
   }) async {
@@ -103,11 +98,8 @@ void main() {
 
     await tester.tap(find.byType(DropdownButtonFormField<AccountCategory>));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Daily Use').last);
+    await tester.tap(find.text('Checking').last);
     await tester.pumpAndSettle();
-
-    await tester.enterText(find.byType(TextFormField).at(1), '100');
-    await tester.pump();
 
     await tester.ensureVisible(find.text('Save Account'));
     await tester.pumpAndSettle();
@@ -125,7 +117,7 @@ void main() {
 
         await pumpBottomSheet(
           tester,
-          onSave: (name, category, balance, dueDay) => onSaveCalled = true,
+          onSave: (name, category, dueDay) => onSaveCalled = true,
         );
 
         expect(find.byType(AddEditAccountBottomSheet), findsOneWidget);
@@ -163,7 +155,7 @@ void main() {
 
       await pumpBottomSheet(
         tester,
-        onSave: (name, category, balance, dueDay) => onSaveCalled = true,
+        onSave: (name, category, dueDay) => onSaveCalled = true,
       );
 
       await fillFormAndTapSave(tester);
@@ -185,7 +177,7 @@ void main() {
 
         await pumpBottomSheet(
           tester,
-          onSave: (name, category, balance, dueDay) => onSaveCalled = true,
+          onSave: (name, category, dueDay) => onSaveCalled = true,
         );
 
         await tester.ensureVisible(find.text('Save Account'));
@@ -204,7 +196,7 @@ void main() {
       (tester) async {
         await pumpBottomSheet(
           tester,
-          onSave: (name, category, balance, dueDay) {},
+          onSave: (name, category, dueDay) {},
           account: tAccountEntity,
         );
 
@@ -242,7 +234,7 @@ void main() {
       (tester) async {
         await pumpBottomSheet(
           tester,
-          onSave: (name, category, balance, dueDay) {},
+          onSave: (name, category, dueDay) {},
           account: tAccountEntity,
         );
 
@@ -271,5 +263,82 @@ void main() {
         );
       },
     );
+
+    testWidgets('ACC-003: the form asks no balance', (tester) async {
+      await pumpBottomSheet(tester, onSave: (name, category, dueDay) {});
+
+      expect(find.textContaining('BALANCE'), findsNothing);
+      // Only the name field is shown until a type is chosen.
+      expect(find.byType(TextFormField), findsOneWidget);
+    });
+
+    testWidgets(
+      'ACC-001: creating a credit card without a due day asks for one '
+      'between 1 and 31',
+      (tester) async {
+        var onSaveCalled = false;
+        await pumpBottomSheet(
+          tester,
+          onSave: (name, category, dueDay) => onSaveCalled = true,
+        );
+
+        await tester.enterText(find.byType(TextFormField).first, 'Card');
+        await tester.tap(find.byType(DropdownButtonFormField<AccountCategory>));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Credit Card').last);
+        await tester.pumpAndSettle();
+
+        await tester.ensureVisible(find.text('Save Account'));
+        await tester.pumpAndSettle();
+        await tester.tap(find.text('Save Account'));
+        await tester.pump();
+
+        expect(onSaveCalled, isFalse);
+        expect(find.text('Enter a due day between 1 and 31.'), findsOneWidget);
+      },
+    );
+
+    testWidgets('ACC-001: creating a credit card saves its due day', (
+      tester,
+    ) async {
+      int? savedDueDay;
+      AccountCategory? savedCategory;
+      await pumpBottomSheet(
+        tester,
+        onSave: (name, category, dueDay) {
+          savedCategory = category;
+          savedDueDay = dueDay;
+        },
+      );
+
+      await tester.enterText(find.byType(TextFormField).first, 'Card');
+      await tester.tap(find.byType(DropdownButtonFormField<AccountCategory>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Credit Card').last);
+      await tester.pumpAndSettle();
+      await tester.enterText(find.byType(TextFormField).at(1), '10');
+
+      await tester.ensureVisible(find.text('Save Account'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Save Account'));
+      await tester.pump();
+
+      expect(savedCategory, AccountCategory.creditCard);
+      expect(savedDueDay, 10);
+    });
+
+    testWidgets('ACC-001: creating cash shows no due day field', (
+      tester,
+    ) async {
+      await pumpBottomSheet(tester, onSave: (name, category, dueDay) {});
+
+      await tester.tap(find.byType(DropdownButtonFormField<AccountCategory>));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('Cash').last);
+      await tester.pumpAndSettle();
+
+      expect(find.text('DUE DATE (INVOICE/CARD)'), findsNothing);
+      expect(find.byType(TextFormField), findsOneWidget);
+    });
   });
 }

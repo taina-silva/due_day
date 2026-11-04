@@ -1,10 +1,8 @@
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
-import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class AccountCard extends StatelessWidget {
   final AccountEntity account;
@@ -18,9 +16,6 @@ class AccountCard extends StatelessWidget {
     final typography = context.typography;
     final dimensions = context.dimensions;
     final l10n = AppLocalizations.of(context);
-    final formatCurrency = NumberFormat.simpleCurrency(
-      locale: context.localeString,
-    );
 
     return GestureDetector(
       onTap: onTap,
@@ -66,23 +61,20 @@ class AccountCard extends StatelessWidget {
                   Text(
                     account.category.localizedName(l10n).toUpperCase(),
                     style: typography.label.medium.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      color: context.onSurfaceVariantColor,
                     ),
                   ),
                 ],
               ),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  formatCurrency.format(account.balance),
-                  style: typography.title.medium.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+            // No balance (ACC-003); cards show their due day.
+            if (account.category.hasDueDay && account.dueDay != null)
+              Text(
+                l10n.accountsDueDayValue(account.dueDay!),
+                style: typography.label.medium.copyWith(
+                  color: context.onSurfaceVariantColor,
                 ),
-              ],
-            ),
+              ),
           ],
         ),
       ),

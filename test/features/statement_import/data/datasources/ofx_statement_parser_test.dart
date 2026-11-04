@@ -18,17 +18,14 @@ void main() {
   }
 
   group('OfxStatementParserImpl', () {
-    test(
-      'parses all transactions from a Nubank-style OFX statement',
-      () {
-        final content = loadFixture('sample_nubank.ofx');
+    test('parses all transactions from a Nubank-style OFX statement', () {
+      final content = loadFixture('sample_nubank.ofx');
 
-        final result = parser.parse(content);
+      final result = parser.parse(content);
 
-        expect(result, hasLength(6));
-        expect(result.every((t) => t.source == StatementSource.ofx), isTrue);
-      },
-    );
+      expect(result, hasLength(6));
+      expect(result.every((t) => t.source == StatementSource.ofx), isTrue);
+    });
 
     test('parses field values correctly for a plain debit line', () {
       final content = loadFixture('sample_nubank.ofx');

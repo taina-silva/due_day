@@ -1,240 +1,387 @@
+import 'package:due_day/features/categories/domain/entities/category_entity.dart';
+import 'package:due_day/features/categories/domain/entities/category_kind.dart';
+import 'package:due_day/features/categories/domain/entities/system_categories.dart';
 import 'package:due_day/features/dashboard/domain/entities/dashboard_summary.dart';
 import 'package:due_day/features/dashboard/domain/usecases/get_dashboard_summary.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../helpers/dashboard_test_helpers.dart';
-
 void main() {
   late GetDashboardSummary getDashboardSummary;
+
+  final october = DateTime(2026, 10);
+  final september = DateTime(2026, 9);
+  final today = DateTime(2026, 10, 4);
+
+  CategoryEntity category(String id, CategoryKind kind) => CategoryEntity(
+    id: id,
+    userId: 'user-1',
+    name: id,
+    color: '#000000',
+    icon: '0xf624',
+    createdAt: DateTime(2026),
+    kind: kind,
+  );
+
+  final food = category('cat-food', CategoryKind.spending);
+  final bills = category('cat-bills', CategoryKind.spending);
+  final salary = category('cat-salary', CategoryKind.spending);
+  final investment = category(
+    SystemCategories.investmentId,
+    CategoryKind.investment,
+  );
+  final ignored = category(SystemCategories.ignoredId, CategoryKind.ignored);
+  final categories = [food, bills, salary, investment, ignored];
+
+  var seq = 0;
+  TransactionEntity tx({
+    required TransactionType type,
+    required double amount,
+    String? categoryId,
+    bool paid = true,
+    DateTime? paidDate,
+    DateTime? dueDate,
+    DateTime? createdAt,
+  }) {
+    seq++;
+    return TransactionEntity(
+      id: 'tx-$seq',
+      userId: 'user-1',
+      type: type,
+      amount: amount,
+      paid: paid,
+      isRecurring: false,
+      category: categoryId,
+      paidDate: paidDate,
+      dueDate: dueDate,
+      createdAt: createdAt ?? today,
+    );
+  }
+
+  DashboardSummary summarize(
+    List<TransactionEntity> transactions, {
+    DateTime? month,
+  }) => getDashboardSummary(
+    month: month ?? october,
+    transactions: transactions,
+    categories: categories,
+    now: today,
+  );
 
   setUp(() {
     getDashboardSummary = GetDashboardSummary();
   });
 
-  test('should calculate correct dashboard summary from accounts and transactions', () {
-    // Current balance should be acc1 (1000) + acc2 (5000) = 6000
-    // Income transaction: paid, income, 200, createdAt=tDateTime.
-    // Expense transaction: paid, expense, 50, createdAt=tDateTime.
-    // Unpaid expense transaction: unpaid, expense, 100, dueDate=2026-07-15, createdAt=tDateTime.
+  group('TRX-003: effective date', () {
+    test('imported last quarter, written today → paidDate counts', () {
+      final t = tx(
+        type: TransactionType.expense,
+        amount: 10,
+        paidDate: DateTime(2026, 7, 10),
+        createdAt: DateTime(2026, 10, 4),
+      );
 
-    // We adjust current local DateTime during test or just rely on tDateTime month match.
-    // Note: GetDashboardSummary uses DateTime.now() to check the current month.
-    // If the test runs in a different month than tDateTime, monthly totals won't match.
-    // So let's build the test transactions dynamically using DateTime.now() to ensure the test always passes regardless of when it is run!
-    final now = DateTime.now();
-    final firstDayOfMonth = DateTime(now.year, now.month, 1);
+      expect(t.effectiveDate, DateTime(2026, 7, 10));
+    });
 
-    final currentMonthIncome = TransactionEntity(
-      id: 'tx-1',
-      userId: 'user-1',
-      type: TransactionType.income,
-      amount: 200.0,
-      paid: true,
-      isRecurring: false,
-      createdAt: firstDayOfMonth.add(const Duration(hours: 12)),
-      accountTo: 'acc-1',
-      notes: 'Salary bonus',
-    );
+    test('legacy document without dates → createdAt', () {
+      final t = tx(
+        type: TransactionType.expense,
+        amount: 10,
+        createdAt: DateTime(2026, 5, 2),
+      );
 
-    final currentMonthExpense = TransactionEntity(
-      id: 'tx-2',
-      userId: 'user-1',
-      type: TransactionType.expense,
-      amount: 50.0,
-      paid: true,
-      isRecurring: false,
-      createdAt: firstDayOfMonth.add(const Duration(hours: 12)),
-      accountFrom: 'acc-1',
-      category: 'cat-1',
-      notes: 'Coffee',
-    );
+      expect(t.effectiveDate, DateTime(2026, 5, 2));
+    });
 
-    final futureUnpaidExpense = TransactionEntity(
-      id: 'tx-3',
-      userId: 'user-1',
-      type: TransactionType.expense,
-      amount: 100.0,
-      paid: false,
-      isRecurring: false,
-      createdAt: firstDayOfMonth.add(const Duration(hours: 12)),
-      // Must stay after `now` and before `lastDayOfMonth` regardless of
-      // which day of the month the test runs on, so a short, fixed offset
-      // is safer than a multi-day one near the end of the month.
-      dueDate: now.add(const Duration(hours: 1)),
-      accountFrom: 'acc-1',
-      category: 'cat-2',
-      notes: 'Electricity bill',
-    );
+    test('no paidDate → dueDate', () {
+      final t = tx(
+        type: TransactionType.expense,
+        amount: 10,
+        dueDate: DateTime(2026, 6, 1),
+        createdAt: DateTime(2026, 5, 2),
+      );
 
-    final result = getDashboardSummary(
-      accounts: [tAccount1, tAccount2],
-      transactions: [
-        currentMonthIncome,
-        currentMonthExpense,
-        futureUnpaidExpense,
-      ],
-    );
-
-    expect(result.currentBalance, 6000.0);
-    expect(result.monthlyIncome, 200.0);
-    expect(result.monthlyExpenses, 150.0);
-    // Upcoming dues: should contain futureUnpaidExpense
-    expect(result.upcomingDues, contains(futureUnpaidExpense));
-    expect(result.spendingByCategory['cat-1'], 50.0);
-    expect(result.spendingByCategory['cat-2'], 100.0);
-
-    // Projected Balance: Current (6000) - Unpaid Expenses (100) = 5900
-    expect(result.projectedBalance, 5900.0);
-
-    // cat-2 (100) is >30% of the 200 monthly income, so it takes priority
-    // over the (not even triggered, since expenses < income) budget warning.
-    expect(result.insight.type, DashboardInsightType.categoryWarning);
-    expect(result.insight.categoryId, 'cat-2');
+      expect(t.effectiveDate, DateTime(2026, 6, 1));
+    });
   });
 
-  group('insight classification', () {
-    test('should classify as healthy when expenses are below income and no '
-        'category dominates spending', () {
-      final result = getDashboardSummary(
-        accounts: const [],
-        transactions: [
-          TransactionEntity(
-            id: 'income-1',
-            userId: 'user-1',
-            type: TransactionType.income,
-            amount: 1000.0,
-            paid: true,
-            isRecurring: false,
-            createdAt: DateTime.now(),
-          ),
-          TransactionEntity(
-            id: 'expense-1',
-            userId: 'user-1',
-            type: TransactionType.expense,
-            amount: 100.0,
-            paid: true,
-            isRecurring: false,
-            createdAt: DateTime.now(),
-            category: 'cat-1',
-          ),
-        ],
+  group('DSH-002: totals bounded to the selected month', () {
+    final imported = [
+      tx(
+        type: TransactionType.expense,
+        amount: 100,
+        categoryId: food.id,
+        paidDate: DateTime(2026, 7, 15),
+      ),
+      tx(
+        type: TransactionType.expense,
+        amount: 200,
+        categoryId: food.id,
+        paidDate: DateTime(2026, 8, 15),
+      ),
+      tx(
+        type: TransactionType.expense,
+        amount: 300,
+        categoryId: food.id,
+        paidDate: DateTime(2026, 9, 15),
+      ),
+      tx(
+        type: TransactionType.expense,
+        amount: 1,
+        categoryId: food.id,
+        paidDate: DateTime(2026, 9, 30, 23, 59, 59),
+      ),
+    ];
+
+    test('importing three months at once → none count in October', () {
+      final result = summarize(imported);
+
+      expect(result.month, october);
+      expect(result.spent, 0);
+      expect(result.spendingByCategory, isEmpty);
+    });
+
+    test('September shows only September (including its last second)', () {
+      final result = summarize(imported, month: september);
+
+      expect(result.spent, 301);
+      expect(result.spendingByCategory, {food.id: 301});
+    });
+  });
+
+  group('DSH-003: Spent', () {
+    test('mixed month → only paid spending and uncategorized count', () {
+      final result = summarize([
+        tx(
+          type: TransactionType.expense,
+          amount: 100,
+          categoryId: food.id,
+          paidDate: DateTime(2026, 10, 2),
+        ),
+        tx(
+          type: TransactionType.expense,
+          amount: 50,
+          paidDate: DateTime(2026, 10, 3),
+        ),
+        tx(
+          type: TransactionType.expense,
+          amount: 1000,
+          categoryId: investment.id,
+          paidDate: DateTime(2026, 10, 5),
+        ),
+        tx(
+          type: TransactionType.expense,
+          amount: 2000,
+          categoryId: ignored.id,
+          paidDate: DateTime(2026, 10, 10),
+        ),
+        tx(
+          type: TransactionType.expense,
+          amount: 300,
+          categoryId: bills.id,
+          paid: false,
+          dueDate: DateTime(2026, 10, 20),
+        ),
+      ]);
+
+      expect(result.spent, 150);
+    });
+  });
+
+  group('DSH-004: Income', () {
+    test('card refund left uncategorized counts as income', () {
+      final result = summarize([
+        tx(
+          type: TransactionType.income,
+          amount: 5000,
+          categoryId: salary.id,
+          paidDate: DateTime(2026, 10, 5),
+        ),
+        tx(
+          type: TransactionType.income,
+          amount: 40,
+          paidDate: DateTime(2026, 10, 6),
+        ),
+      ]);
+
+      expect(result.income, 5040);
+    });
+
+    test('ignored income (payment received) does not count', () {
+      final result = summarize([
+        tx(
+          type: TransactionType.income,
+          amount: 2000,
+          categoryId: ignored.id,
+          paidDate: DateTime(2026, 10, 10),
+        ),
+      ]);
+
+      expect(result.income, 0);
+    });
+  });
+
+  group('DSH-005: Invested', () {
+    test('monthly investment is shown and never added to Spent', () {
+      final result = summarize([
+        tx(
+          type: TransactionType.expense,
+          amount: 1000,
+          categoryId: investment.id,
+          paidDate: DateTime(2026, 10, 5),
+        ),
+        tx(
+          type: TransactionType.expense,
+          amount: 200,
+          categoryId: food.id,
+          paidDate: DateTime(2026, 10, 6),
+        ),
+      ]);
+
+      expect(result.invested, 1000);
+      expect(result.spent, 200);
+    });
+  });
+
+  group('DSH-006: spending by category', () {
+    test('Ignored does not appear; uncategorized is its own group', () {
+      final result = summarize([
+        tx(
+          type: TransactionType.expense,
+          amount: 2000,
+          categoryId: ignored.id,
+          paidDate: DateTime(2026, 10, 10),
+        ),
+        tx(
+          type: TransactionType.expense,
+          amount: 80,
+          categoryId: food.id,
+          paidDate: DateTime(2026, 10, 11),
+        ),
+        tx(
+          type: TransactionType.expense,
+          amount: 20,
+          paidDate: DateTime(2026, 10, 12),
+        ),
+      ]);
+
+      expect(result.spendingByCategory, {
+        food.id: 80,
+        DashboardSummary.uncategorizedKey: 20,
+      });
+    });
+  });
+
+  group('TRX-002: legacy transfers', () {
+    test('a paid transfer in the month changes no total', () {
+      final result = summarize([
+        tx(
+          type: TransactionType.transfer,
+          amount: 500,
+          paidDate: DateTime(2026, 10, 10),
+        ),
+      ]);
+
+      expect(result.spent, 0);
+      expect(result.income, 0);
+      expect(result.invested, 0);
+      expect(result.spendingByCategory, isEmpty);
+    });
+  });
+
+  group('upcoming dues', () {
+    test('lists unpaid future expenses sorted by due date', () {
+      final later = tx(
+        type: TransactionType.expense,
+        amount: 10,
+        paid: false,
+        dueDate: DateTime(2026, 10, 20),
       );
+      final sooner = tx(
+        type: TransactionType.expense,
+        amount: 10,
+        paid: false,
+        dueDate: DateTime(2026, 10, 10),
+      );
+      final past = tx(
+        type: TransactionType.expense,
+        amount: 10,
+        paid: false,
+        dueDate: DateTime(2026, 10, 1),
+      );
+
+      final result = summarize([later, past, sooner]);
+
+      expect(result.upcomingDues, [sooner, later]);
+    });
+  });
+
+  group('insight', () {
+    test('healthy when spent is below income and no category dominates', () {
+      final result = summarize([
+        tx(
+          type: TransactionType.income,
+          amount: 1000,
+          paidDate: DateTime(2026, 10, 1),
+        ),
+        tx(
+          type: TransactionType.expense,
+          amount: 100,
+          categoryId: food.id,
+          paidDate: DateTime(2026, 10, 2),
+        ),
+      ]);
 
       expect(result.insight.type, DashboardInsightType.healthy);
     });
 
-    test('should classify as budgetWarning when monthly expenses exceed '
-        'monthly income and no single category dominates spending', () {
-      final result = getDashboardSummary(
-        accounts: const [],
-        transactions: [
-          TransactionEntity(
-            id: 'income-1',
-            userId: 'user-1',
-            type: TransactionType.income,
-            amount: 100.0,
-            paid: true,
-            isRecurring: false,
-            createdAt: DateTime.now(),
-          ),
-          TransactionEntity(
-            id: 'expense-1',
-            userId: 'user-1',
-            type: TransactionType.expense,
-            amount: 30.0,
-            paid: true,
-            isRecurring: false,
-            createdAt: DateTime.now(),
-            category: 'cat-1',
-          ),
-          TransactionEntity(
-            id: 'expense-2',
-            userId: 'user-1',
-            type: TransactionType.expense,
-            amount: 30.0,
-            paid: true,
-            isRecurring: false,
-            createdAt: DateTime.now(),
-            category: 'cat-2',
-          ),
-          TransactionEntity(
-            id: 'expense-3',
-            userId: 'user-1',
-            type: TransactionType.expense,
-            amount: 30.0,
-            paid: true,
-            isRecurring: false,
-            createdAt: DateTime.now(),
-            category: 'cat-3',
-          ),
-          TransactionEntity(
-            id: 'expense-4',
-            userId: 'user-1',
-            type: TransactionType.expense,
-            amount: 30.0,
-            paid: true,
-            isRecurring: false,
-            createdAt: DateTime.now(),
-            category: 'cat-4',
-          ),
-        ],
-      );
+    test('budgetWarning when spent exceeds income', () {
+      final result = summarize([
+        tx(
+          type: TransactionType.income,
+          amount: 1000,
+          paidDate: DateTime(2026, 10, 1),
+        ),
+        tx(
+          type: TransactionType.expense,
+          amount: 1200,
+          paidDate: DateTime(2026, 10, 2),
+        ),
+      ]);
 
-      // Each category (30) sits exactly at 30% of the 100 income, so none
-      // individually triggers categoryWarning; only the combined 120 total
-      // (>100 income) triggers budgetWarning.
       expect(result.insight.type, DashboardInsightType.budgetWarning);
       expect(result.insight.budgetPercentage, 120);
     });
 
-    test('should classify as categoryWarning when a single category exceeds '
-        '30% of monthly income, taking priority over budgetWarning', () {
-      final result = getDashboardSummary(
-        accounts: const [],
-        transactions: [
-          TransactionEntity(
-            id: 'income-1',
-            userId: 'user-1',
-            type: TransactionType.income,
-            amount: 100.0,
-            paid: true,
-            isRecurring: false,
-            createdAt: DateTime.now(),
-          ),
-          TransactionEntity(
-            id: 'expense-1',
-            userId: 'user-1',
-            type: TransactionType.expense,
-            amount: 40.0,
-            paid: true,
-            isRecurring: false,
-            createdAt: DateTime.now(),
-            category: 'cat-1',
-          ),
-        ],
-      );
+    test('categoryWarning when one category exceeds 30% of income', () {
+      final result = summarize([
+        tx(
+          type: TransactionType.income,
+          amount: 1000,
+          paidDate: DateTime(2026, 10, 1),
+        ),
+        tx(
+          type: TransactionType.expense,
+          amount: 400,
+          categoryId: food.id,
+          paidDate: DateTime(2026, 10, 2),
+        ),
+      ]);
 
       expect(result.insight.type, DashboardInsightType.categoryWarning);
-      expect(result.insight.categoryId, 'cat-1');
+      expect(result.insight.categoryId, food.id);
     });
 
-    test('should classify as healthy when there is no monthly income', () {
-      final result = getDashboardSummary(
-        accounts: const [],
-        transactions: [
-          TransactionEntity(
-            id: 'expense-1',
-            userId: 'user-1',
-            type: TransactionType.expense,
-            amount: 100.0,
-            paid: true,
-            isRecurring: false,
-            createdAt: DateTime.now(),
-            category: 'cat-1',
-          ),
-        ],
-      );
+    test('healthy when there is no income', () {
+      final result = summarize([
+        tx(
+          type: TransactionType.expense,
+          amount: 400,
+          categoryId: food.id,
+          paidDate: DateTime(2026, 10, 2),
+        ),
+      ]);
 
       expect(result.insight.type, DashboardInsightType.healthy);
     });

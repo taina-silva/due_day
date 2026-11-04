@@ -3,6 +3,7 @@ import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/date_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
+import 'package:due_day/features/categories/presentation/utils/category_l10n_extension.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:due_day/features/transactions/presentation/utils/transaction_type_extension.dart';
 import 'package:flutter/material.dart';
@@ -75,13 +76,7 @@ class TransactionFilterBar extends StatelessWidget {
                   onTap: () => onTypeChanged(TransactionType.expense),
                   activeColor: colors.system.error,
                 ),
-                SizedBox(width: spacing.small.width),
-                _FilterChip(
-                  label: l10n.transfer,
-                  isSelected: selectedType == TransactionType.transfer,
-                  onTap: () => onTypeChanged(TransactionType.transfer),
-                  activeColor: colors.resource.secondary,
-                ),
+                // No Transfer filter (TRX-001).
 
                 // Divider
                 Padding(
@@ -97,7 +92,9 @@ class TransactionFilterBar extends StatelessWidget {
 
                 // Category Filter
                 _FilterChip(
-                  label: selectedCategory?.name ?? l10n.category,
+                  label:
+                      l10n.categoryDisplayNameOrNull(selectedCategory) ??
+                      l10n.category,
                   isSelected: selectedCategoryId != null,
                   onTap: onCategoryTap,
                   icon: Icons.category_outlined,

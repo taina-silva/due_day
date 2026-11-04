@@ -47,10 +47,7 @@ class StatementImportConfirming extends StatementImportState {
   final AccountEntity account;
   final List<ImportReviewItem> items;
 
-  const StatementImportConfirming({
-    required this.account,
-    required this.items,
-  });
+  const StatementImportConfirming({required this.account, required this.items});
 
   @override
   List<Object?> get props => [account, items];

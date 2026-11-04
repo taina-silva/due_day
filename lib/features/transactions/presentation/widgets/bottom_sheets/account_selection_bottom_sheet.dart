@@ -1,15 +1,20 @@
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
+import 'package:due_day/features/accounts/domain/entities/account_category.dart';
+import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_load_bloc.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_load_state.dart';
 import 'package:due_day/features/accounts/presentation/utils/account_failure_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 class AccountSelectionBottomSheet extends StatelessWidget {
-  const AccountSelectionBottomSheet({super.key});
+  /// Accounts of this type are listed first; the rest stay selectable
+  /// (IMP-004).
+  final AccountCategory? preferredType;
+
+  const AccountSelectionBottomSheet({super.key, this.preferredType});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +23,6 @@ class AccountSelectionBottomSheet extends StatelessWidget {
     final spacing = context.spacing;
     final radius = context.radius;
     final l10n = AppLocalizations.of(context);
-    final localeStr = Localizations.localeOf(context).toString();
 
     return Container(
       padding: EdgeInsets.symmetric(vertical: spacing.mediumLarge.height),
@@ -64,7 +68,7 @@ class AccountSelectionBottomSheet extends StatelessWidget {
                       child: Text(state.failure.toLocalizedString(context)),
                     );
                   case AccountLoaded():
-                    final accounts = state.activeAccounts;
+                    final accounts = _sorted(state.activeAccounts);
 
                     if (accounts.isEmpty) {
                       return Center(
@@ -99,7 +103,7 @@ class AccountSelectionBottomSheet extends StatelessWidget {
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
-                              Icons.account_balance_rounded,
+                              acc.category.icon,
                               color: colors.resource.primary,
                               size: 20.width,
                             ),
@@ -108,14 +112,6 @@ class AccountSelectionBottomSheet extends StatelessWidget {
                           subtitle: Text(
                             acc.category.localizedName(l10n),
                             style: typography.label.medium,
-                          ),
-                          trailing: Text(
-                            NumberFormat.simpleCurrency(
-                              locale: localeStr,
-                            ).format(acc.balance),
-                            style: typography.body.large.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
                           ),
                           onTap: () => Navigator.pop(context, acc),
                         );
@@ -130,5 +126,14 @@ class AccountSelectionBottomSheet extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  List<AccountEntity> _sorted(List<AccountEntity> accounts) {
+    final type = preferredType;
+    if (type == null) return accounts;
+    return [
+      ...accounts.where((a) => a.category == type),
+      ...accounts.where((a) => a.category != type),
+    ];
   }
 }

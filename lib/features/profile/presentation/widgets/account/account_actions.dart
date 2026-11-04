@@ -1,8 +1,15 @@
 import 'package:due_day/core/design_system/components/messenger/app_messenger.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
+import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_event.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
+import 'package:due_day/features/categories/presentation/bloc/category_load_event.dart';
+import 'package:due_day/features/categories/presentation/utils/category_l10n_extension.dart';
+import 'package:due_day/features/profile/presentation/bloc/user_data_action_bloc.dart';
+import 'package:due_day/features/profile/presentation/bloc/user_data_action_event.dart';
+import 'package:due_day/features/profile/presentation/bloc/user_data_action_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -17,64 +24,88 @@ class AccountActions extends StatelessWidget {
     final typography = context.typography;
     final radius = context.radius;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: context.surfaceColor,
-        borderRadius: BorderRadius.circular(radius.extraLarge),
-      ),
-      child: Column(
-        children: [
-          ListTile(
-            leading: Icon(
-              Icons.logout,
-              color: context.onSurfaceColor.withValues(alpha: 0.5),
-            ),
-            title: Text(
-              l10n.profileLogOut,
-              style: typography.body.large.copyWith(
-                fontWeight: FontWeight.bold,
-                color: context.onSurfaceColor,
+    return BlocConsumer<UserDataActionBloc, UserDataActionState>(
+      listener: (context, state) {
+        if (state is UserDataActionSuccess) {
+          AppMessenger.showSuccess(context, l10n.profileDeleteAllDataSuccess);
+          // Recreate the default categories right away (SET-001, CAT-004).
+          context.read<CategoryLoadBloc>().add(
+            LoadCategories(defaultNames: l10n.defaultCategoryNames),
+          );
+        } else if (state is UserDataActionError) {
+          AppMessenger.showError(context, l10n.profileDeleteAllDataError);
+        }
+      },
+      builder: (context, state) {
+        final isDeleting = state is UserDataActionInProgress;
+
+        return Container(
+          decoration: BoxDecoration(
+            color: context.surfaceColor,
+            borderRadius: BorderRadius.circular(radius.extraLarge),
+          ),
+          child: Column(
+            children: [
+              ListTile(
+                leading: Icon(
+                  Icons.logout,
+                  color: context.onSurfaceColor.withValues(alpha: 0.5),
+                ),
+                title: Text(
+                  l10n.profileLogOut,
+                  style: typography.body.large.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: context.onSurfaceColor,
+                  ),
+                ),
+                trailing: Icon(
+                  Icons.chevron_right,
+                  color: context.onSurfaceColor.withValues(alpha: 0.3),
+                ),
+                onTap: () => context.read<AuthBloc>().add(AuthSignOutEvent()),
               ),
-            ),
-            trailing: Icon(
-              Icons.chevron_right,
-              color: context.onSurfaceColor.withValues(alpha: 0.3),
-            ),
-            onTap: () => context.read<AuthBloc>().add(AuthSignOutEvent()),
-          ),
-          Divider(
-            height: 1,
-            color: colors.resource.secondary.withValues(alpha: 0.1),
-          ),
-          ListTile(
-            leading: Icon(
-              Icons.delete_forever,
-              color: colors.system.error.withValues(alpha: 0.7),
-            ),
-            title: Text(
-              l10n.profileDeleteAccount,
-              style: typography.body.large.copyWith(
-                fontWeight: FontWeight.bold,
-                color: colors.system.error,
+              Divider(
+                height: 1,
+                color: colors.resource.secondary.withValues(alpha: 0.1),
               ),
-            ),
-            trailing: Icon(
-              Icons.chevron_right,
-              color: colors.system.error.withValues(alpha: 0.3),
-            ),
-            onTap: () => _showDeleteDialog(context, l10n),
+              ListTile(
+                enabled: !isDeleting,
+                leading: Icon(
+                  Icons.delete_forever,
+                  color: colors.system.error.withValues(alpha: 0.7),
+                ),
+                title: Text(
+                  l10n.profileDeleteAllData,
+                  style: typography.body.large.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: colors.system.error,
+                  ),
+                ),
+                trailing: isDeleting
+                    ? SizedBox.square(
+                        dimension: context.sizes.iconMedium.scale,
+                        child: const CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Icon(
+                        Icons.chevron_right,
+                        color: colors.system.error.withValues(alpha: 0.3),
+                      ),
+                onTap: () => _showDeleteDialog(context, l10n),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
+  /// Confirms "Delete all my data" (SET-001). Cancelling deletes nothing.
   void _showDeleteDialog(BuildContext context, AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (cntx) => AlertDialog(
-        title: Text(l10n.profileConfirmDeleteTitle),
-        content: Text(l10n.profileConfirmDeleteDesc),
+        title: Text(l10n.profileDeleteAllDataTitle),
+        content: Text(l10n.profileDeleteAllDataConfirm),
         actions: [
           TextButton(
             onPressed: () => cntx.pop(),
@@ -83,7 +114,9 @@ class AccountActions extends StatelessWidget {
           TextButton(
             onPressed: () {
               cntx.pop();
-              AppMessenger.showError(context, l10n.profileExcludeDevAlert);
+              context.read<UserDataActionBloc>().add(
+                const DeleteAllUserDataRequested(),
+              );
             },
             child: Text(
               l10n.profileExclude,

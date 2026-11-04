@@ -194,9 +194,7 @@ void main() {
           ).thenAnswer((_) => controllerB.stream);
 
           final emissions = <List<CategoryModel>>[];
-          final subscription = dataSource.getCategories().listen(
-            emissions.add,
-          );
+          final subscription = dataSource.getCategories().listen(emissions.add);
 
           authStateController.add(mockUser); // user-1
           await Future.delayed(Duration.zero);

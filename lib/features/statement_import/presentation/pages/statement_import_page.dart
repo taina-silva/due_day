@@ -13,6 +13,7 @@ import 'package:due_day/features/categories/domain/entities/category_entity.dart
 import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_event.dart';
 import 'package:due_day/features/statement_import/domain/entities/import_review_item.dart';
+import 'package:due_day/features/statement_import/domain/entities/parsed_statement_transaction.dart';
 import 'package:due_day/features/statement_import/presentation/bloc/statement_import_bloc.dart';
 import 'package:due_day/features/statement_import/presentation/bloc/statement_import_event.dart';
 import 'package:due_day/features/statement_import/presentation/bloc/statement_import_state.dart';
@@ -39,7 +40,7 @@ class _StatementImportPageState extends State<StatementImportPage> {
     super.initState();
     _bloc = di.sl<StatementImportBloc>();
     context.read<AccountLoadBloc>().add(LoadAccounts());
-    context.read<CategoryLoadBloc>().add(LoadCategories());
+    context.read<CategoryLoadBloc>().add(const LoadCategories());
   }
 
   @override
@@ -57,7 +58,7 @@ class _StatementImportPageState extends State<StatementImportPage> {
       child: BlocConsumer<StatementImportBloc, StatementImportState>(
         listener: (context, state) {
           if (state is StatementImportAwaitingAccount) {
-            _openAccountPicker(context);
+            _openAccountPicker(context, state.parsed);
           } else if (state is StatementImportSuccess) {
             _isSubmitting = false;
             AppMessenger.showSuccess(
@@ -105,8 +106,7 @@ class _StatementImportPageState extends State<StatementImportPage> {
       case StatementImportReviewing():
         return ImportReviewList(
           items: state.items,
-          onToggleSelected: (index) =>
-              _bloc.add(ItemSelectionToggled(index)),
+          onToggleSelected: (index) => _bloc.add(ItemSelectionToggled(index)),
           onTapCategory: (index) => _openCategoryPicker(context, index, state),
         );
       case StatementImportInitial():
@@ -197,7 +197,10 @@ class _StatementImportPageState extends State<StatementImportPage> {
     );
   }
 
-  Future<void> _openAccountPicker(BuildContext context) async {
+  Future<void> _openAccountPicker(
+    BuildContext context,
+    List<ParsedStatementTransaction> parsed,
+  ) async {
     // No `backgroundColor: Colors.transparent` here: unlike
     // CategorySelectionBottomSheet, AccountSelectionBottomSheet paints no
     // background of its own — a transparent modal background left the
@@ -206,7 +209,11 @@ class _StatementImportPageState extends State<StatementImportPage> {
       context: context,
       isScrollControlled: true,
       useRootNavigator: true,
-      builder: (_) => const AccountSelectionBottomSheet(),
+      builder: (_) => AccountSelectionBottomSheet(
+        preferredType: parsed.isEmpty
+            ? null
+            : parsed.first.format.matchingAccountType,
+      ),
     );
 
     if (!mounted) return;

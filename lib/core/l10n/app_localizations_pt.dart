@@ -17,13 +17,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get dashboardMonthlySummary => 'Resumo Mensal';
 
   @override
-  String get dashboardGeneralBalance => 'Saldo Geral';
-
-  @override
   String get dashboardIncomes => 'Receitas';
-
-  @override
-  String get dashboardExpenses => 'Despesas';
 
   @override
   String get dashboardUpcomingDues => 'Próximos Vencimentos';
@@ -41,9 +35,6 @@ class AppLocalizationsPt extends AppLocalizations {
   String dashboardDueInDays(int days) {
     return 'Vence em $days dias';
   }
-
-  @override
-  String get dashboardProjectedBalance => 'Saldo Projetado';
 
   @override
   String get dashboardCategorySpending => 'Gastos por Categoria';
@@ -168,19 +159,7 @@ class AppLocalizationsPt extends AppLocalizations {
   String get accountsNameHint => 'Nome da conta';
 
   @override
-  String get accountsBalanceLabel => 'SALDO INICIAL';
-
-  @override
   String get accountsCategoryLabel => 'CATEGORIA';
-
-  @override
-  String get accountsCategoryInvestments => 'Investimentos';
-
-  @override
-  String get accountsCategorySavings => 'Poupança';
-
-  @override
-  String get accountsCategoryDailyUse => 'Uso Diário';
 
   @override
   String get accountsSaveAccount => 'Salvar Conta';
@@ -285,20 +264,10 @@ class AppLocalizationsPt extends AppLocalizations {
   String get profilePremiumMember => 'MEMBRO PREMIUM';
 
   @override
-  String get profileConfirmDeleteTitle => 'Confirmar exclusão';
-
-  @override
-  String get profileConfirmDeleteDesc =>
-      'Deseja realmente excluir sua conta permanentemente? Esta ação não tem retorno.';
-
-  @override
   String get profileCancel => 'Cancelar';
 
   @override
   String get profileExclude => 'Excluir';
-
-  @override
-  String get profileExcludeDevAlert => 'Função de exclusão em desenvolvimento.';
 
   @override
   String get profileLanguage => 'Idioma';
@@ -320,9 +289,6 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get profileLogOut => 'Sair da Conta';
-
-  @override
-  String get profileDeleteAccount => 'Deletar Conta';
 
   @override
   String get profileSecurity => 'Segurança Biométrica';
@@ -883,4 +849,100 @@ class AppLocalizationsPt extends AppLocalizations {
   @override
   String get scheduleActionErrorFallback =>
       'Falha ao atualizar sua agenda. Tente novamente.';
+
+  @override
+  String get accountsCategoryChecking => 'Conta corrente';
+
+  @override
+  String get accountsCategoryCash => 'Dinheiro';
+
+  @override
+  String get accountsDueDayInvalid =>
+      'Informe um dia de vencimento entre 1 e 31.';
+
+  @override
+  String accountsDueDayValue(int day) {
+    return 'Vence dia $day';
+  }
+
+  @override
+  String get categoriesSystemInvestment => 'Investimento';
+
+  @override
+  String get categoriesSystemIgnored => 'Ignorado';
+
+  @override
+  String get categoriesSystemProtected =>
+      'Categoria do sistema: não pode ser renomeada nem excluída.';
+
+  @override
+  String get categoriesDefaultFood => 'Alimentação';
+
+  @override
+  String get categoriesDefaultGroceries => 'Mercado';
+
+  @override
+  String get categoriesDefaultTransport => 'Transporte';
+
+  @override
+  String get categoriesDefaultHousing => 'Moradia';
+
+  @override
+  String get categoriesDefaultBills => 'Contas';
+
+  @override
+  String get categoriesDefaultHealth => 'Saúde';
+
+  @override
+  String get categoriesDefaultLeisure => 'Lazer';
+
+  @override
+  String get categoriesDefaultShopping => 'Compras';
+
+  @override
+  String get categoriesDefaultSubscriptions => 'Assinaturas';
+
+  @override
+  String get categoriesDefaultEducation => 'Educação';
+
+  @override
+  String get categoriesDefaultOther => 'Outros';
+
+  @override
+  String get categoriesDefaultSalary => 'Salário';
+
+  @override
+  String get categoriesDefaultOtherIncome => 'Outras receitas';
+
+  @override
+  String get dashboardPreviousMonth => 'Mês anterior';
+
+  @override
+  String get dashboardNextMonth => 'Próximo mês';
+
+  @override
+  String get dashboardSpent => 'Gasto';
+
+  @override
+  String get dashboardInvested => 'Investido';
+
+  @override
+  String get dashboardUncategorized => 'Sem categoria';
+
+  @override
+  String get profileDeleteAllData => 'Apagar todos os meus dados';
+
+  @override
+  String get profileDeleteAllDataTitle => 'Apagar todos os seus dados?';
+
+  @override
+  String get profileDeleteAllDataConfirm =>
+      'Todas as suas contas, categorias e transações serão apagadas. Seu login e suas preferências continuam. Isso não pode ser desfeito.';
+
+  @override
+  String get profileDeleteAllDataSuccess => 'Seus dados foram apagados.';
+
+  @override
+  String get profileDeleteAllDataError =>
+      'Não foi possível apagar seus dados. Tente novamente.';
 }

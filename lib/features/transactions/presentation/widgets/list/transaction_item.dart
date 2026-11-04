@@ -2,6 +2,7 @@ import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
+import 'package:due_day/features/categories/presentation/utils/category_l10n_extension.dart';
 import 'package:due_day/features/categories/presentation/utils/category_utils.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,7 @@ class TransactionItem extends StatelessWidget {
     final l10n = context.l10n;
 
     final isExpense = transaction.type == TransactionType.expense;
-    final categoryName = category?.name;
+    final categoryName = l10n.categoryDisplayNameOrNull(category);
     final noteText = transaction.notes;
 
     final String title;

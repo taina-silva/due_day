@@ -2,6 +2,7 @@ import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
+import 'package:due_day/features/categories/presentation/utils/category_l10n_extension.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:due_day/features/transactions/presentation/utils/transaction_type_extension.dart';
 import 'package:due_day/features/transactions/presentation/widgets/bottom_sheets/category_selection_bottom_sheet.dart';
@@ -139,7 +140,7 @@ class _TransactionFilterBottomSheetState
           // Category Filter
           TransactionSelectionField(
             label: l10n.category,
-            value: selectedCategory?.name ?? l10n.all,
+            value: l10n.categoryDisplayNameOrNull(selectedCategory) ?? l10n.all,
             icon: Icons.category_outlined,
             onTap: () async {
               final result = await showModalBottomSheet<dynamic>(

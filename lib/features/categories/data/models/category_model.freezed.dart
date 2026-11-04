@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CategoryModel {
 
- String get id; String get userId; String get name; String get color; String get icon;@TimestampConverter() DateTime get createdAt; int get transactionCount;
+ String get id; String get userId; String get name; String get color; String get icon;@TimestampConverter() DateTime get createdAt; int get transactionCount;@JsonKey(unknownEnumValue: CategoryKind.spending) CategoryKind get kind;
 /// Create a copy of CategoryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $CategoryModelCopyWith<CategoryModel> get copyWith => _$CategoryModelCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CategoryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.name, name) || other.name == name)&&(identical(other.color, color) || other.color == color)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.transactionCount, transactionCount) || other.transactionCount == transactionCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CategoryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.name, name) || other.name == name)&&(identical(other.color, color) || other.color == color)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.transactionCount, transactionCount) || other.transactionCount == transactionCount)&&(identical(other.kind, kind) || other.kind == kind));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,name,color,icon,createdAt,transactionCount);
+int get hashCode => Object.hash(runtimeType,id,userId,name,color,icon,createdAt,transactionCount,kind);
 
 @override
 String toString() {
-  return 'CategoryModel(id: $id, userId: $userId, name: $name, color: $color, icon: $icon, createdAt: $createdAt, transactionCount: $transactionCount)';
+  return 'CategoryModel(id: $id, userId: $userId, name: $name, color: $color, icon: $icon, createdAt: $createdAt, transactionCount: $transactionCount, kind: $kind)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $CategoryModelCopyWith<$Res>  {
   factory $CategoryModelCopyWith(CategoryModel value, $Res Function(CategoryModel) _then) = _$CategoryModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String userId, String name, String color, String icon,@TimestampConverter() DateTime createdAt, int transactionCount
+ String id, String userId, String name, String color, String icon,@TimestampConverter() DateTime createdAt, int transactionCount,@JsonKey(unknownEnumValue: CategoryKind.spending) CategoryKind kind
 });
 
 
@@ -65,7 +65,7 @@ class _$CategoryModelCopyWithImpl<$Res>
 
 /// Create a copy of CategoryModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? name = null,Object? color = null,Object? icon = null,Object? createdAt = null,Object? transactionCount = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? name = null,Object? color = null,Object? icon = null,Object? createdAt = null,Object? transactionCount = null,Object? kind = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
@@ -74,7 +74,8 @@ as String,color: null == color ? _self.color : color // ignore: cast_nullable_to
 as String,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,transactionCount: null == transactionCount ? _self.transactionCount : transactionCount // ignore: cast_nullable_to_non_nullable
-as int,
+as int,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
+as CategoryKind,
   ));
 }
 
@@ -159,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String userId,  String name,  String color,  String icon, @TimestampConverter()  DateTime createdAt,  int transactionCount)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String userId,  String name,  String color,  String icon, @TimestampConverter()  DateTime createdAt,  int transactionCount, @JsonKey(unknownEnumValue: CategoryKind.spending)  CategoryKind kind)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CategoryModel() when $default != null:
-return $default(_that.id,_that.userId,_that.name,_that.color,_that.icon,_that.createdAt,_that.transactionCount);case _:
+return $default(_that.id,_that.userId,_that.name,_that.color,_that.icon,_that.createdAt,_that.transactionCount,_that.kind);case _:
   return orElse();
 
 }
@@ -180,10 +181,10 @@ return $default(_that.id,_that.userId,_that.name,_that.color,_that.icon,_that.cr
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String userId,  String name,  String color,  String icon, @TimestampConverter()  DateTime createdAt,  int transactionCount)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String userId,  String name,  String color,  String icon, @TimestampConverter()  DateTime createdAt,  int transactionCount, @JsonKey(unknownEnumValue: CategoryKind.spending)  CategoryKind kind)  $default,) {final _that = this;
 switch (_that) {
 case _CategoryModel():
-return $default(_that.id,_that.userId,_that.name,_that.color,_that.icon,_that.createdAt,_that.transactionCount);case _:
+return $default(_that.id,_that.userId,_that.name,_that.color,_that.icon,_that.createdAt,_that.transactionCount,_that.kind);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +201,10 @@ return $default(_that.id,_that.userId,_that.name,_that.color,_that.icon,_that.cr
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String userId,  String name,  String color,  String icon, @TimestampConverter()  DateTime createdAt,  int transactionCount)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String userId,  String name,  String color,  String icon, @TimestampConverter()  DateTime createdAt,  int transactionCount, @JsonKey(unknownEnumValue: CategoryKind.spending)  CategoryKind kind)?  $default,) {final _that = this;
 switch (_that) {
 case _CategoryModel() when $default != null:
-return $default(_that.id,_that.userId,_that.name,_that.color,_that.icon,_that.createdAt,_that.transactionCount);case _:
+return $default(_that.id,_that.userId,_that.name,_that.color,_that.icon,_that.createdAt,_that.transactionCount,_that.kind);case _:
   return null;
 
 }
@@ -215,7 +216,7 @@ return $default(_that.id,_that.userId,_that.name,_that.color,_that.icon,_that.cr
 @JsonSerializable()
 
 class _CategoryModel extends CategoryModel {
-  const _CategoryModel({required this.id, required this.userId, required this.name, required this.color, required this.icon, @TimestampConverter() required this.createdAt, this.transactionCount = 0}): super._();
+  const _CategoryModel({required this.id, required this.userId, required this.name, required this.color, required this.icon, @TimestampConverter() required this.createdAt, this.transactionCount = 0, @JsonKey(unknownEnumValue: CategoryKind.spending) this.kind = CategoryKind.spending}): super._();
   factory _CategoryModel.fromJson(Map<String, dynamic> json) => _$CategoryModelFromJson(json);
 
 @override final  String id;
@@ -225,6 +226,7 @@ class _CategoryModel extends CategoryModel {
 @override final  String icon;
 @override@TimestampConverter() final  DateTime createdAt;
 @override@JsonKey() final  int transactionCount;
+@override@JsonKey(unknownEnumValue: CategoryKind.spending) final  CategoryKind kind;
 
 /// Create a copy of CategoryModel
 /// with the given fields replaced by the non-null parameter values.
@@ -239,16 +241,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CategoryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.name, name) || other.name == name)&&(identical(other.color, color) || other.color == color)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.transactionCount, transactionCount) || other.transactionCount == transactionCount));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CategoryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.name, name) || other.name == name)&&(identical(other.color, color) || other.color == color)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.transactionCount, transactionCount) || other.transactionCount == transactionCount)&&(identical(other.kind, kind) || other.kind == kind));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,name,color,icon,createdAt,transactionCount);
+int get hashCode => Object.hash(runtimeType,id,userId,name,color,icon,createdAt,transactionCount,kind);
 
 @override
 String toString() {
-  return 'CategoryModel(id: $id, userId: $userId, name: $name, color: $color, icon: $icon, createdAt: $createdAt, transactionCount: $transactionCount)';
+  return 'CategoryModel(id: $id, userId: $userId, name: $name, color: $color, icon: $icon, createdAt: $createdAt, transactionCount: $transactionCount, kind: $kind)';
 }
 
 
@@ -259,7 +261,7 @@ abstract mixin class _$CategoryModelCopyWith<$Res> implements $CategoryModelCopy
   factory _$CategoryModelCopyWith(_CategoryModel value, $Res Function(_CategoryModel) _then) = __$CategoryModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String userId, String name, String color, String icon,@TimestampConverter() DateTime createdAt, int transactionCount
+ String id, String userId, String name, String color, String icon,@TimestampConverter() DateTime createdAt, int transactionCount,@JsonKey(unknownEnumValue: CategoryKind.spending) CategoryKind kind
 });
 
 
@@ -276,7 +278,7 @@ class __$CategoryModelCopyWithImpl<$Res>
 
 /// Create a copy of CategoryModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? name = null,Object? color = null,Object? icon = null,Object? createdAt = null,Object? transactionCount = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? name = null,Object? color = null,Object? icon = null,Object? createdAt = null,Object? transactionCount = null,Object? kind = null,}) {
   return _then(_CategoryModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
@@ -285,7 +287,8 @@ as String,color: null == color ? _self.color : color // ignore: cast_nullable_to
 as String,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,transactionCount: null == transactionCount ? _self.transactionCount : transactionCount // ignore: cast_nullable_to_non_nullable
-as int,
+as int,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
+as CategoryKind,
   ));
 }
 

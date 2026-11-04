@@ -3,7 +3,13 @@ import 'package:equatable/equatable.dart';
 enum TransactionType {
   income,
   expense,
+
+  /// Legacy only (TRX-001, TRX-002): still loads from stored documents but
+  /// can't be created and counts in no total.
   transfer;
+
+  /// Types the user can create or filter by (TRX-001).
+  static const List<TransactionType> selectable = [income, expense];
 
   static TransactionType fromString(String value) {
     return TransactionType.values.firstWhere(
@@ -32,8 +38,7 @@ class TransactionEntity extends Equatable {
   final String id;
   final String userId;
   final TransactionType type;
-  final double
-  amount; // Always positive. Impact on balance depends on transaction type.
+  final double amount; // Always positive; the sign comes from [type].
   final String? category; // reference to categoryId (if income/expense)
   final String? accountFrom; // accountId (if expense or transfer)
   final String? accountTo; // accountId (if income or transfer)
@@ -45,7 +50,8 @@ class TransactionEntity extends Equatable {
   final String? notes;
   final String? parentRecurringId;
   final DateTime createdAt;
-  final String? externalId; // composite dedup key set only on imported transactions
+  final String?
+  externalId; // composite dedup key set only on imported transactions
   final String? importSource; // 'ofx' | 'csv'; null for manual entries
 
   const TransactionEntity({
@@ -67,6 +73,10 @@ class TransactionEntity extends Equatable {
     this.externalId,
     this.importSource,
   });
+
+  /// The date the transaction belongs to (TRX-003): `paidDate`, else
+  /// `dueDate`, else `createdAt`. Month grouping uses this date only.
+  DateTime get effectiveDate => paidDate ?? dueDate ?? createdAt;
 
   TransactionEntity copyWith({
     String? id,

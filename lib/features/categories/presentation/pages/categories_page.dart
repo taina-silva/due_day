@@ -106,6 +106,8 @@ class CategoriesPage extends StatelessWidget {
                     color: color,
                     icon: icon,
                     createdAt: category.createdAt,
+                    transactionCount: category.transactionCount,
+                    kind: category.kind,
                   ),
                 ),
               );

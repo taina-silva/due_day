@@ -8,6 +8,9 @@ import 'package:due_day/core/settings/settings_state.dart';
 import 'package:due_day/features/auth/domain/entities/user_entity.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:due_day/features/auth/presentation/bloc/auth_state.dart';
+import 'package:due_day/features/profile/presentation/bloc/user_data_action_bloc.dart';
+import 'package:due_day/features/profile/presentation/bloc/user_data_action_event.dart';
+import 'package:due_day/features/profile/presentation/bloc/user_data_action_state.dart';
 import 'package:due_day/features/profile/presentation/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,12 +25,21 @@ class MockSettingsBloc extends MockBloc<SettingsEvent, SettingsState>
 
 class MockSecurityService extends Mock implements SecurityService {}
 
+class MockUserDataActionBloc
+    extends MockBloc<UserDataActionEvent, UserDataActionState>
+    implements UserDataActionBloc {}
+
 void main() {
   late MockAuthBloc mockAuthBloc;
   late MockSettingsBloc mockSettingsBloc;
   late MockSecurityService mockSecurityService;
+  late MockUserDataActionBloc mockUserDataActionBloc;
 
   setUp(() {
+    mockUserDataActionBloc = MockUserDataActionBloc();
+    when(
+      () => mockUserDataActionBloc.state,
+    ).thenReturn(const UserDataActionInitial());
     mockAuthBloc = MockAuthBloc();
     mockSettingsBloc = MockSettingsBloc();
     mockSecurityService = MockSecurityService();
@@ -79,6 +91,7 @@ void main() {
       providers: [
         BlocProvider<AuthBloc>.value(value: mockAuthBloc),
         BlocProvider<SettingsBloc>.value(value: mockSettingsBloc),
+        BlocProvider<UserDataActionBloc>.value(value: mockUserDataActionBloc),
       ],
       child: MaterialApp.router(
         routerConfig: router,
@@ -123,7 +136,7 @@ void main() {
 
         // Verify actions
         expect(find.text('Log Out'), findsOneWidget);
-        expect(find.text('Delete Account'), findsOneWidget);
+        expect(find.text('Delete all my data'), findsOneWidget);
       },
     );
   });

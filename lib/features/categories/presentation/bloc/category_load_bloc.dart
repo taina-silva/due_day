@@ -1,17 +1,27 @@
 import 'dart:async';
 
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
+import 'package:due_day/features/categories/domain/entities/default_category_names.dart';
 import 'package:due_day/features/categories/domain/usecases/category_usecases.dart';
+import 'package:due_day/features/categories/domain/usecases/ensure_categories.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_event.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CategoryLoadBloc extends Bloc<CategoryLoadEvent, CategoryLoadState> {
   final GetCategories getCategories;
+  final EnsureCategories ensureCategories;
 
   StreamSubscription? _categoriesSubscription;
 
-  CategoryLoadBloc({required this.getCategories}) : super(CategoryInitial()) {
+  /// Set by a [LoadCategories] carrying names; consumed by the first
+  /// loaded list so `EnsureCategories` runs once per load (CAT-004).
+  DefaultCategoryNames? _pendingEnsureNames;
+
+  CategoryLoadBloc({
+    required this.getCategories,
+    required this.ensureCategories,
+  }) : super(CategoryInitial()) {
     on<LoadCategories>(_onLoadCategories);
     on<CategoriesUpdated>(_onCategoriesUpdated);
     on<CategoryLoadFailed>(_onCategoryLoadFailed);
@@ -21,6 +31,7 @@ class CategoryLoadBloc extends Bloc<CategoryLoadEvent, CategoryLoadState> {
     LoadCategories event,
     Emitter<CategoryLoadState> emit,
   ) {
+    if (event.defaultNames != null) _pendingEnsureNames = event.defaultNames;
     emit(CategoryLoading());
     _categoriesSubscription?.cancel();
     _categoriesSubscription = getCategories().listen((result) {
@@ -45,6 +56,15 @@ class CategoryLoadBloc extends Bloc<CategoryLoadEvent, CategoryLoadState> {
     final sortedCategories = List<CategoryEntity>.from(event.categories)
       ..sort((a, b) => b.transactionCount.compareTo(a.transactionCount));
     emit(CategoryLoaded(categories: sortedCategories));
+
+    // Seed after emitting and without awaiting: the batch commit only
+    // completes on server ack, and the stream already delivers the created
+    // categories. Awaiting here would re-emit this stale list afterwards.
+    final names = _pendingEnsureNames;
+    if (names != null) {
+      _pendingEnsureNames = null;
+      unawaited(ensureCategories(existing: event.categories, names: names));
+    }
   }
 
   @override

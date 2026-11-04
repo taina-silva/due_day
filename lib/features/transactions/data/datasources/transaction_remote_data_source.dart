@@ -179,52 +179,55 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
     // own collection whenever the auth session changes, so a listener from
     // a previous account never lingers (and never trips permission-denied)
     // after logout/login.
-    return firebaseAuth.authStateChanges().switchMap((user) {
-      if (user == null) {
-        return Stream<List<TransactionModel>>.value(const []);
-      }
+    return firebaseAuth
+        .authStateChanges()
+        .switchMap((user) {
+          if (user == null) {
+            return Stream<List<TransactionModel>>.value(const []);
+          }
 
-      Query<Map<String, dynamic>> query = firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('transactions');
+          Query<Map<String, dynamic>> query = firestore
+              .collection('users')
+              .doc(user.uid)
+              .collection('transactions');
 
-      if (startDate != null) {
-        query = query.where(
-          'createdAt',
-          isGreaterThanOrEqualTo: startDate.toIso8601String(),
-        );
-      }
-      if (endDate != null) {
-        query = query.where(
-          'createdAt',
-          isLessThanOrEqualTo: endDate.toIso8601String(),
-        );
-      }
-      if (categoryId != null) {
-        query = query.where('category', isEqualTo: categoryId);
-      }
-      if (type != null) {
-        query = query.where('type', isEqualTo: type);
-      }
-      if (frequency != null) {
-        query = query.where('frequency', isEqualTo: frequency);
-      }
+          if (startDate != null) {
+            query = query.where(
+              'createdAt',
+              isGreaterThanOrEqualTo: startDate.toIso8601String(),
+            );
+          }
+          if (endDate != null) {
+            query = query.where(
+              'createdAt',
+              isLessThanOrEqualTo: endDate.toIso8601String(),
+            );
+          }
+          if (categoryId != null) {
+            query = query.where('category', isEqualTo: categoryId);
+          }
+          if (type != null) {
+            query = query.where('type', isEqualTo: type);
+          }
+          if (frequency != null) {
+            query = query.where('frequency', isEqualTo: frequency);
+          }
 
-      return query.snapshots().map((snapshot) {
-        return snapshot.docs
-            .map((doc) => TransactionModel.fromJson(doc.data()))
-            .toList();
-      });
-    }).handleError((Object e) {
-      if (e is FirebaseException) {
-        throw ServerException(
-          e.message ?? 'Failed to fetch transactions.',
-          e.code,
-        );
-      }
-      throw ServerException('Failed to fetch transactions: $e');
-    });
+          return query.snapshots().map((snapshot) {
+            return snapshot.docs
+                .map((doc) => TransactionModel.fromJson(doc.data()))
+                .toList();
+          });
+        })
+        .handleError((Object e) {
+          if (e is FirebaseException) {
+            throw ServerException(
+              e.message ?? 'Failed to fetch transactions.',
+              e.code,
+            );
+          }
+          throw ServerException('Failed to fetch transactions: $e');
+        });
   }
 
   @override
@@ -232,7 +235,8 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
     List<TransactionModel> transactions,
   ) async {
     try {
-      const chunkSize = 450; // headroom under Firestore's 500-writes-per-batch cap
+      const chunkSize =
+          450; // headroom under Firestore's 500-writes-per-batch cap
       final categoryDeltas = <String, int>{};
 
       for (var i = 0; i < transactions.length; i += chunkSize) {
@@ -257,9 +261,11 @@ class TransactionRemoteDataSourceImpl implements TransactionRemoteDataSource {
       if (categoryDeltas.isNotEmpty) {
         final counterBatch = firestore.batch();
         for (final entry in categoryDeltas.entries) {
-          counterBatch.update(_categoriesCollection.doc(entry.key), {
+          // merge: a missing category doc (e.g. *Ignored* not seeded yet)
+          // must not fail an import whose transactions are already written.
+          counterBatch.set(_categoriesCollection.doc(entry.key), {
             'transactionCount': FieldValue.increment(entry.value),
-          });
+          }, SetOptions(merge: true));
         }
         await counterBatch.commit();
       }

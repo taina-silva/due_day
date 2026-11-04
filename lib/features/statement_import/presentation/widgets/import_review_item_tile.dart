@@ -1,6 +1,8 @@
 import 'package:due_day/core/design_system/theme/theme.dart';
+import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
+import 'package:due_day/features/categories/domain/entities/system_categories.dart';
 import 'package:due_day/features/statement_import/domain/entities/import_review_item.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -27,8 +29,7 @@ class ImportReviewItemTile extends StatelessWidget {
 
     final parsed = item.parsed;
     final isExpense = parsed.amount < 0;
-    final isAlreadyImported =
-        item.status == ImportReviewStatus.alreadyImported;
+    final isAlreadyImported = item.status == ImportReviewStatus.alreadyImported;
     final amountColor = isAlreadyImported
         ? colors.resource.secondary
         : (isExpense ? colors.system.error : colors.system.success);
@@ -56,7 +57,9 @@ class ImportReviewItemTile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    parsed.memo.isNotEmpty ? parsed.memo : l10n.defaultTransaction,
+                    parsed.memo.isNotEmpty
+                        ? parsed.memo
+                        : l10n.defaultTransaction,
                     style: typography.body.medium.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -80,13 +83,11 @@ class ImportReviewItemTile extends StatelessWidget {
                           vertical: 2.height,
                         ),
                         decoration: BoxDecoration(
-                          color: colors.resource.primary.withValues(
-                            alpha: 0.1,
-                          ),
+                          color: colors.resource.primary.withValues(alpha: 0.1),
                           borderRadius: BorderRadius.circular(radius.circle),
                         ),
                         child: Text(
-                          item.categoryName ?? l10n.statementImportSelectCategory,
+                          _categoryLabel(l10n),
                           style: typography.label.small.copyWith(
                             color: colors.resource.primary,
                             fontWeight: FontWeight.w600,
@@ -110,5 +111,17 @@ class ImportReviewItemTile extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  /// System categories are named from their kind (CAT-002), including the
+  /// pre-selected *Ignored* (IMP-008).
+  String _categoryLabel(AppLocalizations l10n) {
+    switch (item.categoryId) {
+      case SystemCategories.investmentId:
+        return l10n.categoriesSystemInvestment;
+      case SystemCategories.ignoredId:
+        return l10n.categoriesSystemIgnored;
+    }
+    return item.categoryName ?? l10n.statementImportSelectCategory;
   }
 }

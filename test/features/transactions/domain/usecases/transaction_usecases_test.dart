@@ -1,6 +1,5 @@
 import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
-import 'package:due_day/features/transactions/domain/errors/transaction_failures.dart';
 import 'package:due_day/features/transactions/domain/usecases/transaction_usecases.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fpdart/fpdart.dart';
@@ -14,7 +13,6 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(tTransactionEntity);
-    registerFallbackValue(tAccountEntity);
   });
 
   setUp(() {
@@ -24,74 +22,26 @@ void main() {
 
   group('AddTransaction', () {
     test(
-      'should add the transaction and update account balance when paid',
+      'TRX-004: adding a paid expense writes only the transaction',
       () async {
-        final usecase = AddTransaction(
-          mockTransactionRepository,
-          mockAccountRepository,
-        );
+        final usecase = AddTransaction(mockTransactionRepository);
         when(
           () => mockTransactionRepository.addTransaction(any()),
         ).thenAnswer((_) async => Right(tTransactionEntity));
-        when(
-          () => mockAccountRepository.getAccountById('acc-1'),
-        ).thenAnswer((_) async => Right(tAccountEntity));
-        when(
-          () => mockAccountRepository.updateAccount(any()),
-        ).thenAnswer((_) async => Right(tAccountEntity));
 
         final result = await usecase(tTransactionEntity);
 
+        expect(tTransactionEntity.paid, isTrue);
         expect(result, Right(tTransactionEntity));
         verify(
           () => mockTransactionRepository.addTransaction(tTransactionEntity),
         ).called(1);
-        verify(() => mockAccountRepository.getAccountById('acc-1')).called(1);
-        verify(
-          () => mockAccountRepository.updateAccount(
-            any(
-              that: predicate<dynamic>(
-                (a) => a.balance == tAccountEntity.balance - 50.0,
-              ),
-            ),
-          ),
-        ).called(1);
+        verifyZeroInteractions(mockAccountRepository);
       },
     );
 
-    test(
-      'should not touch account balance when transaction is unpaid',
-      () async {
-        final unpaidTx = TransactionEntity(
-          id: 'transaction-2',
-          userId: 'user-1',
-          type: TransactionType.expense,
-          amount: 20.0,
-          accountFrom: 'acc-1',
-          paid: false,
-          isRecurring: false,
-          createdAt: tDateTime,
-        );
-        final usecase = AddTransaction(
-          mockTransactionRepository,
-          mockAccountRepository,
-        );
-        when(
-          () => mockTransactionRepository.addTransaction(any()),
-        ).thenAnswer((_) async => Right(unpaidTx));
-
-        final result = await usecase(unpaidTx);
-
-        expect(result, Right(unpaidTx));
-        verifyNever(() => mockAccountRepository.getAccountById(any()));
-      },
-    );
-
-    test('should return Left(failure) when repository fails', () async {
-      final usecase = AddTransaction(
-        mockTransactionRepository,
-        mockAccountRepository,
-      );
+    test('returns Left(failure) when the repository fails', () async {
+      final usecase = AddTransaction(mockTransactionRepository);
       when(
         () => mockTransactionRepository.addTransaction(any()),
       ).thenAnswer((_) async => const Left(ServerFailure('Add failed')));
@@ -99,233 +49,57 @@ void main() {
       final result = await usecase(tTransactionEntity);
 
       expect(result, const Left(ServerFailure('Add failed')));
-      verifyNever(() => mockAccountRepository.getAccountById(any()));
     });
   });
 
   group('UpdateTransaction', () {
-    test('should revert old balance and apply new balance when both the old '
-        'and the updated transaction are paid', () async {
-      final newTx = tTransactionEntity.copyWith(amount: 80.0);
-      final usecase = UpdateTransaction(
-        mockTransactionRepository,
-        mockAccountRepository,
-      );
-      when(
-        () => mockTransactionRepository.getTransaction('transaction-1'),
-      ).thenAnswer((_) async => Right(tTransactionEntity));
+    test('TRX-004: updating writes only the transaction', () async {
+      final usecase = UpdateTransaction(mockTransactionRepository);
+      final updated = tTransactionEntity.copyWith(amount: 80.0);
       when(
         () => mockTransactionRepository.updateTransaction(any()),
-      ).thenAnswer((_) async => Right(newTx));
-      when(
-        () => mockAccountRepository.getAccountById('acc-1'),
-      ).thenAnswer((_) async => Right(tAccountEntity));
-      when(
-        () => mockAccountRepository.updateAccount(any()),
-      ).thenAnswer((_) async => Right(tAccountEntity));
+      ).thenAnswer((_) async => Right(updated));
 
-      final result = await usecase(newTx);
+      final result = await usecase(updated);
 
-      expect(result, Right(newTx));
-      verify(() => mockTransactionRepository.updateTransaction(newTx));
-      // Revert of the old (50.0) paid impact.
+      expect(result, Right(updated));
       verify(
-        () => mockAccountRepository.updateAccount(
-          any(
-            that: predicate<dynamic>(
-              (a) => a.balance == tAccountEntity.balance + 50.0,
-            ),
-          ),
-        ),
+        () => mockTransactionRepository.updateTransaction(updated),
       ).called(1);
-      // Apply of the new (80.0) paid impact.
-      verify(
-        () => mockAccountRepository.updateAccount(
-          any(
-            that: predicate<dynamic>(
-              (a) => a.balance == tAccountEntity.balance - 80.0,
-            ),
-          ),
-        ),
-      ).called(1);
+      verifyNever(() => mockTransactionRepository.getTransaction(any()));
+      verifyZeroInteractions(mockAccountRepository);
     });
 
-    test(
-      'should not touch account balance when the transaction stays unpaid',
-      () async {
-        final oldTx = tTransactionEntity.copyWith(paid: false);
-        final newTx = oldTx.copyWith(amount: 80.0);
-        final usecase = UpdateTransaction(
-          mockTransactionRepository,
-          mockAccountRepository,
-        );
-        when(
-          () => mockTransactionRepository.getTransaction('transaction-1'),
-        ).thenAnswer((_) async => Right(oldTx));
-        when(
-          () => mockTransactionRepository.updateTransaction(any()),
-        ).thenAnswer((_) async => Right(newTx));
+    test('returns Left(failure) when the repository fails', () async {
+      final usecase = UpdateTransaction(mockTransactionRepository);
+      when(
+        () => mockTransactionRepository.updateTransaction(any()),
+      ).thenAnswer((_) async => const Left(ServerFailure('Update failed')));
 
-        final result = await usecase(newTx);
+      final result = await usecase(tTransactionEntity);
 
-        expect(result, Right(newTx));
-        verifyNever(() => mockAccountRepository.getAccountById(any()));
-        verifyNever(() => mockAccountRepository.updateAccount(any()));
-      },
-    );
-
-    test(
-      'should revert balance when the transaction changes from paid to unpaid',
-      () async {
-        final newTx = tTransactionEntity.copyWith(paid: false);
-        final usecase = UpdateTransaction(
-          mockTransactionRepository,
-          mockAccountRepository,
-        );
-        when(
-          () => mockTransactionRepository.getTransaction('transaction-1'),
-        ).thenAnswer((_) async => Right(tTransactionEntity));
-        when(
-          () => mockTransactionRepository.updateTransaction(any()),
-        ).thenAnswer((_) async => Right(newTx));
-        when(
-          () => mockAccountRepository.getAccountById('acc-1'),
-        ).thenAnswer((_) async => Right(tAccountEntity));
-        when(
-          () => mockAccountRepository.updateAccount(any()),
-        ).thenAnswer((_) async => Right(tAccountEntity));
-
-        final result = await usecase(newTx);
-
-        expect(result, Right(newTx));
-        verify(
-          () => mockAccountRepository.updateAccount(
-            any(
-              that: predicate<dynamic>(
-                (a) => a.balance == tAccountEntity.balance + 50.0,
-              ),
-            ),
-          ),
-        ).called(1);
-      },
-    );
-
-    test(
-      'should apply balance when the transaction changes from unpaid to paid',
-      () async {
-        final oldTx = tTransactionEntity.copyWith(paid: false);
-        final usecase = UpdateTransaction(
-          mockTransactionRepository,
-          mockAccountRepository,
-        );
-        when(
-          () => mockTransactionRepository.getTransaction('transaction-1'),
-        ).thenAnswer((_) async => Right(oldTx));
-        when(
-          () => mockTransactionRepository.updateTransaction(any()),
-        ).thenAnswer((_) async => Right(tTransactionEntity));
-        when(
-          () => mockAccountRepository.getAccountById('acc-1'),
-        ).thenAnswer((_) async => Right(tAccountEntity));
-        when(
-          () => mockAccountRepository.updateAccount(any()),
-        ).thenAnswer((_) async => Right(tAccountEntity));
-
-        final result = await usecase(tTransactionEntity);
-
-        expect(result, Right(tTransactionEntity));
-        verify(
-          () => mockAccountRepository.updateAccount(
-            any(
-              that: predicate<dynamic>(
-                (a) => a.balance == tAccountEntity.balance - 50.0,
-              ),
-            ),
-          ),
-        ).called(1);
-      },
-    );
-
-    test(
-      'should return Left(failure) when fetching the old transaction fails',
-      () async {
-        final usecase = UpdateTransaction(
-          mockTransactionRepository,
-          mockAccountRepository,
-        );
-        when(
-          () => mockTransactionRepository.getTransaction('transaction-1'),
-        ).thenAnswer((_) async => const Left(ServerFailure('Fetch failed')));
-
-        final result = await usecase(tTransactionEntity);
-
-        expect(result, const Left(ServerFailure('Fetch failed')));
-        verifyNever(() => mockTransactionRepository.updateTransaction(any()));
-        verifyNever(() => mockAccountRepository.getAccountById(any()));
-      },
-    );
-
-    test(
-      'should return Left(failure) when the repository fails to update',
-      () async {
-        final oldTx = tTransactionEntity.copyWith(paid: false);
-        final newTx = oldTx.copyWith(amount: 80.0);
-        final usecase = UpdateTransaction(
-          mockTransactionRepository,
-          mockAccountRepository,
-        );
-        when(
-          () => mockTransactionRepository.getTransaction('transaction-1'),
-        ).thenAnswer((_) async => Right(oldTx));
-        when(
-          () => mockTransactionRepository.updateTransaction(any()),
-        ).thenAnswer(
-          (_) async => const Left(TransactionSaveFailure('Update failed')),
-        );
-
-        final result = await usecase(newTx);
-
-        expect(result, const Left(TransactionSaveFailure('Update failed')));
-      },
-    );
+      expect(result, const Left(ServerFailure('Update failed')));
+    });
   });
 
   group('DeleteTransaction', () {
     test(
-      'should revert account balance and delete a paid transaction',
+      'TRX-004: deleting a paid transaction never touches accounts',
       () async {
-        final usecase = DeleteTransaction(
-          mockTransactionRepository,
-          mockAccountRepository,
-        );
+        final usecase = DeleteTransaction(mockTransactionRepository);
         when(
-          () => mockTransactionRepository.getTransaction('transaction-1'),
-        ).thenAnswer((_) async => Right(tTransactionEntity));
-        when(
-          () => mockAccountRepository.getAccountById('acc-1'),
-        ).thenAnswer((_) async => Right(tAccountEntity));
-        when(
-          () => mockAccountRepository.updateAccount(any()),
-        ).thenAnswer((_) async => Right(tAccountEntity));
-        when(
-          () => mockTransactionRepository.deleteTransaction('transaction-1'),
+          () => mockTransactionRepository.deleteTransaction(any()),
         ).thenAnswer((_) async => const Right(null));
 
-        final result = await usecase('transaction-1');
+        final result = await usecase(tTransactionEntity.id);
 
         expect(result, const Right(null));
         verify(
-          () => mockAccountRepository.updateAccount(
-            any(
-              that: predicate<dynamic>(
-                (a) => a.balance == tAccountEntity.balance + 50.0,
-              ),
-            ),
+          () => mockTransactionRepository.deleteTransaction(
+            tTransactionEntity.id,
           ),
         ).called(1);
-        verify(
-          () => mockTransactionRepository.deleteTransaction('transaction-1'),
-        ).called(1);
+        verifyZeroInteractions(mockAccountRepository);
       },
     );
   });

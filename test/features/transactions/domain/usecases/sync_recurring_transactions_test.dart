@@ -13,7 +13,6 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(tTransactionEntity);
-    registerFallbackValue(tAccountEntity);
   });
 
   setUp(() {
@@ -21,7 +20,6 @@ void main() {
     mockAccountRepository = MockAccountRepository();
     usecase = SyncRecurringTransactions(
       transactionRepository: mockTransactionRepository,
-      accountRepository: mockAccountRepository,
     );
   });
 
@@ -39,7 +37,7 @@ void main() {
   );
 
   test(
-    'should create a new instance for an overdue recurring template and update balance',
+    'TRX-004: creates the next instance of an overdue template without touching accounts',
     () async {
       when(
         () => mockTransactionRepository.getTransactions(),
@@ -50,28 +48,13 @@ void main() {
         final tx = invocation.positionalArguments.first as TransactionEntity;
         return Right(tx);
       });
-      when(
-        () => mockAccountRepository.getAccounts(),
-      ).thenAnswer((_) => Stream.value(Right([tAccountEntity])));
-      when(
-        () => mockAccountRepository.updateAccount(any()),
-      ).thenAnswer((_) async => Right(tAccountEntity));
-
       final created = await usecase('user-1');
 
       expect(created, hasLength(1));
       expect(created.first.parentRecurringId, 'template-1');
       expect(created.first.isRecurring, false);
       verify(() => mockTransactionRepository.addTransaction(any())).called(1);
-      verify(
-        () => mockAccountRepository.updateAccount(
-          any(
-            that: predicate<dynamic>(
-              (a) => a.balance == tAccountEntity.balance - 30.0,
-            ),
-          ),
-        ),
-      ).called(1);
+      verifyZeroInteractions(mockAccountRepository);
     },
   );
 

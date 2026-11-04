@@ -5,9 +5,7 @@ import 'package:due_day/core/design_system/components/messenger/app_messenger.da
 import 'package:due_day/core/design_system/components/structure/pull_to_dismiss_sheet.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
-import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
-import 'package:due_day/core/utils/formatters/currency_input_formatter.dart';
 import 'package:due_day/core/utils/validators/validators.dart';
 import 'package:due_day/features/accounts/domain/entities/account_category.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
@@ -17,16 +15,12 @@ import 'package:due_day/features/accounts/presentation/bloc/account_action_state
 import 'package:due_day/features/accounts/presentation/utils/account_failure_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 class AddEditAccountBottomSheet extends StatefulWidget {
   final AccountEntity? account;
-  final Function(
-    String name,
-    AccountCategory category,
-    double balance,
-    int? dueDay,
-  )
+
+  /// [dueDay] is set only for credit cards (ACC-001).
+  final void Function(String name, AccountCategory category, int? dueDay)
   onSave;
 
   const AddEditAccountBottomSheet({
@@ -44,16 +38,13 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _nameController;
-  late TextEditingController _balanceController;
   late TextEditingController _dueDayController;
 
   final FocusNode _nameFocusNode = FocusNode();
-  final FocusNode _balanceFocusNode = FocusNode();
   final FocusNode _dueDayFocusNode = FocusNode();
 
   AccountCategory? _selectedCategory;
 
-  bool _isInit = false;
   bool _isSubmitting = false;
 
   @override
@@ -61,7 +52,6 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
     super.initState();
 
     _nameController = TextEditingController(text: widget.account?.name ?? '');
-    _balanceController = TextEditingController();
     _dueDayController = TextEditingController(
       text: widget.account?.dueDay?.toString() ?? '',
     );
@@ -69,30 +59,10 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (!_isInit) {
-      _isInit = true;
-      if (widget.account != null) {
-        final numberFormat = NumberFormat.currency(
-          locale: context.localeString,
-          symbol: '',
-          decimalDigits: 2,
-        );
-        _balanceController.text = numberFormat
-            .format(widget.account!.balance)
-            .trim();
-      }
-    }
-  }
-
-  @override
   void dispose() {
     _nameController.dispose();
-    _balanceController.dispose();
     _dueDayController.dispose();
     _nameFocusNode.dispose();
-    _balanceFocusNode.dispose();
     _dueDayFocusNode.dispose();
     super.dispose();
   }
@@ -170,9 +140,8 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
                       label: l10n.accountsNameLabel,
                       hintText: l10n.accountsNameHint,
                       prefixIcon: Icons.account_balance_wallet_outlined,
-                      textInputAction: TextInputAction.next,
-                      onFieldSubmitted: (_) =>
-                          _balanceFocusNode.requestFocus(),
+                      textInputAction: TextInputAction.done,
+                      onFieldSubmitted: (_) => FocusScope.of(context).unfocus(),
                       validator: Validators.requiredField(l10n),
                     ),
                     SizedBox(height: dimensions.spacing.large.height),
@@ -198,33 +167,7 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
                         l10n,
                       ),
                     ),
-                    SizedBox(height: dimensions.spacing.large.height),
-                    AppTextField(
-                      controller: _balanceController,
-                      focusNode: _balanceFocusNode,
-                      label: l10n.accountsBalanceLabel,
-                      hintText: '0,00',
-                      prefixIcon: Icons.attach_money_rounded,
-                      keyboardType: const TextInputType.numberWithOptions(
-                        decimal: true,
-                      ),
-                      inputFormatters: [
-                        CurrencyInputFormatter(locale: context.localeString),
-                      ],
-                      textInputAction: _selectedCategory ==
-                              AccountCategory.creditCard
-                          ? TextInputAction.next
-                          : TextInputAction.done,
-                      onFieldSubmitted: (_) {
-                        if (_selectedCategory == AccountCategory.creditCard) {
-                          _dueDayFocusNode.requestFocus();
-                        } else {
-                          FocusScope.of(context).unfocus();
-                        }
-                      },
-                      validator: Validators.requiredField(l10n),
-                    ),
-                    if (_selectedCategory == AccountCategory.creditCard) ...[
+                    if (_selectedCategory?.hasDueDay ?? false) ...[
                       SizedBox(height: dimensions.spacing.large.height),
                       AppTextField(
                         controller: _dueDayController,
@@ -235,11 +178,11 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
                         keyboardType: TextInputType.number,
                         maxLength: 2,
                         textInputAction: TextInputAction.done,
+                        // A credit card needs a due day (ACC-001).
                         validator: (value) {
-                          if (value == null || value.isEmpty) return null;
-                          final day = int.tryParse(value);
+                          final day = int.tryParse(value ?? '');
                           if (day == null || day < 1 || day > 31) {
-                            return l10n.validatorRequired;
+                            return l10n.accountsDueDayInvalid;
                           }
                           return null;
                         },
@@ -291,15 +234,11 @@ class _AddEditAccountBottomSheetState extends State<AddEditAccountBottomSheet> {
 
     if (_formKey.currentState!.validate() && _selectedCategory != null) {
       setState(() => _isSubmitting = true);
-      final balance = CurrencyInputFormatter.parse(_balanceController.text);
-      final dueDay = int.tryParse(_dueDayController.text);
+      final dueDay = _selectedCategory!.hasDueDay
+          ? int.tryParse(_dueDayController.text)
+          : null;
 
-      widget.onSave(
-        _nameController.text.trim(),
-        _selectedCategory!,
-        balance,
-        dueDay,
-      );
+      widget.onSave(_nameController.text.trim(), _selectedCategory!, dueDay);
     }
   }
 

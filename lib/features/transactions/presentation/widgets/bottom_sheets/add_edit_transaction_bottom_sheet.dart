@@ -37,9 +37,7 @@ class AddEditTransactionBottomSheet extends StatelessWidget {
                   color: Theme.of(
                     context,
                   ).colorScheme.onSurfaceVariant.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(
-                    dimensions.radius.circle,
-                  ),
+                  borderRadius: BorderRadius.circular(dimensions.radius.circle),
                 ),
               ),
             ),

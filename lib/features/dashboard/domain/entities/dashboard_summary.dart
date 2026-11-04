@@ -19,19 +19,31 @@ class DashboardInsight extends Equatable {
 }
 
 class DashboardSummary extends Equatable {
-  final double currentBalance;
-  final double projectedBalance;
-  final double monthlyIncome;
-  final double monthlyExpenses;
+  /// Key of the "Uncategorized" group in [spendingByCategory] (DSH-006).
+  static const String uncategorizedKey = '';
+
+  /// First day of the month the totals belong to (DSH-001).
+  final DateTime month;
+
+  /// Paid expenses in `spending` (or no) categories (DSH-003).
+  final double spent;
+
+  /// Paid income not in `ignored` categories (DSH-004).
+  final double income;
+
+  /// Paid expenses in `investment` categories (DSH-005).
+  final double invested;
   final List<TransactionEntity> upcomingDues;
+
+  /// Spent grouped by category id; uncategorized under [uncategorizedKey].
   final Map<String, double> spendingByCategory;
   final DashboardInsight insight;
 
   const DashboardSummary({
-    required this.currentBalance,
-    required this.projectedBalance,
-    required this.monthlyIncome,
-    required this.monthlyExpenses,
+    required this.month,
+    required this.spent,
+    required this.income,
+    required this.invested,
     required this.upcomingDues,
     required this.spendingByCategory,
     required this.insight,
@@ -39,10 +51,10 @@ class DashboardSummary extends Equatable {
 
   @override
   List<Object?> get props => [
-    currentBalance,
-    projectedBalance,
-    monthlyIncome,
-    monthlyExpenses,
+    month,
+    spent,
+    income,
+    invested,
     upcomingDues,
     spendingByCategory,
     insight,

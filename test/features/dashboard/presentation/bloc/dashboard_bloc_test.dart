@@ -13,17 +13,27 @@ void main() {
   late MockGetDashboardSummary mockGetDashboardSummary;
   late MockGetAccounts mockGetAccounts;
   late MockGetTransactions mockGetTransactions;
+  late MockGetCategories mockGetCategories;
   late DashboardBloc dashboardBloc;
+
+  final tNow = DateTime(2026, 7, 20);
+  final tJuly = DateTime(2026, 7);
+  final tJune = DateTime(2026, 6);
+
+  setUpAll(() => registerFallbackValue(DateTime(2000)));
 
   setUp(() {
     mockGetDashboardSummary = MockGetDashboardSummary();
     mockGetAccounts = MockGetAccounts();
     mockGetTransactions = MockGetTransactions();
+    mockGetCategories = MockGetCategories();
 
     dashboardBloc = DashboardBloc(
       getDashboardSummary: mockGetDashboardSummary,
       getAccounts: mockGetAccounts,
       getTransactions: mockGetTransactions,
+      getCategories: mockGetCategories,
+      now: () => tNow,
     );
   });
 
@@ -31,26 +41,36 @@ void main() {
     dashboardBloc.close();
   });
 
-  test('initial state should be DashboardInitial', () {
+  void stubStreams() {
+    when(
+      () => mockGetAccounts(),
+    ).thenAnswer((_) => Stream.value(Right([tAccount1, tAccount2])));
+    when(() => mockGetTransactions()).thenAnswer(
+      (_) => Stream.value(Right([tIncomeTx, tExpenseTx, tUnpaidExpenseTx])),
+    );
+    when(
+      () => mockGetCategories(),
+    ).thenAnswer((_) => Stream.value(Right([tCategory1])));
+    when(
+      () => mockGetDashboardSummary(
+        month: any(named: 'month'),
+        transactions: any(named: 'transactions'),
+        categories: any(named: 'categories'),
+        now: any(named: 'now'),
+      ),
+    ).thenReturn(tDashboardSummary);
+  }
+
+  test('initial state is DashboardInitial and month is the current one', () {
     expect(dashboardBloc.state, equals(DashboardInitial()));
+    expect(dashboardBloc.selectedMonth, tJuly);
   });
 
   group('DashboardLoadRequested', () {
     blocTest<DashboardBloc, DashboardState>(
-      'should emit [DashboardLoading, DashboardLoaded] when data is fetched successfully',
+      'emits [Loading, Loaded] with the current month when data loads',
       build: () {
-        when(
-          () => mockGetAccounts(),
-        ).thenAnswer((_) => Stream.value(Right([tAccount1, tAccount2])));
-        when(() => mockGetTransactions()).thenAnswer(
-          (_) => Stream.value(Right([tIncomeTx, tExpenseTx, tUnpaidExpenseTx])),
-        );
-        when(
-          () => mockGetDashboardSummary(
-            accounts: any(named: 'accounts'),
-            transactions: any(named: 'transactions'),
-          ),
-        ).thenReturn(tDashboardSummary);
+        stubStreams();
         return dashboardBloc;
       },
       act: (bloc) => bloc.add(const DashboardLoadRequested()),
@@ -59,26 +79,24 @@ void main() {
         DashboardLoaded(tDashboardSummary, selectedAccountIds: const []),
       ],
       verify: (_) {
-        verify(() => mockGetAccounts()).called(1);
-        verify(() => mockGetTransactions()).called(1);
         verify(
           () => mockGetDashboardSummary(
-            accounts: [tAccount1, tAccount2],
+            month: tJuly,
             transactions: [tIncomeTx, tExpenseTx, tUnpaidExpenseTx],
+            categories: [tCategory1],
+            now: tNow,
           ),
         ).called(1);
       },
     );
 
     blocTest<DashboardBloc, DashboardState>(
-      'should emit [DashboardLoading, DashboardError] when getAccounts fails',
+      'emits [Loading, Error] when getAccounts fails',
       build: () {
+        stubStreams();
         when(() => mockGetAccounts()).thenAnswer(
           (_) => Stream.value(const Left(ServerFailure('Accounts error'))),
         );
-        when(
-          () => mockGetTransactions(),
-        ).thenAnswer((_) => Stream.value(Right([tIncomeTx])));
         return dashboardBloc;
       },
       act: (bloc) => bloc.add(const DashboardLoadRequested()),
@@ -89,11 +107,9 @@ void main() {
     );
 
     blocTest<DashboardBloc, DashboardState>(
-      'should emit [DashboardLoading, DashboardError] when getTransactions fails',
+      'emits [Loading, Error] when getTransactions fails',
       build: () {
-        when(
-          () => mockGetAccounts(),
-        ).thenAnswer((_) => Stream.value(Right([tAccount1])));
+        stubStreams();
         when(() => mockGetTransactions()).thenAnswer(
           (_) => Stream.value(const Left(ServerFailure('Transactions error'))),
         );
@@ -105,46 +121,74 @@ void main() {
         const DashboardError(ServerFailure('Transactions error')),
       ],
     );
+
+    blocTest<DashboardBloc, DashboardState>(
+      'emits [Loading, Error] when getCategories fails',
+      build: () {
+        stubStreams();
+        when(() => mockGetCategories()).thenAnswer(
+          (_) => Stream.value(const Left(ServerFailure('Categories error'))),
+        );
+        return dashboardBloc;
+      },
+      act: (bloc) => bloc.add(const DashboardLoadRequested()),
+      expect: () => [
+        DashboardLoading(),
+        const DashboardError(ServerFailure('Categories error')),
+      ],
+    );
   });
 
-  group('DashboardFilterAccountsRequested', () {
+  group('DashboardMonthChanged', () {
     blocTest<DashboardBloc, DashboardState>(
-      'should filter accounts and transactions and emit DashboardLoaded',
+      'DSH-001: going back recomputes every total for the previous month',
       build: () {
-        // First load the data so the last emitted accounts/transactions are captured
-        when(
-          () => mockGetAccounts(),
-        ).thenAnswer((_) => Stream.value(Right([tAccount1, tAccount2])));
-        when(() => mockGetTransactions()).thenAnswer(
-          (_) => Stream.value(Right([tIncomeTx, tExpenseTx, tUnpaidExpenseTx])),
-        );
-        when(
-          () => mockGetDashboardSummary(
-            accounts: any(named: 'accounts'),
-            transactions: any(named: 'transactions'),
-          ),
-        ).thenReturn(tDashboardSummary);
+        stubStreams();
         return dashboardBloc;
       },
       act: (bloc) async {
         bloc.add(const DashboardLoadRequested());
-        // Wait for load to finish
-        await Future.delayed(Duration.zero);
-        // Request filter
-        bloc.add(const DashboardFilterAccountsRequested(['acc-1']));
+        await Future<void>.delayed(Duration.zero);
+        bloc.add(DashboardMonthChanged(DateTime(2026, 6, 15)));
+      },
+      verify: (bloc) {
+        expect(bloc.selectedMonth, tJune);
+        verify(
+          () => mockGetDashboardSummary(
+            month: tJune,
+            transactions: any(named: 'transactions'),
+            categories: any(named: 'categories'),
+            now: any(named: 'now'),
+          ),
+        ).called(1);
+      },
+    );
+  });
+
+  group('DashboardFilterAccountsRequested', () {
+    blocTest<DashboardBloc, DashboardState>(
+      'filters transactions by account and emits DashboardLoaded',
+      build: () {
+        stubStreams();
+        return dashboardBloc;
+      },
+      act: (bloc) async {
+        bloc.add(const DashboardLoadRequested());
+        await Future<void>.delayed(Duration.zero);
+        bloc.add(const DashboardFilterAccountsRequested(['acc-2']));
       },
       expect: () => [
         DashboardLoading(),
         DashboardLoaded(tDashboardSummary, selectedAccountIds: const []),
-        DashboardLoaded(tDashboardSummary, selectedAccountIds: const ['acc-1']),
+        DashboardLoaded(tDashboardSummary, selectedAccountIds: const ['acc-2']),
       ],
       verify: (_) {
-        // Verify that the second call to getDashboardSummary only received filtered accounts and transactions
         verify(
           () => mockGetDashboardSummary(
-            accounts: [tAccount1], // acc-1 only
-            // tIncomeTx accountTo is acc-1, tExpenseTx accountFrom is acc-1, tUnpaidExpenseTx accountFrom is acc-1
-            transactions: [tIncomeTx, tExpenseTx, tUnpaidExpenseTx],
+            month: tJuly,
+            transactions: const [],
+            categories: [tCategory1],
+            now: tNow,
           ),
         ).called(1);
       },

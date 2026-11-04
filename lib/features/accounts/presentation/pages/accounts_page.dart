@@ -2,7 +2,6 @@ import 'package:due_day/core/design_system/components/buttons/app_text_button.da
 import 'package:due_day/core/design_system/components/structure/custom_scaffold.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
-import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:due_day/features/accounts/presentation/bloc/account_action_bloc.dart';
@@ -16,7 +15,6 @@ import 'package:due_day/features/dashboard/presentation/widgets/dashboard_app_ba
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 
 class AccountsPage extends StatelessWidget {
@@ -24,12 +22,9 @@ class AccountsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colors = context.colors;
     final typography = context.typography;
     final spacing = context.spacing;
-    final radius = context.radius;
     final l10n = AppLocalizations.of(context);
-    final localeStr = context.localeString;
 
     return CustomScaffold(
       appBar: DashboardAppBar(titleText: l10n.accountsTitle),
@@ -47,10 +42,6 @@ class AccountsPage extends StatelessWidget {
               );
             } else if (state is AccountLoaded) {
               final accounts = state.activeAccounts;
-              final totalBalance = accounts.fold(
-                0.0,
-                (sum, acc) => sum + acc.balance,
-              );
 
               return ListView(
                 padding: EdgeInsets.fromLTRB(
@@ -60,34 +51,6 @@ class AccountsPage extends StatelessWidget {
                   spacing.safeBottomNav.height,
                 ),
                 children: [
-                  // Balance Sum
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: spacing.largeExtraLarge.height,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
-                      borderRadius: BorderRadius.circular(radius.extraLarge),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          l10n.dashboardGeneralBalance,
-                          style: typography.label.medium,
-                        ),
-                        SizedBox(height: spacing.smallMedium.height),
-                        Text(
-                          NumberFormat.simpleCurrency(
-                            locale: localeStr,
-                          ).format(totalBalance),
-                          style: typography.headline.large.copyWith(
-                            color: colors.resource.primary,
-                            fontSize: 36.fontSize,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   SizedBox(height: spacing.mediumLarge.height),
                   Align(
                     alignment: Alignment.centerRight,
@@ -151,7 +114,7 @@ class AccountsPage extends StatelessWidget {
       builder: (ctx) {
         return AddEditAccountBottomSheet(
           account: account,
-          onSave: (name, category, balance, dueDay) {
+          onSave: (name, category, dueDay) {
             final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
             final accountBloc = context.read<AccountActionBloc>();
 
@@ -163,7 +126,6 @@ class AccountsPage extends StatelessWidget {
                     userId: userId,
                     name: name,
                     category: category,
-                    balance: balance,
                     dueDay: dueDay,
                     createdAt: DateTime.now(),
                   ),
@@ -177,7 +139,6 @@ class AccountsPage extends StatelessWidget {
                     userId: account.userId,
                     name: name,
                     category: category,
-                    balance: balance,
                     dueDay: dueDay,
                     createdAt: account.createdAt,
                   ),

@@ -2,39 +2,38 @@ import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+/// Where money is spent from (ACC-001). Legacy stored values
+/// (`investments`, `savings`, `daily_use`, unknown) read as [checking]
+/// (ACC-002) through `unknownEnumValue` on the model field.
 enum AccountCategory {
-  @JsonValue('investments')
-  investments,
-  @JsonValue('savings')
-  savings,
-  @JsonValue('daily_use')
-  dailyUse,
+  @JsonValue('checking')
+  checking,
   @JsonValue('credit_card')
-  creditCard;
+  creditCard,
+  @JsonValue('cash')
+  cash;
+
+  bool get hasDueDay => this == AccountCategory.creditCard;
 
   String localizedName(AppLocalizations l10n) {
     switch (this) {
-      case AccountCategory.investments:
-        return l10n.accountsCategoryInvestments;
-      case AccountCategory.savings:
-        return l10n.accountsCategorySavings;
-      case AccountCategory.dailyUse:
-        return l10n.accountsCategoryDailyUse;
+      case AccountCategory.checking:
+        return l10n.accountsCategoryChecking;
       case AccountCategory.creditCard:
         return l10n.accountsCategoryCreditCard;
+      case AccountCategory.cash:
+        return l10n.accountsCategoryCash;
     }
   }
 
   IconData get icon {
     switch (this) {
-      case AccountCategory.investments:
-        return Icons.trending_up_rounded;
-      case AccountCategory.savings:
-        return Icons.savings_rounded;
-      case AccountCategory.dailyUse:
-        return Icons.account_balance_wallet_rounded;
+      case AccountCategory.checking:
+        return Icons.account_balance_rounded;
       case AccountCategory.creditCard:
         return Icons.credit_card_rounded;
+      case AccountCategory.cash:
+        return Icons.payments_rounded;
     }
   }
 }

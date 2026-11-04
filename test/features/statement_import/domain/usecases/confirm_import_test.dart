@@ -54,7 +54,6 @@ void main() {
         when(
           () => mockRepository.confirmImport(
             transactionsToCreate: any(named: 'transactionsToCreate'),
-            destinationAccountId: any(named: 'destinationAccountId'),
           ),
         ).thenAnswer((_) async => const Right(<TransactionEntity>[]));
 
@@ -64,12 +63,15 @@ void main() {
           destinationAccountId: 'acc-import-1',
         );
 
-        final captured = verify(
-          () => mockRepository.confirmImport(
-            transactionsToCreate: captureAny(named: 'transactionsToCreate'),
-            destinationAccountId: 'acc-import-1',
-          ),
-        ).captured.single as List<TransactionEntity>;
+        final captured =
+            verify(
+                  () => mockRepository.confirmImport(
+                    transactionsToCreate: captureAny(
+                      named: 'transactionsToCreate',
+                    ),
+                  ),
+                ).captured.single
+                as List<TransactionEntity>;
 
         expect(captured, hasLength(1));
         expect(captured.single.externalId, tParsedDebit.externalId);
@@ -82,7 +84,6 @@ void main() {
         when(
           () => mockRepository.confirmImport(
             transactionsToCreate: any(named: 'transactionsToCreate'),
-            destinationAccountId: any(named: 'destinationAccountId'),
           ),
         ).thenAnswer((_) async => const Right(<TransactionEntity>[]));
 
@@ -92,12 +93,15 @@ void main() {
           destinationAccountId: 'acc-import-1',
         );
 
-        final captured = verify(
-          () => mockRepository.confirmImport(
-            transactionsToCreate: captureAny(named: 'transactionsToCreate'),
-            destinationAccountId: 'acc-import-1',
-          ),
-        ).captured.single as List<TransactionEntity>;
+        final captured =
+            verify(
+                  () => mockRepository.confirmImport(
+                    transactionsToCreate: captureAny(
+                      named: 'transactionsToCreate',
+                    ),
+                  ),
+                ).captured.single
+                as List<TransactionEntity>;
 
         final expense = captured.firstWhere(
           (t) => t.externalId == tParsedDebit.externalId,
@@ -121,44 +125,39 @@ void main() {
       },
     );
 
-    test(
-      'returns an ImportSummary with correct counts on success',
-      () async {
-        final createdEntity = TransactionEntity(
-          id: 'x',
-          userId: 'user-1',
-          type: TransactionType.expense,
-          amount: tParsedDebit.amount.abs(),
-          paid: true,
-          isRecurring: false,
-          createdAt: DateTime(2026, 8, 1),
-        );
-        when(
-          () => mockRepository.confirmImport(
-            transactionsToCreate: any(named: 'transactionsToCreate'),
-            destinationAccountId: any(named: 'destinationAccountId'),
-          ),
-        ).thenAnswer((_) async => Right([createdEntity]));
+    test('returns an ImportSummary with correct counts on success', () async {
+      final createdEntity = TransactionEntity(
+        id: 'x',
+        userId: 'user-1',
+        type: TransactionType.expense,
+        amount: tParsedDebit.amount.abs(),
+        paid: true,
+        isRecurring: false,
+        createdAt: DateTime(2026, 8, 1),
+      );
+      when(
+        () => mockRepository.confirmImport(
+          transactionsToCreate: any(named: 'transactionsToCreate'),
+        ),
+      ).thenAnswer((_) async => Right([createdEntity]));
 
-        final result = await useCase(
-          reviewItems: [pendingDebit, deselectedItem, duplicateItem],
-          userId: 'user-1',
-          destinationAccountId: 'acc-import-1',
-        );
+      final result = await useCase(
+        reviewItems: [pendingDebit, deselectedItem, duplicateItem],
+        userId: 'user-1',
+        destinationAccountId: 'acc-import-1',
+      );
 
-        result.fold((l) => fail('Should not be left'), (summary) {
-          expect(summary.importedCount, 1);
-          expect(summary.skippedDuplicateCount, 1);
-          expect(summary.skippedByUserCount, 1);
-        });
-      },
-    );
+      result.fold((l) => fail('Should not be left'), (summary) {
+        expect(summary.importedCount, 1);
+        expect(summary.skippedDuplicateCount, 1);
+        expect(summary.skippedByUserCount, 1);
+      });
+    });
 
     test('propagates a repository failure', () async {
       when(
         () => mockRepository.confirmImport(
           transactionsToCreate: any(named: 'transactionsToCreate'),
-          destinationAccountId: any(named: 'destinationAccountId'),
         ),
       ).thenAnswer((_) async => const Left(ImportPersistFailure()));
 

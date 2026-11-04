@@ -8,6 +8,10 @@ abstract class CategoryRemoteDataSource {
   Future<CategoryModel> addCategory(CategoryModel category);
   Future<CategoryModel> updateCategory(CategoryModel category);
   Future<void> deleteCategory(String categoryId);
+
+  /// Writes [categories] in one batch under their own ids, stamping the
+  /// signed-in user's id (CAT-002, CAT-004).
+  Future<void> addCategoriesBatch(List<CategoryModel> categories);
   Stream<List<CategoryModel>> getCategories();
 }
 
@@ -75,34 +79,58 @@ class CategoryRemoteDataSourceImpl implements CategoryRemoteDataSource {
   }
 
   @override
+  Future<void> addCategoriesBatch(List<CategoryModel> categories) async {
+    try {
+      final userId = _userId;
+      final batch = firestore.batch();
+      for (final category in categories) {
+        batch.set(
+          _collection.doc(category.id),
+          category.copyWith(userId: userId).toJson(),
+        );
+      }
+      await batch.commit();
+    } on ServerException {
+      rethrow;
+    } on FirebaseException catch (e) {
+      throw ServerException(e.message ?? 'Failed to add categories.', e.code);
+    } catch (e) {
+      throw ServerException('Failed to add categories: $e');
+    }
+  }
+
+  @override
   Stream<List<CategoryModel>> getCategories() {
     // Switches the underlying Firestore listener to the signed-in user's
     // own collection whenever the auth session changes, so a listener from
     // a previous account never lingers (and never trips permission-denied)
     // after logout/login.
-    return firebaseAuth.authStateChanges().switchMap((user) {
-      if (user == null) {
-        return Stream<List<CategoryModel>>.value(const []);
-      }
+    return firebaseAuth
+        .authStateChanges()
+        .switchMap((user) {
+          if (user == null) {
+            return Stream<List<CategoryModel>>.value(const []);
+          }
 
-      return firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('categories')
-          .snapshots()
-          .map((snapshot) {
-            return snapshot.docs
-                .map((doc) => CategoryModel.fromJson(doc.data()))
-                .toList();
-          });
-    }).handleError((Object e) {
-      if (e is FirebaseException) {
-        throw ServerException(
-          e.message ?? 'Failed to fetch categories.',
-          e.code,
-        );
-      }
-      throw ServerException('Failed to fetch categories: $e');
-    });
+          return firestore
+              .collection('users')
+              .doc(user.uid)
+              .collection('categories')
+              .snapshots()
+              .map((snapshot) {
+                return snapshot.docs
+                    .map((doc) => CategoryModel.fromJson(doc.data()))
+                    .toList();
+              });
+        })
+        .handleError((Object e) {
+          if (e is FirebaseException) {
+            throw ServerException(
+              e.message ?? 'Failed to fetch categories.',
+              e.code,
+            );
+          }
+          throw ServerException('Failed to fetch categories: $e');
+        });
   }
 }

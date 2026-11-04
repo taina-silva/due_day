@@ -52,13 +52,14 @@ class ImportReviewList extends StatelessWidget {
           SizedBox(height: spacing.medium.height),
           Text(
             l10n.statementImportSectionDuplicate(duplicateIndices.length),
-            style: typography.title.small.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
+            style: typography.title.small.copyWith(fontWeight: FontWeight.bold),
           ),
           SizedBox(height: spacing.small.height),
           for (final index in duplicateIndices)
-            ImportReviewItemTile(key: ValueKey('dup_$index'), item: items[index]),
+            ImportReviewItemTile(
+              key: ValueKey('dup_$index'),
+              item: items[index],
+            ),
         ],
       ],
     );

@@ -56,10 +56,7 @@ void main() {
         expect(matching, hasLength(2));
         expect(matching[0].amount, -75.00);
         expect(matching[1].amount, 75.00);
-        expect(
-          matching[0].externalId,
-          isNot(equals(matching[1].externalId)),
-        );
+        expect(matching[0].externalId, isNot(equals(matching[1].externalId)));
       },
     );
 

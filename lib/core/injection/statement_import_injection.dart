@@ -1,5 +1,6 @@
 import 'package:due_day/core/services/statement_file_picker_service.dart';
 import 'package:due_day/features/auth/domain/usecases/auth_usecases.dart';
+import 'package:due_day/features/statement_import/data/datasources/card_bill_csv_statement_parser.dart';
 import 'package:due_day/features/statement_import/data/datasources/csv_statement_parser.dart';
 import 'package:due_day/features/statement_import/data/datasources/ofx_statement_parser.dart';
 import 'package:due_day/features/statement_import/data/repositories/statement_import_repository_impl.dart';
@@ -36,8 +37,8 @@ void initStatementImport() {
     () => StatementImportRepositoryImpl(
       ofxParser: sl(),
       csvParser: sl(),
+      cardBillParser: sl(),
       transactionRepository: sl(),
-      accountRepository: sl(),
       observability: sl(),
     ),
   );
@@ -45,6 +46,9 @@ void initStatementImport() {
   // Parsers
   sl.registerLazySingleton<OfxStatementParser>(() => OfxStatementParserImpl());
   sl.registerLazySingleton<CsvStatementParser>(() => CsvStatementParserImpl());
+  sl.registerLazySingleton<CardBillCsvStatementParser>(
+    () => CardBillCsvStatementParserImpl(),
+  );
 
   // File picker (core service)
   sl.registerLazySingleton<StatementFilePickerService>(
