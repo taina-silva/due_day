@@ -71,8 +71,7 @@ final tAccountEntity = AccountEntity(
   id: 'account-1',
   userId: 'user-1',
   name: 'Checking Account',
-  category: AccountCategory.dailyUse,
-  balance: 1500.0,
+  category: AccountCategory.checking,
   createdAt: tDateTime,
 );
 
@@ -80,8 +79,7 @@ final tAccountModel = AccountModel(
   id: 'account-1',
   userId: 'user-1',
   name: 'Checking Account',
-  category: AccountCategory.dailyUse,
-  balance: 1500.0,
+  category: AccountCategory.checking,
   createdAt: tDateTime,
 );
 
@@ -90,7 +88,6 @@ final tCreditCardAccountEntity = AccountEntity(
   userId: 'user-1',
   name: 'Main Credit Card',
   category: AccountCategory.creditCard,
-  balance: -500.0,
   dueDay: 15,
   createdAt: tDateTime,
 );
@@ -100,7 +97,6 @@ final tCreditCardAccountModel = AccountModel(
   userId: 'user-1',
   name: 'Main Credit Card',
   category: AccountCategory.creditCard,
-  balance: -500.0,
   dueDay: 15,
   createdAt: tDateTime,
 );

@@ -16,6 +16,8 @@ extension CategoryFailureExtension on Failure {
         return l10n.categoriesErrorSaveFailed;
       case CategoryDeleteFailure():
         return l10n.categoriesErrorDeleteFailed;
+      case SystemCategoryProtectedFailure():
+        return l10n.categoriesSystemProtected;
       default:
         return l10n.categoriesErrorFallback;
     }

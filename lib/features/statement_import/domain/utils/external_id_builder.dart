@@ -23,4 +23,17 @@ class ExternalIdBuilder {
     final amountKey = amountInCents.round();
     return '$normalizedId|$amountKey';
   }
+
+  /// Card bill lines have no identifier (IMP-006): the key is the raw line
+  /// date, title, amount in cents, and the occurrence index among identical
+  /// (date, title, amount) lines in the same file, so two identical
+  /// purchases on the same day are both kept and a re-import matches.
+  static String buildCardBill({
+    required String rawDate,
+    required String title,
+    required int amountInCents,
+    required int occurrence,
+  }) {
+    return 'card|$rawDate|$title|$amountInCents|$occurrence';
+  }
 }

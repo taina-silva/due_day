@@ -60,6 +60,7 @@ class CategoryIconUtils {
     Icons.build_rounded,
     Icons.volunteer_activism_rounded,
     Icons.category_rounded,
+    Icons.block_rounded,
   ];
 
   /// Encodes an [IconData] to a hex-string of its codePoint.

@@ -8,5 +8,8 @@ abstract class CategoryRepository {
     CategoryEntity category,
   );
   Future<Either<Failure, void>> deleteCategory(String categoryId);
+
+  /// Creates [categories] in one batch, keeping their ids (CAT-002, CAT-004).
+  Future<Either<Failure, void>> addCategories(List<CategoryEntity> categories);
   Stream<Either<Failure, List<CategoryEntity>>> getCategories();
 }

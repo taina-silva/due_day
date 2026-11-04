@@ -136,8 +136,7 @@ final tAccountEntity = AccountEntity(
   id: 'acc-1',
   userId: 'user-1',
   name: 'Checking Account',
-  category: AccountCategory.dailyUse,
-  balance: 1000.0,
+  category: AccountCategory.checking,
   createdAt: tDateTime,
 );
 

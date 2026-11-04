@@ -5,8 +5,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:due_day/features/categories/data/datasources/category_remote_data_source.dart';
 import 'package:due_day/features/categories/data/models/category_model.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
+import 'package:due_day/features/categories/domain/entities/default_category_names.dart';
 import 'package:due_day/features/categories/domain/repositories/category_repository.dart';
 import 'package:due_day/features/categories/domain/usecases/category_usecases.dart';
+import 'package:due_day/features/categories/domain/usecases/ensure_categories.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_action_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_action_event.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_action_state.dart';
@@ -52,6 +54,8 @@ class MockUpdateCategory extends Mock implements UpdateCategory {}
 class MockDeleteCategory extends Mock implements DeleteCategory {}
 
 class MockGetCategories extends Mock implements GetCategories {}
+
+class MockEnsureCategories extends Mock implements EnsureCategories {}
 
 // BLoC Mocks
 class MockCategoryLoadBloc
@@ -103,4 +107,20 @@ final tCategoryModel2 = CategoryModel(
   icon: '0xe531',
   createdAt: tDateTime,
   transactionCount: 2,
+);
+
+const tDefaultNames = DefaultCategoryNames(
+  food: 'Food',
+  groceries: 'Groceries',
+  transport: 'Transport',
+  housing: 'Housing',
+  bills: 'Bills',
+  health: 'Health',
+  leisure: 'Leisure',
+  shopping: 'Shopping',
+  subscriptions: 'Subscriptions',
+  education: 'Education',
+  other: 'Other',
+  salary: 'Salary',
+  otherIncome: 'Other income',
 );

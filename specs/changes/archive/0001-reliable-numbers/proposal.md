@@ -1,6 +1,6 @@
 # 0001 — Reliable numbers
 
-Status: approved
+Status: done
 
 ## Why
 

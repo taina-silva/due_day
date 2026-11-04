@@ -12,6 +12,7 @@ void initDashboard() {
       getDashboardSummary: sl(),
       getAccounts: sl(),
       getTransactions: sl(),
+      getCategories: sl(),
     ),
   );
 }

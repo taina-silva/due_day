@@ -130,7 +130,8 @@ void main() {
     );
 
     testWidgets(
-      'given AccountLoaded state when page loads then display accounts list and total balance',
+      'ACC-003: given two accounts when the screen opens then each shows name '
+      'and type (and due day for cards), with no amount and no total',
       (tester) async {
         setupTestWindow(tester);
         when(() => mockAccountLoadBloc.state).thenReturn(
@@ -154,6 +155,11 @@ void main() {
 
         expect(find.text('Checking Account'), findsOneWidget);
         expect(find.text('Main Credit Card'), findsOneWidget);
+        expect(find.text('CHECKING'), findsOneWidget);
+        expect(find.text('CREDIT CARD'), findsOneWidget);
+        expect(find.text('Due on day 15'), findsOneWidget);
+        expect(find.textContaining(r'$'), findsNothing);
+        expect(find.textContaining('Balance'), findsNothing);
         expect(find.text('Add Account'), findsOneWidget);
       },
     );

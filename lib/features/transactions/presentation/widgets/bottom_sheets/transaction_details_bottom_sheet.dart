@@ -8,6 +8,7 @@ import 'package:due_day/features/accounts/presentation/bloc/account_load_bloc.da
 import 'package:due_day/features/accounts/presentation/bloc/account_load_state.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
+import 'package:due_day/features/categories/presentation/utils/category_l10n_extension.dart';
 import 'package:due_day/features/categories/presentation/utils/category_utils.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_action_bloc.dart';
@@ -156,7 +157,7 @@ class _TransactionDetailsBottomSheetState
                       final cat = state.categories.firstWhere(
                         (c) => c.id == transaction.category,
                       );
-                      categoryName = cat.name;
+                      categoryName = l10n.categoryDisplayName(cat);
                       categoryIcon = CategoryIconUtils.parseIcon(cat.icon);
                     } catch (_) {}
                   }

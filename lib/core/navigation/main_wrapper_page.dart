@@ -1,6 +1,7 @@
 import 'package:due_day/core/design_system/components/navbar/floating_bottom_nav.dart';
 import 'package:due_day/core/injection/injection_container.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
+import 'package:due_day/core/l10n/l10n_resolver.dart';
 import 'package:due_day/core/navigation/biometric_lock_overlay.dart';
 import 'package:due_day/core/services/security_service.dart';
 import 'package:due_day/core/settings/settings_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:due_day/features/accounts/presentation/bloc/account_load_bloc.da
 import 'package:due_day/features/accounts/presentation/bloc/account_load_event.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_event.dart';
+import 'package:due_day/features/categories/presentation/utils/category_l10n_extension.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_load_bloc.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_load_event.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_load_bloc.dart';
@@ -43,7 +45,12 @@ class _MainWrapperPageState extends State<MainWrapperPage>
     // here on every mount (i.e. every fresh login) is what keeps them from
     // serving stale data left over from a previous account.
     context.read<AccountLoadBloc>().add(LoadAccounts());
-    context.read<CategoryLoadBloc>().add(LoadCategories());
+    final l10n = resolveLocalizations(
+      context.read<SettingsBloc>().state.languageCode,
+    );
+    context.read<CategoryLoadBloc>().add(
+      LoadCategories(defaultNames: l10n.defaultCategoryNames),
+    );
     context.read<TransactionLoadBloc>().add(const LoadTransactions());
     context.read<NotificationsLoadBloc>().add(LoadNotifications());
 

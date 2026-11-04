@@ -2,9 +2,7 @@
     "@@locale": "en",
     "dashboardGreeting": "Hello, {name}",
     "dashboardMonthlySummary": "Monthly Summary",
-    "dashboardGeneralBalance": "General Balance",
     "dashboardIncomes": "Incomes",
-    "dashboardExpenses": "Expenses",
     "dashboardUpcomingDues": "Upcoming Dues",
     "dashboardNoUpcomingDues": "No upcoming dues.",
     "dashboardDueToday": "Due today",
@@ -18,7 +16,6 @@
             }
         }
     },
-    "dashboardProjectedBalance": "Projected Balance",
     "dashboardCategorySpending": "Category Spending",
     "dashboardFinancialInsights": "Financial Insights",
     "dashboardInsightHealthy": "Your finances are healthy this month!",
@@ -41,7 +38,6 @@
         }
     },
     "defaultTransaction": "Transaction",
-
     "loginSubtitle": "Your digital financial curator.",
     "loginEmailLabel": "Email",
     "loginPasswordLabel": "Password",
@@ -56,20 +52,17 @@
     "authErrorUserDisabled": "This user account has been disabled.",
     "authErrorCancelled": "Authentication was cancelled.",
     "authErrorUserNotFound": "User account not found.",
-
     "signupTitle": "Create your account",
     "signupSubtitle": "Start organizing your finances today.",
     "signupNameLabel": "Name",
     "signupNameHint": "Enter your name",
     "signupSubmitButton": "Create account",
     "signupErrorFallback": "An error occurred while creating your account.",
-
     "navHome": "Home",
     "navAdd": "Add",
     "navTrans": "Transactions",
     "navAccount": "Accounts",
     "navCategory": "Categories",
-
     "accountsTitle": "My Accounts",
     "accountsComingSoon": "Feature coming soon!",
     "accountsEmpty": "No accounts added. Start by creating one!",
@@ -78,11 +71,7 @@
     "accountsEditAccount": "Edit Account",
     "accountsNameLabel": "NAME",
     "accountsNameHint": "Enter account name",
-    "accountsBalanceLabel": "INITIAL BALANCE",
     "accountsCategoryLabel": "CATEGORY",
-    "accountsCategoryInvestments": "Investments",
-    "accountsCategorySavings": "Savings",
-    "accountsCategoryDailyUse": "Daily Use",
     "accountsSaveAccount": "Save Account",
     "accountsDeleteAccount": "Delete Account",
     "accountsConfirmDelete": "Are you sure you want to delete this account?",
@@ -94,7 +83,6 @@
     "accountsErrorFallback": "An error occurred while managing your accounts.",
     "accountsErrorSaveFailed": "Failed to save account. Please try again.",
     "accountsErrorDeleteFailed": "Failed to delete account. Please try again.",
-
     "categoriesTitle": "Categories",
     "categoriesSubtitle": "Curate your spending flow.",
     "categoriesFinancialArchitect": "FINANCIAL ARCHITECT",
@@ -121,14 +109,10 @@
     "categoriesSelectIcon": "SELECT ICON",
     "categoriesSelectColor": "SEMANTIC COLOR",
     "categoriesSave": "Save Category",
-
     "profileTitle": "Profile & Settings",
     "profilePremiumMember": "PREMIUM MEMBER",
-    "profileConfirmDeleteTitle": "Confirm Deletion",
-    "profileConfirmDeleteDesc": "Do you really want to permanently delete your account? This action cannot be undone.",
     "profileCancel": "Cancel",
     "profileExclude": "Delete",
-    "profileExcludeDevAlert": "Delete functionality in development.",
     "profileLanguage": "Language",
     "profileLanguageEn": "English-US",
     "profileLanguagePt": "Português-BR",
@@ -136,7 +120,6 @@
     "profilePushAlerts": "Push Alerts",
     "profilePushAlertsDesc": "Bills, reminders, updates",
     "profileLogOut": "Log Out",
-    "profileDeleteAccount": "Delete Account",
     "profileSecurity": "Biometric Security",
     "profileSecurityDesc": "Locks access to the app",
     "profileBiometricsNotSupported": "This device does not have active biometric support.",
@@ -155,7 +138,6 @@
     "profileChooseFromGallery": "Choose from Gallery",
     "profilePhotoTooLargeError": "This image is too large. Try a different photo.",
     "profilePhotoPickError": "Couldn't update your photo. Please try again.",
-
     "notificationsTitle": "Notifications",
     "notifAppUpdateTitle": "System Update",
     "notifAppUpdateDesc": "The platform's terms of use have been updated.",
@@ -203,7 +185,6 @@
             }
         }
     },
-
     "transactionsTitle": "Transactions",
     "transactionsFilterAll": "All",
     "transactionsFilterIncome": "Incomes",
@@ -215,7 +196,6 @@
     "transactionsSectionLastWeek": "Last Week",
     "transactionsSectionLastMonth": "Last Month",
     "transactionsSectionPast": "Past",
-
     "transactionsNew": "New Transaction",
     "transactionsAmount": "AMOUNT",
     "transactionsConfirm": "Confirm Transaction",
@@ -367,11 +347,9 @@
     "scheduleStatusScheduled": "Scheduled",
     "scheduleMarkAsPaid": "Mark as Paid",
     "notAvailable": "N/A",
-
     "splashAppName": "DueDay",
     "splashTagline": "Your finances, on the right day.",
     "splashLogoSemanticLabel": "DueDay logo",
-
     "dateToday": "Today",
     "validatorRequired": "Required field",
     "hintSelect": "Select",
@@ -402,5 +380,43 @@
     "dashboardErrorFallback": "An error occurred while loading the dashboard.",
     "scheduleErrorFallback": "An error occurred while loading your schedule.",
     "scheduleErrorNotAuthenticated": "User not authenticated. Please log in again.",
-    "scheduleActionErrorFallback": "Failed to update your schedule. Please try again."
+    "scheduleActionErrorFallback": "Failed to update your schedule. Please try again.",
+    "accountsCategoryChecking": "Checking",
+    "accountsCategoryCash": "Cash",
+    "accountsDueDayInvalid": "Enter a due day between 1 and 31.",
+    "accountsDueDayValue": "Due on day {day}",
+    "@accountsDueDayValue": {
+        "placeholders": {
+            "day": {
+                "type": "int",
+                "example": "10"
+            }
+        }
+    },
+    "categoriesSystemInvestment": "Investment",
+    "categoriesSystemIgnored": "Ignored",
+    "categoriesSystemProtected": "System category: it can't be renamed or deleted.",
+    "categoriesDefaultFood": "Food",
+    "categoriesDefaultGroceries": "Groceries",
+    "categoriesDefaultTransport": "Transport",
+    "categoriesDefaultHousing": "Housing",
+    "categoriesDefaultBills": "Bills",
+    "categoriesDefaultHealth": "Health",
+    "categoriesDefaultLeisure": "Leisure",
+    "categoriesDefaultShopping": "Shopping",
+    "categoriesDefaultSubscriptions": "Subscriptions",
+    "categoriesDefaultEducation": "Education",
+    "categoriesDefaultOther": "Other",
+    "categoriesDefaultSalary": "Salary",
+    "categoriesDefaultOtherIncome": "Other income",
+    "dashboardPreviousMonth": "Previous month",
+    "dashboardNextMonth": "Next month",
+    "dashboardSpent": "Spent",
+    "dashboardInvested": "Invested",
+    "dashboardUncategorized": "Uncategorized",
+    "profileDeleteAllData": "Delete all my data",
+    "profileDeleteAllDataTitle": "Delete all your data?",
+    "profileDeleteAllDataConfirm": "All your accounts, categories, and transactions will be deleted. Your login and preferences stay. This can't be undone.",
+    "profileDeleteAllDataSuccess": "Your data was deleted.",
+    "profileDeleteAllDataError": "Couldn't delete your data. Please try again."
 }

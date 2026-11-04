@@ -1,6 +1,8 @@
 import 'package:due_day/features/accounts/domain/entities/account_category.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:due_day/features/accounts/domain/usecases/account_usecases.dart';
+import 'package:due_day/features/categories/domain/entities/category_entity.dart';
+import 'package:due_day/features/categories/domain/usecases/category_usecases.dart';
 import 'package:due_day/features/dashboard/domain/entities/dashboard_summary.dart';
 import 'package:due_day/features/dashboard/domain/usecases/get_dashboard_summary.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
@@ -14,6 +16,8 @@ class MockGetTransactions extends Mock implements GetTransactions {}
 
 class MockGetDashboardSummary extends Mock implements GetDashboardSummary {}
 
+class MockGetCategories extends Mock implements GetCategories {}
+
 // Test Data
 final tDateTime = DateTime(2026, 7, 7);
 
@@ -21,8 +25,7 @@ final tAccount1 = AccountEntity(
   id: 'acc-1',
   userId: 'user-1',
   name: 'Checking Account',
-  category: AccountCategory.dailyUse,
-  balance: 1000.0,
+  category: AccountCategory.checking,
   createdAt: tDateTime,
 );
 
@@ -30,8 +33,7 @@ final tAccount2 = AccountEntity(
   id: 'acc-2',
   userId: 'user-1',
   name: 'Savings',
-  category: AccountCategory.savings,
-  balance: 5000.0,
+  category: AccountCategory.checking,
   createdAt: tDateTime,
 );
 
@@ -74,11 +76,20 @@ final tUnpaidExpenseTx = TransactionEntity(
   notes: 'Electricity bill',
 );
 
+final tCategory1 = CategoryEntity(
+  id: 'cat-1',
+  userId: 'user-1',
+  name: 'Food',
+  color: '#E63946',
+  icon: '0xf0108',
+  createdAt: tDateTime,
+);
+
 final tDashboardSummary = DashboardSummary(
-  currentBalance: 6000.0,
-  projectedBalance: 5900.0,
-  monthlyIncome: 200.0,
-  monthlyExpenses: 50.0,
+  month: DateTime(2026, 7),
+  spent: 50.0,
+  income: 200.0,
+  invested: 0,
   upcomingDues: [tUnpaidExpenseTx],
   spendingByCategory: const {'cat-1': 50.0},
   insight: const DashboardInsight(type: DashboardInsightType.healthy),

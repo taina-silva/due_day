@@ -32,16 +32,13 @@ void initTransactions() {
   );
 
   // Use cases
-  sl.registerLazySingleton(() => AddTransaction(sl(), sl()));
-  sl.registerLazySingleton(() => UpdateTransaction(sl(), sl()));
-  sl.registerLazySingleton(() => DeleteTransaction(sl(), sl()));
+  sl.registerLazySingleton(() => AddTransaction(sl()));
+  sl.registerLazySingleton(() => UpdateTransaction(sl()));
+  sl.registerLazySingleton(() => DeleteTransaction(sl()));
   sl.registerLazySingleton(() => GetTransactions(sl()));
   sl.registerLazySingleton(() => ClassifyTransactionReminders());
   sl.registerLazySingleton(
-    () => SyncRecurringTransactions(
-      transactionRepository: sl(),
-      accountRepository: sl(),
-    ),
+    () => SyncRecurringTransactions(transactionRepository: sl()),
   );
 
   // Repository

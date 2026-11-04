@@ -4,10 +4,10 @@ import 'package:due_day/features/transactions/domain/entities/transaction_entity
 import 'package:fpdart/fpdart.dart';
 
 abstract class StatementImportRepository {
-  /// Pure parsing, no I/O beyond the given content. Detects format from
-  /// [fileName]'s extension and delegates to the OFX or CSV parser.
+  /// Pure parsing, no I/O beyond the given content. Detects the format from
+  /// the content, never the file name (IMP-003), and delegates to the
+  /// matching parser. Unsupported content → `UnsupportedFileFormatFailure`.
   Either<Failure, List<ParsedStatementTransaction>> parseStatement({
-    required String fileName,
     required String content,
   });
 
@@ -17,10 +17,9 @@ abstract class StatementImportRepository {
     Set<String> externalIds,
   );
 
-  /// Persists [transactionsToCreate] and updates [destinationAccountId]'s
-  /// balance by the net delta of the batch. Returns the created entities.
+  /// Persists [transactionsToCreate] in a batch and returns them. Writes
+  /// only transactions (and category counters), never accounts (IMP-010).
   Future<Either<Failure, List<TransactionEntity>>> confirmImport({
     required List<TransactionEntity> transactionsToCreate,
-    required String destinationAccountId,
   });
 }

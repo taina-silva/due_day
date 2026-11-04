@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AccountModel {
 
- String get id; String get userId; String get name; AccountCategory get category; double get balance;@TimestampConverter() DateTime get createdAt; int? get dueDay;@NullableTimestampConverter() DateTime? get deletedAt;
+ String get id; String get userId; String get name;@JsonKey(unknownEnumValue: AccountCategory.checking) AccountCategory get category;@TimestampConverter() DateTime get createdAt; int? get dueDay;@NullableTimestampConverter() DateTime? get deletedAt;
 /// Create a copy of AccountModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $AccountModelCopyWith<AccountModel> get copyWith => _$AccountModelCopyWithImpl<A
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AccountModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.name, name) || other.name == name)&&(identical(other.category, category) || other.category == category)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.dueDay, dueDay) || other.dueDay == dueDay)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AccountModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.name, name) || other.name == name)&&(identical(other.category, category) || other.category == category)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.dueDay, dueDay) || other.dueDay == dueDay)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,name,category,balance,createdAt,dueDay,deletedAt);
+int get hashCode => Object.hash(runtimeType,id,userId,name,category,createdAt,dueDay,deletedAt);
 
 @override
 String toString() {
-  return 'AccountModel(id: $id, userId: $userId, name: $name, category: $category, balance: $balance, createdAt: $createdAt, dueDay: $dueDay, deletedAt: $deletedAt)';
+  return 'AccountModel(id: $id, userId: $userId, name: $name, category: $category, createdAt: $createdAt, dueDay: $dueDay, deletedAt: $deletedAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $AccountModelCopyWith<$Res>  {
   factory $AccountModelCopyWith(AccountModel value, $Res Function(AccountModel) _then) = _$AccountModelCopyWithImpl;
 @useResult
 $Res call({
- String id, String userId, String name, AccountCategory category, double balance,@TimestampConverter() DateTime createdAt, int? dueDay,@NullableTimestampConverter() DateTime? deletedAt
+ String id, String userId, String name,@JsonKey(unknownEnumValue: AccountCategory.checking) AccountCategory category,@TimestampConverter() DateTime createdAt, int? dueDay,@NullableTimestampConverter() DateTime? deletedAt
 });
 
 
@@ -65,14 +65,13 @@ class _$AccountModelCopyWithImpl<$Res>
 
 /// Create a copy of AccountModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? name = null,Object? category = null,Object? balance = null,Object? createdAt = null,Object? dueDay = freezed,Object? deletedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? userId = null,Object? name = null,Object? category = null,Object? createdAt = null,Object? dueDay = freezed,Object? deletedAt = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
-as AccountCategory,balance: null == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
-as double,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as AccountCategory,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,dueDay: freezed == dueDay ? _self.dueDay : dueDay // ignore: cast_nullable_to_non_nullable
 as int?,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
@@ -160,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String userId,  String name,  AccountCategory category,  double balance, @TimestampConverter()  DateTime createdAt,  int? dueDay, @NullableTimestampConverter()  DateTime? deletedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String userId,  String name, @JsonKey(unknownEnumValue: AccountCategory.checking)  AccountCategory category, @TimestampConverter()  DateTime createdAt,  int? dueDay, @NullableTimestampConverter()  DateTime? deletedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AccountModel() when $default != null:
-return $default(_that.id,_that.userId,_that.name,_that.category,_that.balance,_that.createdAt,_that.dueDay,_that.deletedAt);case _:
+return $default(_that.id,_that.userId,_that.name,_that.category,_that.createdAt,_that.dueDay,_that.deletedAt);case _:
   return orElse();
 
 }
@@ -181,10 +180,10 @@ return $default(_that.id,_that.userId,_that.name,_that.category,_that.balance,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String userId,  String name,  AccountCategory category,  double balance, @TimestampConverter()  DateTime createdAt,  int? dueDay, @NullableTimestampConverter()  DateTime? deletedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String userId,  String name, @JsonKey(unknownEnumValue: AccountCategory.checking)  AccountCategory category, @TimestampConverter()  DateTime createdAt,  int? dueDay, @NullableTimestampConverter()  DateTime? deletedAt)  $default,) {final _that = this;
 switch (_that) {
 case _AccountModel():
-return $default(_that.id,_that.userId,_that.name,_that.category,_that.balance,_that.createdAt,_that.dueDay,_that.deletedAt);case _:
+return $default(_that.id,_that.userId,_that.name,_that.category,_that.createdAt,_that.dueDay,_that.deletedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +200,10 @@ return $default(_that.id,_that.userId,_that.name,_that.category,_that.balance,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String userId,  String name,  AccountCategory category,  double balance, @TimestampConverter()  DateTime createdAt,  int? dueDay, @NullableTimestampConverter()  DateTime? deletedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String userId,  String name, @JsonKey(unknownEnumValue: AccountCategory.checking)  AccountCategory category, @TimestampConverter()  DateTime createdAt,  int? dueDay, @NullableTimestampConverter()  DateTime? deletedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _AccountModel() when $default != null:
-return $default(_that.id,_that.userId,_that.name,_that.category,_that.balance,_that.createdAt,_that.dueDay,_that.deletedAt);case _:
+return $default(_that.id,_that.userId,_that.name,_that.category,_that.createdAt,_that.dueDay,_that.deletedAt);case _:
   return null;
 
 }
@@ -216,14 +215,13 @@ return $default(_that.id,_that.userId,_that.name,_that.category,_that.balance,_t
 @JsonSerializable()
 
 class _AccountModel extends AccountModel {
-  const _AccountModel({required this.id, required this.userId, required this.name, required this.category, required this.balance, @TimestampConverter() required this.createdAt, this.dueDay, @NullableTimestampConverter() this.deletedAt}): super._();
+  const _AccountModel({required this.id, required this.userId, required this.name, @JsonKey(unknownEnumValue: AccountCategory.checking) required this.category, @TimestampConverter() required this.createdAt, this.dueDay, @NullableTimestampConverter() this.deletedAt}): super._();
   factory _AccountModel.fromJson(Map<String, dynamic> json) => _$AccountModelFromJson(json);
 
 @override final  String id;
 @override final  String userId;
 @override final  String name;
-@override final  AccountCategory category;
-@override final  double balance;
+@override@JsonKey(unknownEnumValue: AccountCategory.checking) final  AccountCategory category;
 @override@TimestampConverter() final  DateTime createdAt;
 @override final  int? dueDay;
 @override@NullableTimestampConverter() final  DateTime? deletedAt;
@@ -241,16 +239,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AccountModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.name, name) || other.name == name)&&(identical(other.category, category) || other.category == category)&&(identical(other.balance, balance) || other.balance == balance)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.dueDay, dueDay) || other.dueDay == dueDay)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AccountModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.name, name) || other.name == name)&&(identical(other.category, category) || other.category == category)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.dueDay, dueDay) || other.dueDay == dueDay)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,name,category,balance,createdAt,dueDay,deletedAt);
+int get hashCode => Object.hash(runtimeType,id,userId,name,category,createdAt,dueDay,deletedAt);
 
 @override
 String toString() {
-  return 'AccountModel(id: $id, userId: $userId, name: $name, category: $category, balance: $balance, createdAt: $createdAt, dueDay: $dueDay, deletedAt: $deletedAt)';
+  return 'AccountModel(id: $id, userId: $userId, name: $name, category: $category, createdAt: $createdAt, dueDay: $dueDay, deletedAt: $deletedAt)';
 }
 
 
@@ -261,7 +259,7 @@ abstract mixin class _$AccountModelCopyWith<$Res> implements $AccountModelCopyWi
   factory _$AccountModelCopyWith(_AccountModel value, $Res Function(_AccountModel) _then) = __$AccountModelCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String userId, String name, AccountCategory category, double balance,@TimestampConverter() DateTime createdAt, int? dueDay,@NullableTimestampConverter() DateTime? deletedAt
+ String id, String userId, String name,@JsonKey(unknownEnumValue: AccountCategory.checking) AccountCategory category,@TimestampConverter() DateTime createdAt, int? dueDay,@NullableTimestampConverter() DateTime? deletedAt
 });
 
 
@@ -278,14 +276,13 @@ class __$AccountModelCopyWithImpl<$Res>
 
 /// Create a copy of AccountModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? name = null,Object? category = null,Object? balance = null,Object? createdAt = null,Object? dueDay = freezed,Object? deletedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? userId = null,Object? name = null,Object? category = null,Object? createdAt = null,Object? dueDay = freezed,Object? deletedAt = freezed,}) {
   return _then(_AccountModel(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,category: null == category ? _self.category : category // ignore: cast_nullable_to_non_nullable
-as AccountCategory,balance: null == balance ? _self.balance : balance // ignore: cast_nullable_to_non_nullable
-as double,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as AccountCategory,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime,dueDay: freezed == dueDay ? _self.dueDay : dueDay // ignore: cast_nullable_to_non_nullable
 as int?,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,

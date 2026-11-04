@@ -1,6 +1,8 @@
 import 'package:due_day/core/design_system/theme/theme.dart';
+import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
+import 'package:due_day/features/categories/presentation/utils/category_l10n_extension.dart';
 import 'package:due_day/features/categories/presentation/utils/category_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -57,7 +59,7 @@ class CategoryCard extends StatelessWidget {
             SizedBox(width: dimensions.spacing.medium.width),
             Expanded(
               child: Text(
-                category.name,
+                AppLocalizations.of(context).categoryDisplayName(category),
                 style: typography.body.large.copyWith(
                   fontWeight: FontWeight.w600,
                 ),

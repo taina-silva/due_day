@@ -9,9 +9,8 @@ class ParseStatement {
   ParseStatement(this.repository);
 
   Either<Failure, List<ParsedStatementTransaction>> call({
-    required String fileName,
     required String content,
   }) {
-    return repository.parseStatement(fileName: fileName, content: content);
+    return repository.parseStatement(content: content);
   }
 }

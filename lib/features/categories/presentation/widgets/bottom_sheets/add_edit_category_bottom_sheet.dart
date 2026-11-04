@@ -9,6 +9,7 @@ import 'package:due_day/features/categories/domain/entities/category_entity.dart
 import 'package:due_day/features/categories/presentation/bloc/category_action_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_action_state.dart';
 import 'package:due_day/features/categories/presentation/utils/category_failure_extension.dart';
+import 'package:due_day/features/categories/presentation/utils/category_l10n_extension.dart';
 import 'package:due_day/features/categories/presentation/utils/category_utils.dart';
 import 'package:due_day/features/categories/presentation/widgets/bottom_sheets/parts/category_form_actions.dart';
 import 'package:due_day/features/categories/presentation/widgets/bottom_sheets/parts/category_section_title.dart';
@@ -74,6 +75,7 @@ class _AddEditCategoryBottomSheetState
     final l10n = AppLocalizations.of(context);
 
     final isEditing = widget.category != null;
+    final isSystem = widget.category?.isSystem ?? false;
 
     return BlocListener<CategoryActionBloc, CategoryActionState>(
       listener: (context, state) {
@@ -134,16 +136,23 @@ class _AddEditCategoryBottomSheetState
                       textAlign: TextAlign.center,
                     ),
                     SizedBox(height: dimensions.spacing.extraLarge.height),
-                    AppTextField(
-                      controller: _nameController,
-                      label: l10n.categoriesNameLabel,
-                      hintText: l10n.categoriesNameHint,
-                      prefixIcon: Icons.label_outline_rounded,
-                      textInputAction: TextInputAction.done,
-                      onFieldSubmitted: (_) =>
-                          FocusScope.of(context).unfocus(),
-                      validator: Validators.requiredField(l10n),
-                    ),
+                    if (isSystem)
+                      // System categories can't be renamed (CAT-003).
+                      _SystemCategoryName(
+                        name: l10n.categoryDisplayName(widget.category!),
+                        note: l10n.categoriesSystemProtected,
+                      )
+                    else
+                      AppTextField(
+                        controller: _nameController,
+                        label: l10n.categoriesNameLabel,
+                        hintText: l10n.categoriesNameHint,
+                        prefixIcon: Icons.label_outline_rounded,
+                        textInputAction: TextInputAction.done,
+                        onFieldSubmitted: (_) =>
+                            FocusScope.of(context).unfocus(),
+                        validator: Validators.requiredField(l10n),
+                      ),
                     SizedBox(height: dimensions.spacing.extraLarge.height),
                     CategorySectionTitle(title: l10n.categoriesSelectIcon),
                     SizedBox(height: dimensions.spacing.medium.height),
@@ -182,11 +191,59 @@ class _AddEditCategoryBottomSheetState
 
     if (_formKey.currentState!.validate()) {
       setState(() => _isSubmitting = true);
+      final category = widget.category;
       widget.onSave(
-        _nameController.text.trim(),
+        // A system category keeps its stored name (CAT-003).
+        category != null && category.isSystem
+            ? category.name
+            : _nameController.text.trim(),
         CategoryIconUtils.encode(_selectedIcon),
         CategoryColorUtils.encode(_selectedColor),
       );
     }
+  }
+}
+
+class _SystemCategoryName extends StatelessWidget {
+  final String name;
+  final String note;
+
+  const _SystemCategoryName({required this.name, required this.note});
+
+  @override
+  Widget build(BuildContext context) {
+    final typography = context.typography;
+    final spacing = context.spacing;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.lock_outline_rounded,
+              size: context.sizes.iconMedium.scale,
+              color: context.onSurfaceVariantColor,
+            ),
+            SizedBox(width: spacing.smallMedium.width),
+            Expanded(
+              child: Text(
+                name,
+                style: typography.title.medium.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: spacing.small.height),
+        Text(
+          note,
+          style: typography.body.small.copyWith(
+            color: context.onSurfaceVariantColor,
+          ),
+        ),
+      ],
+    );
   }
 }

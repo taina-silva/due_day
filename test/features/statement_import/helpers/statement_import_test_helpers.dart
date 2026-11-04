@@ -3,6 +3,7 @@ import 'package:due_day/core/services/statement_file_picker_service.dart';
 import 'package:due_day/features/accounts/domain/entities/account_category.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:due_day/features/statement_import/domain/entities/parsed_statement_transaction.dart';
+import 'package:due_day/features/statement_import/domain/entities/statement_format.dart';
 import 'package:due_day/features/statement_import/domain/entities/statement_source.dart';
 import 'package:due_day/features/statement_import/domain/repositories/statement_import_repository.dart';
 import 'package:due_day/features/statement_import/domain/usecases/build_review_list.dart';
@@ -39,6 +40,7 @@ final tParsedDebit = ParsedStatementTransaction(
   amount: -19.90,
   memo: 'Compra no débito - FAKE COMERCIO LTDA',
   source: StatementSource.ofx,
+  format: StatementFormat.nubankOfx,
 );
 
 final tParsedCredit = ParsedStatementTransaction(
@@ -48,13 +50,13 @@ final tParsedCredit = ParsedStatementTransaction(
   amount: 1000.00,
   memo: 'Transferência Recebida - CICLANO DE SOUZA',
   source: StatementSource.ofx,
+  format: StatementFormat.nubankOfx,
 );
 
 final tImportAccountEntity = AccountEntity(
   id: 'acc-import-1',
   userId: 'user-1',
   name: 'Nubank',
-  category: AccountCategory.dailyUse,
-  balance: 500.0,
+  category: AccountCategory.checking,
   createdAt: DateTime(2026, 1, 1),
 );

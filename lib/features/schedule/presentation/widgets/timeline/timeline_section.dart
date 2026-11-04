@@ -2,6 +2,7 @@ import 'package:due_day/core/design_system/theme/theme.dart';
 import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
+import 'package:due_day/features/categories/presentation/utils/category_l10n_extension.dart';
 import 'package:due_day/features/schedule/domain/entities/schedule_summary.dart';
 import 'package:due_day/features/schedule/presentation/bloc/schedule_action_bloc.dart';
 import 'package:due_day/features/schedule/presentation/bloc/schedule_action_event.dart';
@@ -85,7 +86,7 @@ class TimelineSection extends StatelessWidget {
             final category = categories[tx.category];
             return ScheduleItemCard(
               transaction: tx,
-              categoryName: category?.name,
+              categoryName: l10n.categoryDisplayNameOrNull(category),
               categoryIcon: category?.icon,
               categoryColor: category?.color,
               onMarkAsPaid: () {

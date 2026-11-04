@@ -100,27 +100,33 @@ class AccountRemoteDataSourceImpl implements AccountRemoteDataSource {
     // own collection whenever the auth session changes, so a listener from
     // a previous account never lingers (and never trips permission-denied)
     // after logout/login.
-    return firebaseAuth.authStateChanges().switchMap((user) {
-      if (user == null) {
-        return Stream<List<AccountModel>>.value(const []);
-      }
+    return firebaseAuth
+        .authStateChanges()
+        .switchMap((user) {
+          if (user == null) {
+            return Stream<List<AccountModel>>.value(const []);
+          }
 
-      return firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('accounts')
-          .where('deletedAt', isNull: true)
-          .snapshots()
-          .map((snapshot) {
-            return snapshot.docs
-                .map((doc) => AccountModel.fromJson(doc.data()))
-                .toList();
-          });
-    }).handleError((Object e) {
-      if (e is FirebaseException) {
-        throw ServerException(e.message ?? 'Failed to fetch accounts.', e.code);
-      }
-      throw ServerException('Failed to fetch accounts: $e');
-    });
+          return firestore
+              .collection('users')
+              .doc(user.uid)
+              .collection('accounts')
+              .where('deletedAt', isNull: true)
+              .snapshots()
+              .map((snapshot) {
+                return snapshot.docs
+                    .map((doc) => AccountModel.fromJson(doc.data()))
+                    .toList();
+              });
+        })
+        .handleError((Object e) {
+          if (e is FirebaseException) {
+            throw ServerException(
+              e.message ?? 'Failed to fetch accounts.',
+              e.code,
+            );
+          }
+          throw ServerException('Failed to fetch accounts: $e');
+        });
   }
 }

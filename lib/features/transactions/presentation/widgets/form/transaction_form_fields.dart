@@ -5,6 +5,7 @@ import 'package:due_day/core/l10n/l10n_extension.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/accounts/domain/entities/account_entity.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
+import 'package:due_day/features/categories/presentation/utils/category_l10n_extension.dart';
 import 'package:due_day/features/transactions/domain/entities/transaction_entity.dart';
 import 'package:due_day/features/transactions/presentation/widgets/form/transaction_frequency_selector.dart';
 import 'package:due_day/features/transactions/presentation/widgets/shared/selection_field_widget.dart';
@@ -71,7 +72,9 @@ class TransactionFormFields extends StatelessWidget {
           SizedBox(height: spacing.medium.height),
           TransactionSelectionField(
             label: l10n.transactionsCategory,
-            value: selectedCategory?.name ?? l10n.transactionsSelectCategory,
+            value:
+                l10n.categoryDisplayNameOrNull(selectedCategory) ??
+                l10n.transactionsSelectCategory,
             icon: Icons.category_outlined,
             onTap: onSelectCategory,
           ),

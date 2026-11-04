@@ -110,23 +110,11 @@ abstract class AppLocalizations {
   /// **'Resumo Mensal'**
   String get dashboardMonthlySummary;
 
-  /// No description provided for @dashboardGeneralBalance.
-  ///
-  /// In pt, this message translates to:
-  /// **'Saldo Geral'**
-  String get dashboardGeneralBalance;
-
   /// No description provided for @dashboardIncomes.
   ///
   /// In pt, this message translates to:
   /// **'Receitas'**
   String get dashboardIncomes;
-
-  /// No description provided for @dashboardExpenses.
-  ///
-  /// In pt, this message translates to:
-  /// **'Despesas'**
-  String get dashboardExpenses;
 
   /// No description provided for @dashboardUpcomingDues.
   ///
@@ -157,12 +145,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Vence em {days} dias'**
   String dashboardDueInDays(int days);
-
-  /// No description provided for @dashboardProjectedBalance.
-  ///
-  /// In pt, this message translates to:
-  /// **'Saldo Projetado'**
-  String get dashboardProjectedBalance;
 
   /// No description provided for @dashboardCategorySpending.
   ///
@@ -398,35 +380,11 @@ abstract class AppLocalizations {
   /// **'Nome da conta'**
   String get accountsNameHint;
 
-  /// No description provided for @accountsBalanceLabel.
-  ///
-  /// In pt, this message translates to:
-  /// **'SALDO INICIAL'**
-  String get accountsBalanceLabel;
-
   /// No description provided for @accountsCategoryLabel.
   ///
   /// In pt, this message translates to:
   /// **'CATEGORIA'**
   String get accountsCategoryLabel;
-
-  /// No description provided for @accountsCategoryInvestments.
-  ///
-  /// In pt, this message translates to:
-  /// **'Investimentos'**
-  String get accountsCategoryInvestments;
-
-  /// No description provided for @accountsCategorySavings.
-  ///
-  /// In pt, this message translates to:
-  /// **'Poupança'**
-  String get accountsCategorySavings;
-
-  /// No description provided for @accountsCategoryDailyUse.
-  ///
-  /// In pt, this message translates to:
-  /// **'Uso Diário'**
-  String get accountsCategoryDailyUse;
 
   /// No description provided for @accountsSaveAccount.
   ///
@@ -614,18 +572,6 @@ abstract class AppLocalizations {
   /// **'MEMBRO PREMIUM'**
   String get profilePremiumMember;
 
-  /// No description provided for @profileConfirmDeleteTitle.
-  ///
-  /// In pt, this message translates to:
-  /// **'Confirmar exclusão'**
-  String get profileConfirmDeleteTitle;
-
-  /// No description provided for @profileConfirmDeleteDesc.
-  ///
-  /// In pt, this message translates to:
-  /// **'Deseja realmente excluir sua conta permanentemente? Esta ação não tem retorno.'**
-  String get profileConfirmDeleteDesc;
-
   /// No description provided for @profileCancel.
   ///
   /// In pt, this message translates to:
@@ -637,12 +583,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Excluir'**
   String get profileExclude;
-
-  /// No description provided for @profileExcludeDevAlert.
-  ///
-  /// In pt, this message translates to:
-  /// **'Função de exclusão em desenvolvimento.'**
-  String get profileExcludeDevAlert;
 
   /// No description provided for @profileLanguage.
   ///
@@ -685,12 +625,6 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Sair da Conta'**
   String get profileLogOut;
-
-  /// No description provided for @profileDeleteAccount.
-  ///
-  /// In pt, this message translates to:
-  /// **'Deletar Conta'**
-  String get profileDeleteAccount;
 
   /// No description provided for @profileSecurity.
   ///
@@ -1686,6 +1620,186 @@ abstract class AppLocalizations {
   /// In pt, this message translates to:
   /// **'Falha ao atualizar sua agenda. Tente novamente.'**
   String get scheduleActionErrorFallback;
+
+  /// No description provided for @accountsCategoryChecking.
+  ///
+  /// In pt, this message translates to:
+  /// **'Conta corrente'**
+  String get accountsCategoryChecking;
+
+  /// No description provided for @accountsCategoryCash.
+  ///
+  /// In pt, this message translates to:
+  /// **'Dinheiro'**
+  String get accountsCategoryCash;
+
+  /// No description provided for @accountsDueDayInvalid.
+  ///
+  /// In pt, this message translates to:
+  /// **'Informe um dia de vencimento entre 1 e 31.'**
+  String get accountsDueDayInvalid;
+
+  /// No description provided for @accountsDueDayValue.
+  ///
+  /// In pt, this message translates to:
+  /// **'Vence dia {day}'**
+  String accountsDueDayValue(int day);
+
+  /// No description provided for @categoriesSystemInvestment.
+  ///
+  /// In pt, this message translates to:
+  /// **'Investimento'**
+  String get categoriesSystemInvestment;
+
+  /// No description provided for @categoriesSystemIgnored.
+  ///
+  /// In pt, this message translates to:
+  /// **'Ignorado'**
+  String get categoriesSystemIgnored;
+
+  /// No description provided for @categoriesSystemProtected.
+  ///
+  /// In pt, this message translates to:
+  /// **'Categoria do sistema: não pode ser renomeada nem excluída.'**
+  String get categoriesSystemProtected;
+
+  /// No description provided for @categoriesDefaultFood.
+  ///
+  /// In pt, this message translates to:
+  /// **'Alimentação'**
+  String get categoriesDefaultFood;
+
+  /// No description provided for @categoriesDefaultGroceries.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mercado'**
+  String get categoriesDefaultGroceries;
+
+  /// No description provided for @categoriesDefaultTransport.
+  ///
+  /// In pt, this message translates to:
+  /// **'Transporte'**
+  String get categoriesDefaultTransport;
+
+  /// No description provided for @categoriesDefaultHousing.
+  ///
+  /// In pt, this message translates to:
+  /// **'Moradia'**
+  String get categoriesDefaultHousing;
+
+  /// No description provided for @categoriesDefaultBills.
+  ///
+  /// In pt, this message translates to:
+  /// **'Contas'**
+  String get categoriesDefaultBills;
+
+  /// No description provided for @categoriesDefaultHealth.
+  ///
+  /// In pt, this message translates to:
+  /// **'Saúde'**
+  String get categoriesDefaultHealth;
+
+  /// No description provided for @categoriesDefaultLeisure.
+  ///
+  /// In pt, this message translates to:
+  /// **'Lazer'**
+  String get categoriesDefaultLeisure;
+
+  /// No description provided for @categoriesDefaultShopping.
+  ///
+  /// In pt, this message translates to:
+  /// **'Compras'**
+  String get categoriesDefaultShopping;
+
+  /// No description provided for @categoriesDefaultSubscriptions.
+  ///
+  /// In pt, this message translates to:
+  /// **'Assinaturas'**
+  String get categoriesDefaultSubscriptions;
+
+  /// No description provided for @categoriesDefaultEducation.
+  ///
+  /// In pt, this message translates to:
+  /// **'Educação'**
+  String get categoriesDefaultEducation;
+
+  /// No description provided for @categoriesDefaultOther.
+  ///
+  /// In pt, this message translates to:
+  /// **'Outros'**
+  String get categoriesDefaultOther;
+
+  /// No description provided for @categoriesDefaultSalary.
+  ///
+  /// In pt, this message translates to:
+  /// **'Salário'**
+  String get categoriesDefaultSalary;
+
+  /// No description provided for @categoriesDefaultOtherIncome.
+  ///
+  /// In pt, this message translates to:
+  /// **'Outras receitas'**
+  String get categoriesDefaultOtherIncome;
+
+  /// No description provided for @dashboardPreviousMonth.
+  ///
+  /// In pt, this message translates to:
+  /// **'Mês anterior'**
+  String get dashboardPreviousMonth;
+
+  /// No description provided for @dashboardNextMonth.
+  ///
+  /// In pt, this message translates to:
+  /// **'Próximo mês'**
+  String get dashboardNextMonth;
+
+  /// No description provided for @dashboardSpent.
+  ///
+  /// In pt, this message translates to:
+  /// **'Gasto'**
+  String get dashboardSpent;
+
+  /// No description provided for @dashboardInvested.
+  ///
+  /// In pt, this message translates to:
+  /// **'Investido'**
+  String get dashboardInvested;
+
+  /// No description provided for @dashboardUncategorized.
+  ///
+  /// In pt, this message translates to:
+  /// **'Sem categoria'**
+  String get dashboardUncategorized;
+
+  /// No description provided for @profileDeleteAllData.
+  ///
+  /// In pt, this message translates to:
+  /// **'Apagar todos os meus dados'**
+  String get profileDeleteAllData;
+
+  /// No description provided for @profileDeleteAllDataTitle.
+  ///
+  /// In pt, this message translates to:
+  /// **'Apagar todos os seus dados?'**
+  String get profileDeleteAllDataTitle;
+
+  /// No description provided for @profileDeleteAllDataConfirm.
+  ///
+  /// In pt, this message translates to:
+  /// **'Todas as suas contas, categorias e transações serão apagadas. Seu login e suas preferências continuam. Isso não pode ser desfeito.'**
+  String get profileDeleteAllDataConfirm;
+
+  /// No description provided for @profileDeleteAllDataSuccess.
+  ///
+  /// In pt, this message translates to:
+  /// **'Seus dados foram apagados.'**
+  String get profileDeleteAllDataSuccess;
+
+  /// No description provided for @profileDeleteAllDataError.
+  ///
+  /// In pt, this message translates to:
+  /// **'Não foi possível apagar seus dados. Tente novamente.'**
+  String get profileDeleteAllDataError;
 }
 
 class _AppLocalizationsDelegate

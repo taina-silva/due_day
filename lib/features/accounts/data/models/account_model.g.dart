@@ -11,8 +11,11 @@ _AccountModel _$AccountModelFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       userId: json['userId'] as String,
       name: json['name'] as String,
-      category: $enumDecode(_$AccountCategoryEnumMap, json['category']),
-      balance: (json['balance'] as num).toDouble(),
+      category: $enumDecode(
+        _$AccountCategoryEnumMap,
+        json['category'],
+        unknownValue: AccountCategory.checking,
+      ),
       createdAt: const TimestampConverter().fromJson(json['createdAt']),
       dueDay: (json['dueDay'] as num?)?.toInt(),
       deletedAt: const NullableTimestampConverter().fromJson(json['deletedAt']),
@@ -25,15 +28,13 @@ Map<String, dynamic> _$AccountModelToJson(
   'userId': instance.userId,
   'name': instance.name,
   'category': _$AccountCategoryEnumMap[instance.category]!,
-  'balance': instance.balance,
   'createdAt': const TimestampConverter().toJson(instance.createdAt),
   'dueDay': instance.dueDay,
   'deletedAt': const NullableTimestampConverter().toJson(instance.deletedAt),
 };
 
 const _$AccountCategoryEnumMap = {
-  AccountCategory.investments: 'investments',
-  AccountCategory.savings: 'savings',
-  AccountCategory.dailyUse: 'daily_use',
+  AccountCategory.checking: 'checking',
   AccountCategory.creditCard: 'credit_card',
+  AccountCategory.cash: 'cash',
 };

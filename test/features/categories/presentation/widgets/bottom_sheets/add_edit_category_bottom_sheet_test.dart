@@ -4,6 +4,9 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:due_day/core/design_system/components/messenger/app_messenger.dart';
 import 'package:due_day/core/errors/failures.dart';
 import 'package:due_day/core/l10n/app_localizations.dart';
+import 'package:due_day/features/categories/domain/entities/category_entity.dart';
+import 'package:due_day/features/categories/domain/entities/category_kind.dart';
+import 'package:due_day/features/categories/domain/entities/system_categories.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_action_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_action_state.dart';
 import 'package:due_day/features/categories/presentation/widgets/bottom_sheets/add_edit_category_bottom_sheet.dart';
@@ -55,6 +58,7 @@ void main() {
   Future<void> pumpBottomSheet(
     WidgetTester tester, {
     required void Function(String name, String icon, String color) onSave,
+    CategoryEntity? category,
   }) async {
     setupTestWindow(tester);
     await tester.pumpWidget(
@@ -71,7 +75,10 @@ void main() {
                   onPressed: () => showModalBottomSheet(
                     context: context,
                     isScrollControlled: true,
-                    builder: (_) => AddEditCategoryBottomSheet(onSave: onSave),
+                    builder: (_) => AddEditCategoryBottomSheet(
+                      onSave: onSave,
+                      category: category,
+                    ),
                   ),
                   child: const Text('open'),
                 ),
@@ -173,6 +180,37 @@ void main() {
 
         expect(onSaveCalled, isFalse);
         expect(find.byType(AddEditCategoryBottomSheet), findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      'CAT-003: opening Ignored shows no name field and no delete action',
+      (tester) async {
+        String? savedName;
+        await pumpBottomSheet(
+          tester,
+          onSave: (name, icon, color) => savedName = name,
+          category: CategoryEntity(
+            id: SystemCategories.ignoredId,
+            userId: 'user-1',
+            name: SystemCategories.ignoredStoredName,
+            color: '#34495E',
+            icon: '0xf5be',
+            createdAt: DateTime(2026),
+            kind: CategoryKind.ignored,
+          ),
+        );
+
+        expect(find.byType(TextFormField), findsNothing);
+        expect(find.text('Ignored'), findsOneWidget);
+        expect(find.textContaining('Delete'), findsNothing);
+
+        await tester.ensureVisible(find.text('Save Category'));
+        await tester.tap(find.text('Save Category'));
+        await tester.pump();
+
+        // Saving keeps the stored name; only color/icon can change.
+        expect(savedName, SystemCategories.ignoredStoredName);
       },
     );
   });

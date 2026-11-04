@@ -41,16 +41,7 @@ class TransactionTypeSelector extends StatelessWidget {
             onTap: () => onTypeChanged(TransactionType.income),
           ),
         ),
-        SizedBox(width: spacing.medium.width),
-        Expanded(
-          child: _TypeItem(
-            label: l10n.transactionsTypeTransfer,
-            icon: Icons.sync_alt_outlined,
-            isSelected: selectedType == TransactionType.transfer,
-            activeColor: colors.resource.secondary,
-            onTap: () => onTypeChanged(TransactionType.transfer),
-          ),
-        ),
+        // Transfer can't be created (TRX-001).
       ],
     );
   }

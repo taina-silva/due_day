@@ -58,10 +58,7 @@ class StatementImportBloc
 
         emit(const StatementImportParsing());
 
-        final parseResult = parseStatement(
-          fileName: picked.fileName,
-          content: picked.content,
-        );
+        final parseResult = parseStatement(content: picked.content);
 
         parseResult.fold((failure) => emit(StatementImportError(failure)), (
           parsed,

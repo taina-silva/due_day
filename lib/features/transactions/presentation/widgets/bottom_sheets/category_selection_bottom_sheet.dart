@@ -4,6 +4,7 @@ import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_bloc.dart';
 import 'package:due_day/features/categories/presentation/bloc/category_load_state.dart';
 import 'package:due_day/features/categories/presentation/utils/category_failure_extension.dart';
+import 'package:due_day/features/categories/presentation/utils/category_l10n_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -95,7 +96,7 @@ class CategorySelectionBottomSheet extends StatelessWidget {
                           } catch (_) {}
 
                           return _CategoryItem(
-                            name: c.name,
+                            name: l10n.categoryDisplayName(c),
                             color: parsedColor,
                             isSelected: selectedCategoryId == c.id,
                             onTap: () => Navigator.pop(context, c),

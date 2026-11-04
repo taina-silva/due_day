@@ -17,9 +17,9 @@ import 'package:due_day/features/dashboard/presentation/bloc/dashboard_state.dar
 import 'package:due_day/features/dashboard/presentation/utils/dashboard_failure_extension.dart';
 import 'package:due_day/features/dashboard/presentation/widgets/account_selection_bottom_sheet.dart';
 import 'package:due_day/features/dashboard/presentation/widgets/cards/due_item_card.dart';
-import 'package:due_day/features/dashboard/presentation/widgets/cards/financial_health_card.dart';
 import 'package:due_day/features/dashboard/presentation/widgets/cards/summary_card.dart';
 import 'package:due_day/features/dashboard/presentation/widgets/dashboard_app_bar.dart';
+import 'package:due_day/features/dashboard/presentation/widgets/dashboard_month_header.dart';
 import 'package:due_day/features/dashboard/presentation/widgets/insights/insight_card.dart';
 import 'package:due_day/features/dashboard/presentation/widgets/spending/category_spending_list.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_load_bloc.dart';
@@ -107,7 +107,8 @@ class _DashboardPageState extends State<DashboardPage> {
                     children: [
                       SizedBox(height: spacing.medium.height),
 
-                      // Saldo & Projected Balance Card
+                      // Month selector + account filter (DSH-001). No
+                      // balances are shown (DSH-007).
                       Builder(
                         builder: (context) {
                           final accountState = context
@@ -123,10 +124,13 @@ class _DashboardPageState extends State<DashboardPage> {
                               .map((a) => a.name)
                               .toList();
 
-                          return FinancialHealthCard(
-                            currentBalance: summary.currentBalance,
-                            projectedBalance: summary.projectedBalance,
+                          return DashboardMonthHeader(
+                            month: summary.month,
+                            localeStr: localeStr,
                             selectedAccountNames: selectedAccountNames,
+                            onMonthChanged: (month) => context
+                                .read<DashboardBloc>()
+                                .add(DashboardMonthChanged(month)),
                             onFilterTap: () async {
                               final selectedIds =
                                   await showModalBottomSheet<List<String>>(
@@ -151,33 +155,44 @@ class _DashboardPageState extends State<DashboardPage> {
                           );
                         },
                       ),
-                      SizedBox(height: spacing.twoExtraLarge.height),
+                      SizedBox(height: spacing.large.height),
 
-                      // Incomes / Expenses
+                      // Spent / Income (DSH-003, DSH-004)
                       Row(
                         children: [
                           Expanded(
                             child: SummaryCard(
-                              title: l10n.dashboardIncomes,
+                              title: l10n.dashboardSpent,
                               amount: NumberFormat.simpleCurrency(
                                 locale: localeStr,
-                              ).format(summary.monthlyIncome),
-                              icon: Icons.arrow_upward_rounded,
-                              color: colors.system.success,
+                              ).format(summary.spent),
+                              icon: Icons.arrow_downward_rounded,
+                              color: colors.system.error,
                             ),
                           ),
                           SizedBox(width: spacing.mediumLarge.width),
                           Expanded(
                             child: SummaryCard(
-                              title: l10n.dashboardExpenses,
+                              title: l10n.dashboardIncomes,
                               amount: NumberFormat.simpleCurrency(
                                 locale: localeStr,
-                              ).format(summary.monthlyExpenses),
-                              icon: Icons.arrow_downward_rounded,
-                              color: colors.system.error,
+                              ).format(summary.income),
+                              icon: Icons.arrow_upward_rounded,
+                              color: colors.system.success,
                             ),
                           ),
                         ],
+                      ),
+                      SizedBox(height: spacing.mediumLarge.height),
+
+                      // Invested, never part of Spent (DSH-005)
+                      SummaryCard(
+                        title: l10n.dashboardInvested,
+                        amount: NumberFormat.simpleCurrency(
+                          locale: localeStr,
+                        ).format(summary.invested),
+                        icon: Icons.trending_up_rounded,
+                        color: colors.resource.primary,
                       ),
                       SizedBox(height: spacing.twoExtraLarge.height),
 
@@ -205,7 +220,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         SizedBox(height: spacing.mediumLarge.height),
                         CategorySpendingList(
                           spending: summary.spendingByCategory,
-                          total: summary.monthlyExpenses,
+                          total: summary.spent,
                           localeStr: localeStr,
                           categories: categories,
                         ),

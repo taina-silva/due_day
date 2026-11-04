@@ -55,9 +55,10 @@ class ConfirmImport {
       );
     }).toList();
 
+    // The account is stored on each transaction; no account changes
+    // (IMP-010).
     final result = await repository.confirmImport(
       transactionsToCreate: entities,
-      destinationAccountId: destinationAccountId,
     );
 
     return result.map(

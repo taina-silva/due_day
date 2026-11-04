@@ -64,7 +64,7 @@ class _TransactionCreateFormState extends State<TransactionCreateForm> {
   void initState() {
     super.initState();
 
-    context.read<CategoryLoadBloc>().add(LoadCategories());
+    context.read<CategoryLoadBloc>().add(const LoadCategories());
     context.read<AccountLoadBloc>().add(LoadAccounts());
 
     if (widget.transaction != null) {

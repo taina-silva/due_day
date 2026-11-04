@@ -20,6 +20,7 @@ import 'package:due_day/features/notifications/presentation/bloc/notifications_a
 import 'package:due_day/features/notifications/presentation/bloc/notifications_load_bloc.dart';
 import 'package:due_day/features/notifications/presentation/bloc/notifications_load_event.dart';
 import 'package:due_day/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:due_day/features/profile/presentation/bloc/user_data_action_bloc.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_action_bloc.dart';
 import 'package:due_day/features/transactions/presentation/bloc/transaction_load_bloc.dart';
 import 'package:due_day/firebase_options.dart';
@@ -129,6 +130,7 @@ class _DueDayAppState extends State<DueDayApp> {
         ),
         BlocProvider(create: (_) => di.sl<NotificationsActionBloc>()),
         BlocProvider(create: (_) => di.sl<ProfileBloc>()),
+        BlocProvider(create: (_) => di.sl<UserDataActionBloc>()),
       ],
       child: BlocBuilder<SettingsBloc, SettingsState>(
         builder: (context, state) {
@@ -144,7 +146,8 @@ class _DueDayAppState extends State<DueDayApp> {
             supportedLocales: AppLocalizations.supportedLocales,
             builder: (context, child) {
               return Listener(
-                onPointerDown: (_) => FocusManager.instance.primaryFocus?.unfocus(),
+                onPointerDown: (_) =>
+                    FocusManager.instance.primaryFocus?.unfocus(),
                 behavior: HitTestBehavior.translucent,
                 child: child,
               );

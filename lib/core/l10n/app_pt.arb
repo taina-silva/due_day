@@ -10,9 +10,7 @@
         }
     },
     "dashboardMonthlySummary": "Resumo Mensal",
-    "dashboardGeneralBalance": "Saldo Geral",
     "dashboardIncomes": "Receitas",
-    "dashboardExpenses": "Despesas",
     "dashboardUpcomingDues": "Próximos Vencimentos",
     "dashboardNoUpcomingDues": "Nenhuma conta a vencer próxima.",
     "dashboardDueToday": "Vence hoje",
@@ -26,7 +24,6 @@
             }
         }
     },
-    "dashboardProjectedBalance": "Saldo Projetado",
     "dashboardCategorySpending": "Gastos por Categoria",
     "dashboardFinancialInsights": "Insights Financeiros",
     "dashboardInsightHealthy": "Suas finanças estão saudáveis este mês!",
@@ -49,7 +46,6 @@
         }
     },
     "defaultTransaction": "Transação",
-
     "loginSubtitle": "O seu curador digital financeiro.",
     "loginEmailLabel": "E-mail",
     "loginPasswordLabel": "Senha",
@@ -64,20 +60,17 @@
     "authErrorUserDisabled": "Esta conta de usuário foi desativada.",
     "authErrorCancelled": "A autenticação foi cancelada.",
     "authErrorUserNotFound": "Conta de usuário não encontrada.",
-
     "signupTitle": "Crie sua conta",
     "signupSubtitle": "Comece a organizar suas finanças hoje.",
     "signupNameLabel": "Nome",
     "signupNameHint": "Digite seu nome",
     "signupSubmitButton": "Criar conta",
     "signupErrorFallback": "Ocorreu um erro ao criar conta.",
-
     "navHome": "Home",
     "navAdd": "Adicionar",
     "navTrans": "Transações",
     "navAccount": "Contas",
     "navCategory": "Categorias",
-
     "accountsTitle": "Minhas Contas",
     "accountsComingSoon": "Funcionalidade disponível em breve!",
     "accountsEmpty": "Nenhuma conta adicionada. Comece criando uma!",
@@ -86,11 +79,7 @@
     "accountsEditAccount": "Editar Conta",
     "accountsNameLabel": "NOME",
     "accountsNameHint": "Nome da conta",
-    "accountsBalanceLabel": "SALDO INICIAL",
     "accountsCategoryLabel": "CATEGORIA",
-    "accountsCategoryInvestments": "Investimentos",
-    "accountsCategorySavings": "Poupança",
-    "accountsCategoryDailyUse": "Uso Diário",
     "accountsSaveAccount": "Salvar Conta",
     "accountsDeleteAccount": "Deletar Conta",
     "accountsConfirmDelete": "Tem certeza que deseja deletar esta conta?",
@@ -102,7 +91,6 @@
     "accountsErrorFallback": "Ocorreu um erro ao gerenciar suas contas.",
     "accountsErrorSaveFailed": "Falha ao salvar a conta. Tente novamente.",
     "accountsErrorDeleteFailed": "Falha ao deletar a conta. Tente novamente.",
-
     "categoriesTitle": "Categorias",
     "categoriesSubtitle": "Curadoria do seu fluxo de gastos.",
     "categoriesFinancialArchitect": "ARQUITETO FINANCEIRO",
@@ -129,14 +117,10 @@
     "categoriesSelectIcon": "SELECIONAR ÍCONE",
     "categoriesSelectColor": "COR SEMÂNTICA",
     "categoriesSave": "Salvar Categoria",
-
     "profileTitle": "Perfil e Configurações",
     "profilePremiumMember": "MEMBRO PREMIUM",
-    "profileConfirmDeleteTitle": "Confirmar exclusão",
-    "profileConfirmDeleteDesc": "Deseja realmente excluir sua conta permanentemente? Esta ação não tem retorno.",
     "profileCancel": "Cancelar",
     "profileExclude": "Excluir",
-    "profileExcludeDevAlert": "Função de exclusão em desenvolvimento.",
     "profileLanguage": "Idioma",
     "profileLanguageEn": "Inglês-EUA",
     "profileLanguagePt": "Português-BR",
@@ -144,7 +128,6 @@
     "profilePushAlerts": "Alertas Automáticos",
     "profilePushAlertsDesc": "Contas, lembretes, atualizações",
     "profileLogOut": "Sair da Conta",
-    "profileDeleteAccount": "Deletar Conta",
     "profileSecurity": "Segurança Biométrica",
     "profileSecurityDesc": "Bloqueia o acesso ao app",
     "profileBiometricsNotSupported": "Este dispositivo não possui suporte biométrico ativo.",
@@ -163,7 +146,6 @@
     "profileChooseFromGallery": "Escolher da Galeria",
     "profilePhotoTooLargeError": "Essa imagem é muito grande. Tente outra foto.",
     "profilePhotoPickError": "Não foi possível atualizar sua foto. Tente novamente.",
-
     "notificationsTitle": "Notificações",
     "notifAppUpdateTitle": "Atualização do Sistema",
     "notifAppUpdateDesc": "Os termos de uso da plataforma foram atualizados.",
@@ -211,7 +193,6 @@
             }
         }
     },
-
     "transactionsTitle": "Transações",
     "transactionsFilterAll": "Todas",
     "transactionsFilterIncome": "Receitas",
@@ -223,7 +204,6 @@
     "transactionsSectionLastWeek": "Última Semana",
     "transactionsSectionLastMonth": "Último Mês",
     "transactionsSectionPast": "Passados",
-
     "transactionsNew": "Nova Transação",
     "transactionsAmount": "VALOR",
     "transactionsConfirm": "Confirmar Transação",
@@ -375,11 +355,9 @@
     "scheduleStatusScheduled": "Agendado",
     "scheduleMarkAsPaid": "Marcar como Pago",
     "notAvailable": "N/A",
-
     "splashAppName": "DueDay",
     "splashTagline": "Suas finanças, no dia certo.",
     "splashLogoSemanticLabel": "Logo do DueDay",
-
     "dateToday": "Hoje",
     "validatorRequired": "Campo obrigatório",
     "hintSelect": "Selecione",
@@ -410,5 +388,43 @@
     "dashboardErrorFallback": "Ocorreu um erro ao carregar o painel.",
     "scheduleErrorFallback": "Ocorreu um erro ao carregar sua agenda.",
     "scheduleErrorNotAuthenticated": "Usuário não autenticado. Por favor, faça login novamente.",
-    "scheduleActionErrorFallback": "Falha ao atualizar sua agenda. Tente novamente."
+    "scheduleActionErrorFallback": "Falha ao atualizar sua agenda. Tente novamente.",
+    "accountsCategoryChecking": "Conta corrente",
+    "accountsCategoryCash": "Dinheiro",
+    "accountsDueDayInvalid": "Informe um dia de vencimento entre 1 e 31.",
+    "accountsDueDayValue": "Vence dia {day}",
+    "@accountsDueDayValue": {
+        "placeholders": {
+            "day": {
+                "type": "int",
+                "example": "10"
+            }
+        }
+    },
+    "categoriesSystemInvestment": "Investimento",
+    "categoriesSystemIgnored": "Ignorado",
+    "categoriesSystemProtected": "Categoria do sistema: não pode ser renomeada nem excluída.",
+    "categoriesDefaultFood": "Alimentação",
+    "categoriesDefaultGroceries": "Mercado",
+    "categoriesDefaultTransport": "Transporte",
+    "categoriesDefaultHousing": "Moradia",
+    "categoriesDefaultBills": "Contas",
+    "categoriesDefaultHealth": "Saúde",
+    "categoriesDefaultLeisure": "Lazer",
+    "categoriesDefaultShopping": "Compras",
+    "categoriesDefaultSubscriptions": "Assinaturas",
+    "categoriesDefaultEducation": "Educação",
+    "categoriesDefaultOther": "Outros",
+    "categoriesDefaultSalary": "Salário",
+    "categoriesDefaultOtherIncome": "Outras receitas",
+    "dashboardPreviousMonth": "Mês anterior",
+    "dashboardNextMonth": "Próximo mês",
+    "dashboardSpent": "Gasto",
+    "dashboardInvested": "Investido",
+    "dashboardUncategorized": "Sem categoria",
+    "profileDeleteAllData": "Apagar todos os meus dados",
+    "profileDeleteAllDataTitle": "Apagar todos os seus dados?",
+    "profileDeleteAllDataConfirm": "Todas as suas contas, categorias e transações serão apagadas. Seu login e suas preferências continuam. Isso não pode ser desfeito.",
+    "profileDeleteAllDataSuccess": "Seus dados foram apagados.",
+    "profileDeleteAllDataError": "Não foi possível apagar seus dados. Tente novamente."
 }

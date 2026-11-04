@@ -1,7 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:due_day/core/design_system/theme/theme.dart';
+import 'package:due_day/core/l10n/app_localizations.dart';
 import 'package:due_day/core/utils/extensions/num_extension.dart';
 import 'package:due_day/features/categories/domain/entities/category_entity.dart';
+import 'package:due_day/features/categories/presentation/utils/category_l10n_extension.dart';
+import 'package:due_day/features/dashboard/domain/entities/dashboard_summary.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -25,6 +28,7 @@ class CategorySpendingList extends StatelessWidget {
     final typography = context.typography;
     final spacing = context.spacing;
     final radius = context.radius;
+    final l10n = AppLocalizations.of(context);
 
     final sortedEntries = spending.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
@@ -33,7 +37,12 @@ class CategorySpendingList extends StatelessWidget {
       children: sortedEntries.take(4).map((entry) {
         final percent = total > 0 ? entry.value / total : 0.0;
         final category = categories.firstWhereOrNull((c) => c.id == entry.key);
-        final categoryName = category?.name ?? entry.key;
+        // Uncategorized expenses form their own group (DSH-006).
+        final categoryName = entry.key == DashboardSummary.uncategorizedKey
+            ? l10n.dashboardUncategorized
+            : category != null
+            ? l10n.categoryDisplayName(category)
+            : entry.key;
 
         return Padding(
           padding: EdgeInsets.only(bottom: spacing.mediumLarge.height),

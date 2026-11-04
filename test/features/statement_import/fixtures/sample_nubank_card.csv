@@ -1,0 +1,10 @@
+date,title,amount
+2026-09-03,Padaria,25.90
+2026-09-03,Cafe,8.00
+2026-09-03,Cafe,8.00
+2026-09-05,Estorno Loja,-40.00
+2026-09-10,Pagamento recebido,-2000.00
+2026-06-15,Loja X - Parcela 3/10,100.00
+2026-01-31,Loja Y - Parcela 2/3,50.00
+not-a-date,Broken,10.00
+2026-09-11,Broken amount,abc

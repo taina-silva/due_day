@@ -15,6 +15,13 @@ _CategoryModel _$CategoryModelFromJson(Map<String, dynamic> json) =>
       icon: json['icon'] as String,
       createdAt: const TimestampConverter().fromJson(json['createdAt']),
       transactionCount: (json['transactionCount'] as num?)?.toInt() ?? 0,
+      kind:
+          $enumDecodeNullable(
+            _$CategoryKindEnumMap,
+            json['kind'],
+            unknownValue: CategoryKind.spending,
+          ) ??
+          CategoryKind.spending,
     );
 
 Map<String, dynamic> _$CategoryModelToJson(_CategoryModel instance) =>
@@ -26,4 +33,11 @@ Map<String, dynamic> _$CategoryModelToJson(_CategoryModel instance) =>
       'icon': instance.icon,
       'createdAt': const TimestampConverter().toJson(instance.createdAt),
       'transactionCount': instance.transactionCount,
+      'kind': _$CategoryKindEnumMap[instance.kind]!,
     };
+
+const _$CategoryKindEnumMap = {
+  CategoryKind.spending: 'spending',
+  CategoryKind.investment: 'investment',
+  CategoryKind.ignored: 'ignored',
+};

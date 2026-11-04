@@ -66,9 +66,7 @@ void main() {
     when(() => mockAccountBloc.state).thenReturn(AccountInitial());
     when(() => mockCategoryLoadBloc.state).thenReturn(CategoryInitial());
     when(() => mockTransactionBloc.state).thenReturn(TransactionInitial());
-    when(
-      () => mockNotificationsBloc.state,
-    ).thenReturn(NotificationsInitial());
+    when(() => mockNotificationsBloc.state).thenReturn(NotificationsInitial());
 
     // GetIt.reset() is asynchronous; awaiting it avoids a race where its
     // deferred clear() runs after registerLazySingleton and wipes it out.
@@ -116,9 +114,7 @@ void main() {
         BlocProvider<AccountLoadBloc>.value(value: mockAccountBloc),
         BlocProvider<CategoryLoadBloc>.value(value: mockCategoryLoadBloc),
         BlocProvider<TransactionLoadBloc>.value(value: mockTransactionBloc),
-        BlocProvider<NotificationsLoadBloc>.value(
-          value: mockNotificationsBloc,
-        ),
+        BlocProvider<NotificationsLoadBloc>.value(value: mockNotificationsBloc),
         BlocProvider<SettingsBloc>.value(value: mockSettingsBloc),
       ],
       child: MaterialApp.router(
@@ -256,40 +252,33 @@ void main() {
       },
     );
 
-    testWidgets(
-      'given the biometric prompt blips the lifecycle through '
-      'inactive/resumed without true backgrounding then it does not '
-      'retrigger authenticate()',
-      (tester) async {
-        setupTestWindow(tester);
-        when(
-          () => mockSecurityService.canAuthenticate(),
-        ).thenAnswer((_) async => true);
-        when(
-          () => mockSecurityService.authenticate(),
-        ).thenAnswer((_) async => BiometricAuthResult.success);
+    testWidgets('given the biometric prompt blips the lifecycle through '
+        'inactive/resumed without true backgrounding then it does not '
+        'retrigger authenticate()', (tester) async {
+      setupTestWindow(tester);
+      when(
+        () => mockSecurityService.canAuthenticate(),
+      ).thenAnswer((_) async => true);
+      when(
+        () => mockSecurityService.authenticate(),
+      ).thenAnswer((_) async => BiometricAuthResult.success);
 
-        await tester.pumpWidget(buildTestableWidget(biometricsEnabled: true));
-        await tester.pumpAndSettle();
+      await tester.pumpWidget(buildTestableWidget(biometricsEnabled: true));
+      await tester.pumpAndSettle();
 
-        expect(find.byType(BiometricLockOverlay), findsNothing);
+      expect(find.byType(BiometricLockOverlay), findsNothing);
 
-        // Mirrors the transient inactive -> resumed blip the system
-        // biometric prompt itself causes, without ever truly backgrounding
-        // the app (i.e. no `paused` state in between).
-        tester.binding.handleAppLifecycleStateChanged(
-          AppLifecycleState.inactive,
-        );
-        await tester.pump();
-        tester.binding.handleAppLifecycleStateChanged(
-          AppLifecycleState.resumed,
-        );
-        await tester.pump();
+      // Mirrors the transient inactive -> resumed blip the system
+      // biometric prompt itself causes, without ever truly backgrounding
+      // the app (i.e. no `paused` state in between).
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+      await tester.pump();
+      tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+      await tester.pump();
 
-        expect(find.byType(BiometricLockOverlay), findsNothing);
-        verify(() => mockSecurityService.authenticate()).called(1);
-      },
-    );
+      expect(find.byType(BiometricLockOverlay), findsNothing);
+      verify(() => mockSecurityService.authenticate()).called(1);
+    });
 
     testWidgets(
       'given the app is genuinely backgrounded and resumed then it re-locks '
@@ -312,9 +301,7 @@ void main() {
           () => mockSecurityService.authenticate(),
         ).thenAnswer((_) => secondAuthCompleter.future);
 
-        tester.binding.handleAppLifecycleStateChanged(
-          AppLifecycleState.paused,
-        );
+        tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
         await tester.pump();
         tester.binding.handleAppLifecycleStateChanged(
           AppLifecycleState.resumed,
@@ -355,9 +342,7 @@ void main() {
           ),
         );
 
-        tester.binding.handleAppLifecycleStateChanged(
-          AppLifecycleState.paused,
-        );
+        tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.paused);
         await tester.pump();
         tester.binding.handleAppLifecycleStateChanged(
           AppLifecycleState.resumed,

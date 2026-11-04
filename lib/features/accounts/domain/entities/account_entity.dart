@@ -6,7 +6,6 @@ class AccountEntity extends Equatable {
   final String userId;
   final String name;
   final AccountCategory category;
-  final double balance;
   final int? dueDay; // for credit card bills (day 1-31)
   final DateTime createdAt;
   final DateTime? deletedAt;
@@ -16,7 +15,6 @@ class AccountEntity extends Equatable {
     required this.userId,
     required this.name,
     required this.category,
-    required this.balance,
     required this.createdAt,
     this.dueDay,
     this.deletedAt,
@@ -28,7 +26,6 @@ class AccountEntity extends Equatable {
     userId,
     name,
     category,
-    balance,
     dueDay,
     createdAt,
     deletedAt,
