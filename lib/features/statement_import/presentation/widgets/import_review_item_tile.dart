@@ -56,6 +56,8 @@ class ImportReviewItemTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Full memo, wrapped: the user needs the whole
+                  // description to pick a category.
                   Text(
                     parsed.memo.isNotEmpty
                         ? parsed.memo
@@ -63,8 +65,7 @@ class ImportReviewItemTile extends StatelessWidget {
                     style: typography.body.medium.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                    softWrap: true,
                   ),
                   SizedBox(height: spacing.extraSmall.height),
                   Text(
